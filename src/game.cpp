@@ -36,7 +36,7 @@ void draw() {
     ClearBackground(BLANK);
 
     BeginMode3D(camera::CAMERA);
-    DrawGrid(100, 5.0);
+    DrawGrid(20, 1.0);
     EndMode3D();
 
     EndDrawing();
