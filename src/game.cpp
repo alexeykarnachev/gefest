@@ -7,6 +7,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "planet.hpp"
 #include "raylib/raylib.h"
+#include "raylib/raymath.h"
 
 namespace gefest {
 namespace game {
@@ -85,10 +86,31 @@ void draw() {
     {
         int flags = ImGuiWindowFlags_AlwaysAutoResize;
         ImGui::Begin("Planet", NULL, flags);
+
         ImGui::SliderInt("N Levels", &planet::N_LEVELS, 1, 8);
         ImGui::SliderFloat("Freq. Mult.", &planet::FREQ_MULT, 1.0, 4.0);
-        ImGui::SliderFloat("Ampl. Mult.", &planet::AMPL_MULT, 0.05, 1.0);
+        ImGui::SliderFloat("Ampl. Mult.", &planet::AMPL_MULT, 0.05, 5.0);
         ImGui::SliderFloat("Freq. Init.", &planet::FREQ_INIT, 0.05, 10.0);
+
+        ImGui::Separator();
+
+        ImGui::SliderFloat("Water Level", &planet::WATER_LEVEL, 0.0, planet::SAND_LEVEL);
+        ImGui::SliderFloat(
+            "Sand Level",
+            &planet::SAND_LEVEL,
+            planet::WATER_LEVEL + EPSILON,
+            planet::GRASS_LEVEL
+        );
+        ImGui::SliderFloat(
+            "Grass Level",
+            &planet::GRASS_LEVEL,
+            planet::SAND_LEVEL + EPSILON,
+            planet::ROCK_LEVEL
+        );
+        ImGui::SliderFloat(
+            "Rock Level", &planet::ROCK_LEVEL, planet::GRASS_LEVEL + EPSILON, 1.0
+        );
+
         ImGui::End();
     }
     end_imgui();
