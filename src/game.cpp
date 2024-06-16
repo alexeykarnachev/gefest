@@ -2,6 +2,7 @@
 
 #include "camera.hpp"
 #include "raylib/raylib.h"
+#include "shaders.hpp"
 
 namespace gefest {
 namespace game {
@@ -13,9 +14,13 @@ void load() {
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     InitWindow(1500, 1000, "Gefest");
     SetTargetFPS(60);
+
+    shaders::load();
 }
 
 void unload() {
+    shaders::unload();
+
     CloseWindow();
 }
 
@@ -31,11 +36,26 @@ void update() {
     update_window_should_close();
 }
 
+void draw_planet() {
+    static Vector3 position = {.x = 0.0, .y = 5.0, .z = 5.0};
+    static float radius = 4.5;
+    static int n_rings = 128;
+    static int n_slices = 128;
+    static Color color = DARKBLUE;
+
+    DrawSphereEx(position, radius, n_rings, n_slices, color);
+}
+
 void draw() {
     BeginDrawing();
     ClearBackground(BLANK);
 
     BeginMode3D(camera::CAMERA);
+
+    shaders::begin_planet_shader();
+    draw_planet();
+    EndShaderMode();
+
     DrawGrid(20, 1.0);
     EndMode3D();
 
