@@ -4,4 +4,4 @@ all:
 	-I./deps/include \
 	-o ./build/linux/gefest \
 	./src/*.cpp \
-	-L./deps/lib/linux -lraylib -lGL -lpthread -ldl
+	-L./deps/lib/linux -lraylib -limgui -lGL -lpthread -ldl

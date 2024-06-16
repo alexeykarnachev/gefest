@@ -1,8 +1,12 @@
 #include "game.hpp"
 
+#include "GLFW/glfw3.h"
 #include "camera.hpp"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "planet.hpp"
 #include "raylib/raylib.h"
-#include "shaders.hpp"
 
 namespace gefest {
 namespace game {
@@ -10,25 +14,44 @@ namespace game {
 static const float DT = 1.0 / 60.0;
 static bool WINDOW_SHOULD_CLOSE = false;
 
-void load() {
+void load_window() {
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     InitWindow(1500, 1000, "Gefest");
+    SetExitKey(KEY_NULL);
     SetTargetFPS(60);
+}
 
-    shaders::load();
+void load_imgui() {
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    GLFWwindow *window = (GLFWwindow *)GetWindowHandle();
+    glfwGetWindowUserPointer(window);
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 420 core");
+    ImGui::StyleColorsDark();
+}
+
+void unload_imgui() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+}
+
+void load() {
+    load_window();
+    load_imgui();
+    planet::load();
 }
 
 void unload() {
-    shaders::unload();
-
+    planet::unload();
+    unload_imgui();
     CloseWindow();
 }
 
 void update_window_should_close() {
     bool is_alt_f4_pressed = IsKeyDown(KEY_LEFT_ALT) && IsKeyPressed(KEY_F4);
-    bool is_escape_pressed = IsKeyPressed(KEY_ESCAPE);
-    WINDOW_SHOULD_CLOSE = (WindowShouldClose() || is_alt_f4_pressed)
-                          && !is_escape_pressed;
+    WINDOW_SHOULD_CLOSE = (WindowShouldClose() || is_alt_f4_pressed);
 }
 
 void update() {
@@ -36,14 +59,15 @@ void update() {
     update_window_should_close();
 }
 
-void draw_planet() {
-    static Vector3 position = {.x = 0.0, .y = 5.0, .z = 5.0};
-    static float radius = 4.5;
-    static int n_rings = 128;
-    static int n_slices = 128;
-    static Color color = DARKBLUE;
+void begin_imgui() {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+}
 
-    DrawSphereEx(position, radius, n_rings, n_slices, color);
+void end_imgui() {
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void draw() {
@@ -52,13 +76,24 @@ void draw() {
 
     BeginMode3D(camera::CAMERA);
 
-    shaders::begin_planet_shader();
-    draw_planet();
-    EndShaderMode();
+    planet::draw();
 
     DrawGrid(20, 1.0);
     EndMode3D();
 
+    begin_imgui();
+    {
+        int flags = ImGuiWindowFlags_AlwaysAutoResize;
+        ImGui::Begin("Planet", NULL, flags);
+        ImGui::SliderInt("N Levels", &planet::N_LEVELS, 1, 8);
+        ImGui::SliderFloat("Freq. Mult.", &planet::FREQ_MULT, 1.0, 4.0);
+        ImGui::SliderFloat("Ampl. Mult.", &planet::AMPL_MULT, 0.05, 1.0);
+        ImGui::SliderFloat("Freq. Init.", &planet::FREQ_INIT, 0.05, 10.0);
+        ImGui::End();
+    }
+    end_imgui();
+
+    DrawFPS(0, 0);
     EndDrawing();
 }
 

@@ -3,13 +3,10 @@
 #include "raylib/raylib.h"
 #include <fstream>
 #include <sstream>
-#include <stdio.h>
 #include <string>
 
 namespace gefest {
 namespace shaders {
-
-static Shader PLANET_SHADER;
 
 std::string get_shader_file_path(const std::string &file_name) {
     auto file_path = "resources/shaders/" + file_name;
@@ -41,16 +38,6 @@ Shader load_shader(const std::string &vs_file_name, const std::string &fs_file_n
     Shader shader = LoadShaderFromMemory(vs.c_str(), fs.c_str());
 
     return shader;
-}
-
-void load() {
-    PLANET_SHADER = load_shader("base.vert", "planet.frag");
-}
-
-void unload() {}
-
-void begin_planet_shader() {
-    BeginShaderMode(PLANET_SHADER);
 }
 
 }  // namespace shaders

@@ -2,13 +2,14 @@
 
 in vec3 fragPosition;
 
+uniform int n_levels;
+uniform float freq_mult;
+uniform float ampl_mult;
+uniform float freq_init;
+
 out vec4 finalColor;
 
 void main() {
-    int n_levels = 8;
-    float freq_mult = 2.0;
-    float ampl_mult = 0.5;
-    float freq_init = 1.0;
     float p = octave_perlin_noise(
             fragPosition.x,
             fragPosition.y,
@@ -16,7 +17,7 @@ void main() {
             n_levels,
             freq_mult,
             ampl_mult,
-            freq_mult
+            freq_init
         );
 
     finalColor = vec4(p, p, p, 1.0);

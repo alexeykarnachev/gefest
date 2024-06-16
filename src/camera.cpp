@@ -8,7 +8,7 @@ namespace gefest {
 namespace camera {
 
 Camera3D CAMERA = {
-    .position = {.x = 0.0, .y = 5.0, .z = -5.0},
+    .position = {.x = 0.0, .y = 5.0, .z = -10.0},
     .target = {.x = 0.0, .y = 5.0, .z = 0.0},
     .up = {.x = 0.0, .y = 1.0, .z = 0.0},
     .fovy = 90.0,
