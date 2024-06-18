@@ -8,10 +8,10 @@ namespace gefest {
 namespace camera {
 
 Camera3D CAMERA = {
-    .position = {.x = 0.0, .y = 5.0, .z = -10.0},
-    .target = {.x = 0.0, .y = 5.0, .z = 0.0},
-    .up = {.x = 0.0, .y = 1.0, .z = 0.0},
-    .fovy = 90.0,
+    .position = {0.0, 5.0, 30.0},
+    .target = {0.0, 5.0, 0.0},
+    .up = {0.0, 1.0, 0.0},
+    .fovy = 60.0,
     .projection = CAMERA_PERSPECTIVE,
 };
 

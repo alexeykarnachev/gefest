@@ -89,7 +89,7 @@ void draw() {
 
         ImGui::SliderInt("N Levels", &planet::N_LEVELS, 1, 8);
         ImGui::SliderFloat("Freq. Mult.", &planet::FREQ_MULT, 1.0, 4.0);
-        ImGui::SliderFloat("Ampl. Mult.", &planet::AMPL_MULT, 0.05, 5.0);
+        ImGui::SliderFloat("Ampl. Mult.", &planet::AMPL_MULT, 0.05, 15.0);
         ImGui::SliderFloat("Freq. Init.", &planet::FREQ_INIT, 0.05, 10.0);
 
         ImGui::Separator();
