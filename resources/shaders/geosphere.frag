@@ -1,6 +1,7 @@
 /* vim: set filetype=glsl : */
 
-in vec3 fragPosition;
+in vec3 frag_model_pos;
+in vec3 frag_world_pos;
 
 uniform int n_levels;
 uniform float freq_mult;
@@ -12,7 +13,7 @@ uniform float sand_level;
 uniform float grass_level;
 uniform float rock_level;
 
-uniform float planet_radius;
+uniform float geosphere_radius;
 uniform vec3 planet_position;
 uniform vec3 sun_position;
 
@@ -24,24 +25,33 @@ const vec3 GRASS_COLOR = vec3(0.3, 0.6, 0.05);
 const vec3 ROCK_COLOR = vec3(0.45, 0.4, 0.4);
 const vec3 SNOW_COLOR = vec3(0.9, 0.9, 1.0);
 
-float get_shadow(vec3 point_position, float planet_radius, vec3 planet_position, vec3 sun_position) {
-    vec3 x = normalize(sun_position - planet_position);
+float get_shadow(
+    vec3 point_position,
+    vec3 planet_position,
+    vec3 sun_position,
+    float geosphere_radius
+) {
+    vec3 z = normalize(sun_position - planet_position);
     vec3 y = vec3(0.0, 1.0, 0.0);
-    vec3 z = normalize(cross(x, y));
+    vec3 x = normalize(cross(z, y));
     y = normalize(cross(z, x));
 
-    mat3 mat = transpose(mat3(x, y, z));
-    point_position = mat * point_position;
+    mat3 mat = mat3(x, y, z);
+    point_position = mat * (point_position - planet_position);
 
-    float shadow = 1.0 - (point_position - planet_position).x / planet_radius;
-    return shadow;
+    return 1.0 - point_position.z / geosphere_radius;
+    // if (point_position.z < 0.0) {
+    //     return 1.0;
+    // } else {
+    //     return 0.0;
+    // }
 }
 
 void main() {
     float height = octave_perlin_noise(
-            fragPosition.x,
-            fragPosition.y,
-            fragPosition.z,
+            frag_model_pos.x,
+            frag_model_pos.y,
+            frag_model_pos.z,
             n_levels,
             freq_mult,
             ampl_mult,
@@ -56,10 +66,10 @@ void main() {
     else color = SNOW_COLOR;
 
     float shadow = get_shadow(
-            fragPosition,
-            planet_radius,
+            frag_world_pos,
             planet_position,
-            sun_position
+            sun_position,
+            geosphere_radius
         );
 
     color *= (1.0 - shadow);

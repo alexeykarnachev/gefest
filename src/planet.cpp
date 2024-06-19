@@ -7,6 +7,8 @@
 namespace gefest {
 namespace planet {
 
+Vector3 PLANET_POSITION = {0.0, 7.0, 0.0};
+
 int N_LEVELS = 8;
 float FREQ_MULT = 2.0;
 float AMPL_MULT = 0.5;
@@ -17,31 +19,41 @@ float SAND_LEVEL = 0.6;
 float GRASS_LEVEL = 0.7;
 float ROCK_LEVEL = 0.8;
 
-static float RADIUS = 5.0;
-static Vector3 POSITION = {0.0, 5.0, 0.0};
+static float GEOSPHERE_RADIUS = 5.0;
+static Vector3 SUN_POSITION = {20.0, 20.0, 20.0};
 
-static Mesh SPHERE;
-static Material MATERIAL;
+static Mesh GEOSPHERE;
+static Material MATERIAL_GEOSPHERE;
+
+static Matrix PLANET_TRANSFORM;
 
 void load() {
     int n_rings = 64;
     int n_slices = 64;
-    SPHERE = GenMeshSphere(RADIUS, n_rings, n_slices);
 
-    MATERIAL = LoadMaterialDefault();
-    MATERIAL.shader = shaders::load_shader("base.vert", "planet.frag");
+    GEOSPHERE = GenMeshSphere(GEOSPHERE_RADIUS, n_rings, n_slices);
+
+    MATERIAL_GEOSPHERE = LoadMaterialDefault();
+    MATERIAL_GEOSPHERE.shader = shaders::load_shader("base.vert", "geosphere.frag");
 }
 
 void unload() {
-    UnloadMesh(SPHERE);
+    UnloadMesh(GEOSPHERE);
 }
 
-void draw() {
-    // tmp: keep sun here for now
-    Vector3 sun_position = {20.0, 20.0, 20.0};
-    DrawSphere(sun_position, 2.0, RED);
+void update() {
+    Matrix translate = MatrixTranslate(
+        PLANET_POSITION.x, PLANET_POSITION.y, PLANET_POSITION.z
+    );
+    Matrix rotate = MatrixRotate({0.0, 1.0, 0.0}, GetTime() / 10.0);
+    PLANET_TRANSFORM = MatrixMultiply(rotate, translate);
+}
 
-    auto shader = MATERIAL.shader;
+void draw_planet_body() {
+    // tmp: keep sun here for now
+    DrawSphere(SUN_POSITION, 2.0, RED);
+
+    auto shader = MATERIAL_GEOSPHERE.shader;
 
     // perlin noise uniforms
     int n_levels_loc = GetShaderLocation(shader, "n_levels");
@@ -66,20 +78,20 @@ void draw() {
     SetShaderValue(shader, rock_level_loc, &ROCK_LEVEL, SHADER_UNIFORM_FLOAT);
 
     // geometry uniforms
-    int planet_radius_loc = GetShaderLocation(shader, "planet_radius");
+    int planet_radius_loc = GetShaderLocation(shader, "geosphere_radius");
     int planet_position_loc = GetShaderLocation(shader, "planet_position");
     int sun_position_loc = GetShaderLocation(shader, "sun_position");
 
-    SetShaderValue(shader, planet_radius_loc, &RADIUS, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, planet_position_loc, &POSITION, SHADER_UNIFORM_VEC3);
-    SetShaderValue(shader, sun_position_loc, &sun_position, SHADER_UNIFORM_VEC3);
+    SetShaderValue(shader, planet_radius_loc, &GEOSPHERE_RADIUS, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(shader, planet_position_loc, &PLANET_POSITION, SHADER_UNIFORM_VEC3);
+    SetShaderValue(shader, sun_position_loc, &SUN_POSITION, SHADER_UNIFORM_VEC3);
 
-    // sphere transformation
-    Matrix translate = MatrixTranslate(POSITION.x, POSITION.y, POSITION.z);
-    Matrix transform = translate;
+    // draw sphere
+    DrawMesh(GEOSPHERE, MATERIAL_GEOSPHERE, PLANET_TRANSFORM);
+}
 
-    // draw planet
-    DrawMesh(SPHERE, MATERIAL, transform);
+void draw() {
+    draw_planet_body();
 }
 
 }  // namespace planet
