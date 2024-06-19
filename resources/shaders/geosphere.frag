@@ -40,11 +40,6 @@ float get_shadow(
     point_position = mat * (point_position - planet_position);
 
     return 1.0 - point_position.z / geosphere_radius;
-    // if (point_position.z < 0.0) {
-    //     return 1.0;
-    // } else {
-    //     return 0.0;
-    // }
 }
 
 void main() {
