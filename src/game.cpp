@@ -1,18 +1,15 @@
 #include "game.hpp"
 
-#include "GLFW/glfw3.h"
 #include "camera.hpp"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
+#include "constants.hpp"
+#include "editor.hpp"
+#include "entt/entt.hpp"
 #include "planet.hpp"
 #include "raylib/raylib.h"
-#include "raylib/raymath.h"
 
 namespace gefest {
 namespace game {
 
-static const float DT = 1.0 / 60.0;
 static bool WINDOW_SHOULD_CLOSE = false;
 
 void load_window() {
@@ -22,31 +19,15 @@ void load_window() {
     SetTargetFPS(60);
 }
 
-void load_imgui() {
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    GLFWwindow *window = (GLFWwindow *)GetWindowHandle();
-    glfwGetWindowUserPointer(window);
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init("#version 420 core");
-    ImGui::StyleColorsDark();
-}
-
-void unload_imgui() {
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-}
-
 void load() {
     load_window();
-    load_imgui();
+    editor::load();
     planet::load();
 }
 
 void unload() {
     planet::unload();
-    unload_imgui();
+    editor::unload();
     CloseWindow();
 }
 
@@ -61,17 +42,6 @@ void update() {
     update_window_should_close();
 }
 
-void begin_imgui() {
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-}
-
-void end_imgui() {
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
 void draw() {
     BeginDrawing();
     ClearBackground(BLANK);
@@ -83,42 +53,7 @@ void draw() {
 
     EndMode3D();
 
-    begin_imgui();
-    {
-        int flags = ImGuiWindowFlags_AlwaysAutoResize;
-        ImGui::Begin("Planet", NULL, flags);
-
-        ImGui::SliderFloat3("Position", (float *)&planet::PLANET_POSITION, -50.0, 50.0);
-
-        ImGui::Separator();
-
-        ImGui::SliderInt("N Levels", &planet::N_LEVELS, 1, 8);
-        ImGui::SliderFloat("Freq. Mult.", &planet::FREQ_MULT, 1.0, 4.0);
-        ImGui::SliderFloat("Ampl. Mult.", &planet::AMPL_MULT, 0.05, 1.0);
-        ImGui::SliderFloat("Freq. Init.", &planet::FREQ_INIT, 0.05, 4.0);
-
-        ImGui::Separator();
-
-        ImGui::SliderFloat("Water Level", &planet::WATER_LEVEL, 0.0, planet::SAND_LEVEL);
-        ImGui::SliderFloat(
-            "Sand Level",
-            &planet::SAND_LEVEL,
-            planet::WATER_LEVEL + EPSILON,
-            planet::GRASS_LEVEL
-        );
-        ImGui::SliderFloat(
-            "Grass Level",
-            &planet::GRASS_LEVEL,
-            planet::SAND_LEVEL + EPSILON,
-            planet::ROCK_LEVEL
-        );
-        ImGui::SliderFloat(
-            "Rock Level", &planet::ROCK_LEVEL, planet::GRASS_LEVEL + EPSILON, 1.0
-        );
-
-        ImGui::End();
-    }
-    end_imgui();
+    editor::update_and_draw();
 
     DrawFPS(0, 0);
     EndDrawing();
