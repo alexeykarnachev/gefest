@@ -66,9 +66,9 @@ void run() {
     while (!WINDOW_SHOULD_CLOSE) {
         float time = GetTime();
 
-        while (time - last_update_time >= DT) {
+        while (time - last_update_time >= constants::DT) {
             update();
-            last_update_time += DT;
+            last_update_time += constants::DT;
         }
 
         draw();
