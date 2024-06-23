@@ -19,6 +19,10 @@ Camera3D CAMERA = {
 
 Mode MODE = Mode::FOLLOW_PLAYER;
 
+void set_mode(Mode mode) {
+    MODE = mode;
+}
+
 void update_editor_mode() {
     static constexpr float camera_rot_speed = 0.003;
     static constexpr float camera_move_speed = 0.01;
@@ -35,11 +39,8 @@ void update_editor_mode() {
     if (is_moving) {
         CameraMoveRight(&CAMERA, -camera_move_speed * mouse_delta.x, true);
 
-        Vector3 right = GetCameraRight(&CAMERA);
-        Vector3 target_to_camera = Vector3Subtract(CAMERA.position, CAMERA.target);
-        Vector3 up = Vector3CrossProduct(target_to_camera, right);
-        Vector3 up_norm = Vector3Normalize(up);
-        up = Vector3Scale(up_norm, camera_move_speed * mouse_delta.y);
+        Vector3 up_norm = Vector3Normalize(CAMERA.up);
+        Vector3 up = Vector3Scale(up_norm, camera_move_speed * mouse_delta.y);
 
         CAMERA.position = Vector3Add(CAMERA.position, up);
         CAMERA.target = Vector3Add(CAMERA.target, up);
@@ -61,21 +62,31 @@ void update_follow_player_mode() {
     auto entity = registry::registry.view<registry::Player>().front();
     auto tr = registry::registry.get<transform::Transform>(entity);
 
-    Vector3 target = tr.position;
+    // forward
     Vector3 forward = {0.0, 0.0, -1.0};
     forward = Vector3RotateByQuaternion(forward, tr.rotation);
 
+    // up
+    Vector3 right = GetCameraRight(&CAMERA);
+    Vector3 target_to_camera = Vector3Subtract(CAMERA.position, CAMERA.target);
+    Vector3 up = Vector3Normalize(Vector3CrossProduct(target_to_camera, right));
+
+    // target
+    Vector3 target = tr.position;
+
+    // position
     Vector3 offset = Vector3Scale(forward, follow_distance);
     Vector3 position = Vector3Subtract(target, offset);
 
     CAMERA.position = position;
     CAMERA.target = target;
+    CAMERA.up = up;
 }
 
 void update() {
     switch (MODE) {
-        case Mode::EDITOR: update_editor_mode();
-        case Mode::FOLLOW_PLAYER: update_follow_player_mode();
+        case Mode::EDITOR: update_editor_mode(); break;
+        case Mode::FOLLOW_PLAYER: update_follow_player_mode(); break;
     }
 }
 

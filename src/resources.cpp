@@ -51,19 +51,27 @@ Shader load_shader(const std::string &vs_file_name, const std::string &fs_file_n
 }
 
 void load() {
+    // sphere mesh
     int n_rings = 64;
     int n_slices = 64;
     Mesh mesh = GenMeshSphere(1.0, n_rings, n_slices);
     SPHERE_MESH = mesh;
 
+    // geosphere material
     Material material = LoadMaterialDefault();
     material.shader = load_shader("base.vert", "geosphere.frag");
     GEOSPHERE_MATERIAL = material;
 
-    material = LoadMaterialDefault();
+    // model material
+    int n_materials;
+    Material *materials = LoadMaterials(
+        "./resources/models/red_fighter/RedFighter.mtl", &n_materials
+    );
+    material = materials[0];
     material.shader = load_shader("base.vert", "model.frag");
     MODEL_MATERIAL = material;
 
+    // red fighter model
     Model model = LoadModel("./resources/models/red_fighter/RedFighter.obj");
     model.materials[0] = MODEL_MATERIAL;
     Matrix mat = MatrixScale(RED_FIGHTER_SCALE, RED_FIGHTER_SCALE, RED_FIGHTER_SCALE);

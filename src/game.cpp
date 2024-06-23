@@ -50,6 +50,8 @@ void load() {
     editor::load();
 
     create_player_ship({0.0, 4.0, 25.0});
+    // camera::set_mode(camera::Mode::EDITOR);
+    camera::set_mode(camera::Mode::FOLLOW_PLAYER);
 }
 
 void unload() {

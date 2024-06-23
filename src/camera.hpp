@@ -11,8 +11,8 @@ enum class Mode {
 };
 
 extern Camera3D CAMERA;
-extern Mode MODE;
 
+void set_mode(Mode);
 void update();
 
 }  // namespace camera

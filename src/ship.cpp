@@ -66,8 +66,8 @@ void Ship::update() {
     this->reset_controls();
 
     switch (this->controller_type) {
-        case ControllerType::MANUAL: update_manual_controller();
-        case ControllerType::DUMMY: update_dummy_controller();
+        case ControllerType::MANUAL: update_manual_controller(); break;
+        case ControllerType::DUMMY: update_dummy_controller(); break;
     }
 
     this->apply_controls();
