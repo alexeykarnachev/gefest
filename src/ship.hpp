@@ -21,8 +21,8 @@ private:
     Matrix matrix = MatrixIdentity();
 
     void reset_controls();
-    void update_manual();
-    void update_dummy();
+    void update_manual_controller();
+    void update_dummy_controller();
     void apply_controls();
     void update_matrix();
 
@@ -31,8 +31,8 @@ public:
     ControllerType controller_type;
 
     float max_engine_force = 4000.0;
-    float max_pitch_magnitude = 5.0;
-    float max_roll_magnitude = 5.0;
+    float max_pitch_magnitude = 30.0;
+    float max_roll_magnitude = 15.0;
 
     Ship(entt::entity entity, ControllerType controller_type);
 

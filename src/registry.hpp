@@ -6,6 +6,8 @@
 namespace gefest {
 namespace registry {
 
+struct Player {};
+
 extern entt::registry registry;
 
 }  // namespace registry

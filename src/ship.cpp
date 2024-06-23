@@ -22,7 +22,7 @@ void Ship::reset_controls() {
     this->pitch = 0.0;
 }
 
-void Ship::update_manual() {
+void Ship::update_manual_controller() {
     if (IsKeyDown(KEY_SPACE)) this->thrust += 1.0;
     if (IsKeyDown(KEY_D)) this->roll -= 1.0;
     if (IsKeyDown(KEY_A)) this->roll += 1.0;
@@ -30,7 +30,7 @@ void Ship::update_manual() {
     if (IsKeyDown(KEY_S)) this->pitch += 1.0;
 }
 
-void Ship::update_dummy() {}
+void Ship::update_dummy_controller() {}
 
 void Ship::apply_controls() {
     auto &body = registry::registry.get<dynamic_body::DynamicBody>(this->entity);
@@ -66,8 +66,8 @@ void Ship::update() {
     this->reset_controls();
 
     switch (this->controller_type) {
-        case ControllerType::MANUAL: update_manual();
-        case ControllerType::DUMMY: update_dummy();
+        case ControllerType::MANUAL: update_manual_controller();
+        case ControllerType::DUMMY: update_dummy_controller();
     }
 
     this->apply_controls();

@@ -3,6 +3,8 @@
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 #include "raylib/rcamera.h"
+#include "registry.hpp"
+#include "transform.hpp"
 
 namespace gefest {
 namespace camera {
@@ -15,10 +17,12 @@ Camera3D CAMERA = {
     .projection = CAMERA_PERSPECTIVE,
 };
 
-void update() {
-    static const float camera_rot_speed = 0.003;
-    static const float camera_move_speed = 0.01;
-    static const float camera_zoom_speed = 1.0;
+Mode MODE = Mode::FOLLOW_PLAYER;
+
+void update_editor_mode() {
+    static constexpr float camera_rot_speed = 0.003;
+    static constexpr float camera_move_speed = 0.01;
+    static constexpr float camera_zoom_speed = 1.0;
 
     bool is_mmb_down = IsMouseButtonDown(2);
     bool is_shift_down = IsKeyDown(KEY_LEFT_SHIFT);
@@ -49,6 +53,30 @@ void update() {
 
     // zoom
     CameraMoveToTarget(&CAMERA, -GetMouseWheelMove() * camera_zoom_speed);
+}
+
+void update_follow_player_mode() {
+    static constexpr float follow_distance = 5.0;
+
+    auto entity = registry::registry.view<registry::Player>().front();
+    auto tr = registry::registry.get<transform::Transform>(entity);
+
+    Vector3 target = tr.position;
+    Vector3 forward = {0.0, 0.0, -1.0};
+    forward = Vector3RotateByQuaternion(forward, tr.rotation);
+
+    Vector3 offset = Vector3Scale(forward, follow_distance);
+    Vector3 position = Vector3Subtract(target, offset);
+
+    CAMERA.position = position;
+    CAMERA.target = target;
+}
+
+void update() {
+    switch (MODE) {
+        case Mode::EDITOR: update_editor_mode();
+        case Mode::FOLLOW_PLAYER: update_follow_player_mode();
+    }
 }
 
 }  // namespace camera
