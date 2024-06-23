@@ -106,16 +106,19 @@ void update_ship() {
     auto &body = registry::registry.get<dynamic_body::DynamicBody>(entity);
     auto &ship = registry::registry.get<ship::Ship>(entity);
 
-    ImGui::SeparatorText("Dynamic Body");
-    ImGui::SliderFloat("Mass", &body.mass, 10.0, 1000.0);
+    ImGui::SliderFloat("Mass", &body.mass, 1.0, 1000.0);
     ImGui::SliderFloat("Linear Damp.", &body.linear_damping, 1.0, 1000.0);
     ImGui::SliderFloat("Moment of Inertia", &body.moment_of_inertia, 1.0, 1000.0);
     ImGui::SliderFloat("Angular Damping", &body.angular_damping, 1.0, 1000.0);
 
-    ImGui::SeparatorText("Characteristics");
+    ImGui::Separator();
     ImGui::SliderFloat("Engine Force", &ship.max_engine_force, 1.0, 2000.0);
     ImGui::SliderFloat("Pitch Magnitude", &ship.max_pitch_magnitude, 1.0, 50.0);
     ImGui::SliderFloat("Roll Magnitude", &ship.max_roll_magnitude, 1.0, 50.0);
+
+    ImGui::Separator();
+    ImGui::Text("Linear Speed: %f", body.get_linear_speed());
+    ImGui::Text("Angular Speed: %f", body.get_angular_speed());
 }
 
 void update_and_draw() {

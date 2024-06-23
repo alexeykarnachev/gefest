@@ -21,6 +21,22 @@ DynamicBody::DynamicBody(
     , moment_of_inertia(moment_of_inertia)
     , angular_damping(angular_damping) {}
 
+float DynamicBody::get_linear_speed() {
+    return Vector3Length(this->linear_velocity);
+}
+
+float DynamicBody::get_angular_speed() {
+    return Vector3Length(this->angular_velocity);
+}
+
+float DynamicBody::get_net_force_magnitude() {
+    return Vector3Length(this->net_force);
+}
+
+float DynamicBody::get_net_torque_magnitude() {
+    return Vector3Length(this->net_torque);
+}
+
 void DynamicBody::apply_force(Vector3 direction, float magnitude) {
     Vector3 force = Vector3Scale(Vector3Normalize(direction), magnitude);
     this->net_force = Vector3Add(this->net_force, force);
@@ -35,22 +51,31 @@ void DynamicBody::update() {
 
     // Update linear velocity
     Vector3 damping_force = Vector3Scale(this->linear_velocity, -this->linear_damping);
-    Vector3 net_force = Vector3Add(this->net_force, damping_force);
-    Vector3 linear_acceleration = Vector3Scale(net_force, 1.0f / this->mass);
-    this->linear_velocity = Vector3Add(
-        this->linear_velocity, Vector3Scale(linear_acceleration, constants::DT)
-    );
+    if (Vector3Length(damping_force) - Vector3Length(this->net_force) >= EPSILON) {
+        this->linear_velocity = Vector3Zero();
+    } else {
+        Vector3 net_force = Vector3Add(this->net_force, damping_force);
+        Vector3 linear_acceleration = Vector3Scale(net_force, 1.0f / this->mass);
+        this->linear_velocity = Vector3Add(
+            this->linear_velocity, Vector3Scale(linear_acceleration, constants::DT)
+        );
+    }
     this->net_force = Vector3Zero();
 
     // Update angular velocity
     Vector3 damping_torque = Vector3Scale(this->angular_velocity, -this->angular_damping);
-    Vector3 net_torque = Vector3Add(this->net_torque, damping_torque);
-    Vector3 angular_acceleration = Vector3Scale(
-        net_torque, 1.0f / this->moment_of_inertia
-    );
-    this->angular_velocity = Vector3Add(
-        this->angular_velocity, Vector3Scale(angular_acceleration, constants::DT)
-    );
+    if (Vector3Length(damping_torque) - Vector3Length(this->net_torque) >= EPSILON) {
+
+        this->angular_velocity = Vector3Zero();
+    } else {
+        Vector3 net_torque = Vector3Add(this->net_torque, damping_torque);
+        Vector3 angular_acceleration = Vector3Scale(
+            net_torque, 1.0f / this->moment_of_inertia
+        );
+        this->angular_velocity = Vector3Add(
+            this->angular_velocity, Vector3Scale(angular_acceleration, constants::DT)
+        );
+    }
     this->net_torque = Vector3Zero();
 
     // Apply linear velocity

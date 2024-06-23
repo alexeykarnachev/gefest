@@ -29,6 +29,11 @@ public:
         float angular_damping
     );
 
+    float get_linear_speed();
+    float get_angular_speed();
+    float get_net_force_magnitude();
+    float get_net_torque_magnitude();
+
     void apply_force(Vector3 direction, float magnitude);
     void apply_torque(Vector3 magnitude);
 
