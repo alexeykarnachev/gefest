@@ -2,6 +2,7 @@
 
 #include "entt/entity/fwd.hpp"
 #include "raylib/raylib.h"
+#include "raylib/raymath.h"
 
 namespace gefest {
 namespace ship {
@@ -17,7 +18,7 @@ private:
     float roll = 0.0;
     float pitch = 0.0;
 
-    Matrix matrix;
+    Matrix matrix = MatrixIdentity();
 
     void reset_controls();
     void update_manual();
@@ -30,6 +31,8 @@ public:
     ControllerType controller_type;
 
     float max_engine_force = 4000.0;
+    float max_pitch_magnitude = 5.0;
+    float max_roll_magnitude = 5.0;
 
     Ship(entt::entity entity, ControllerType controller_type);
 

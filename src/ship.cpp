@@ -24,8 +24,8 @@ void Ship::reset_controls() {
 
 void Ship::update_manual() {
     if (IsKeyDown(KEY_SPACE)) this->thrust += 1.0;
-    if (IsKeyDown(KEY_A)) this->roll -= 1.0;
-    if (IsKeyDown(KEY_D)) this->roll += 1.0;
+    if (IsKeyDown(KEY_D)) this->roll -= 1.0;
+    if (IsKeyDown(KEY_A)) this->roll += 1.0;
     if (IsKeyDown(KEY_W)) this->pitch -= 1.0;
     if (IsKeyDown(KEY_S)) this->pitch += 1.0;
 }
@@ -34,15 +34,32 @@ void Ship::update_dummy() {}
 
 void Ship::apply_controls() {
     auto &body = registry::registry.get<dynamic_body::DynamicBody>(this->entity);
+    auto &tr = registry::registry.get<transform::Transform>(this->entity);
 
-    float thrust = std::clamp(this->thrust, 0.0f, 1.0f);
+    Vector3 forward = {0.0, 0.0, -1.0};
+    forward = Vector3RotateByQuaternion(forward, tr.rotation);
+
+    float thrust = std::clamp(this->thrust, -1.0f, 1.0f);
     float engine_force = thrust * this->max_engine_force;
+    body.apply_force(forward, engine_force);
 
-    // body.apply_force(this->control_force_dir, this->max_force);
+    float pitch = std::clamp(this->pitch, -1.0f, 1.0f);
+    float pitch_magnitude = pitch * this->max_pitch_magnitude;
+    body.apply_torque({pitch_magnitude, 0.0, 0.0});
+
+    float roll = std::clamp(this->roll, -1.0f, 1.0f);
+    float roll_magnitude = roll * this->max_roll_magnitude;
+    body.apply_torque({0.0, 0.0, roll_magnitude});
 }
 
 void Ship::update_matrix() {
-    this->matrix = MatrixIdentity();
+    auto &tr = registry::registry.get<transform::Transform>(this->entity);
+
+    Matrix r = QuaternionToMatrix(tr.rotation);
+    Matrix t = MatrixTranslate(tr.position.x, tr.position.y, tr.position.z);
+    Matrix mat = MatrixMultiply(r, t);
+
+    this->matrix = mat;
 }
 
 void Ship::update() {
@@ -58,13 +75,11 @@ void Ship::update() {
 }
 
 void Ship::draw() {
-    auto &tr = registry::registry.get<transform::Transform>(this->entity);
-
     Model model = resources::RED_FIGHTER_MODEL;
 
     rlPushMatrix();
     rlMultMatrixf(MatrixToFloat(this->matrix));
-    DrawModel(model, tr.position, 1.0, WHITE);
+    DrawModel(model, Vector3Zero(), 1.0, WHITE);
     rlPopMatrix();
 }
 
