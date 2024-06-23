@@ -12,7 +12,6 @@ namespace resources {
 Mesh SPHERE_MESH;
 
 Material GEOSPHERE_MATERIAL;
-static Material MODEL_MATERIAL;
 
 Model RED_FIGHTER_MODEL;
 
@@ -62,18 +61,8 @@ void load() {
     material.shader = load_shader("base.vert", "geosphere.frag");
     GEOSPHERE_MATERIAL = material;
 
-    // model material
-    int n_materials;
-    Material *materials = LoadMaterials(
-        "./resources/models/red_fighter/RedFighter.mtl", &n_materials
-    );
-    material = materials[0];
-    material.shader = load_shader("base.vert", "model.frag");
-    MODEL_MATERIAL = material;
-
     // red fighter model
     Model model = LoadModel("./resources/models/red_fighter/RedFighter.obj");
-    model.materials[0] = MODEL_MATERIAL;
     Matrix mat = MatrixScale(RED_FIGHTER_SCALE, RED_FIGHTER_SCALE, RED_FIGHTER_SCALE);
     model.transform = mat;
     RED_FIGHTER_MODEL = model;
@@ -82,7 +71,6 @@ void load() {
 void unload() {
     UnloadMesh(SPHERE_MESH);
     UnloadMaterial(GEOSPHERE_MATERIAL);
-    UnloadMaterial(MODEL_MATERIAL);
     UnloadModel(RED_FIGHTER_MODEL);
 }
 
