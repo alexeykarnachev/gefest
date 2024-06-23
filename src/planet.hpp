@@ -20,9 +20,6 @@ extern float ROCK_LEVEL;
 extern float ATMOSPHERE_SCALE;
 extern float ATMOSPHERE_ALPHA;
 
-void load();
-void unload();
-
 void update();
 void draw();
 

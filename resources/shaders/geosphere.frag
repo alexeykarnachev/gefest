@@ -17,7 +17,7 @@ uniform float geosphere_radius;
 uniform vec3 planet_position;
 uniform vec3 sun_position;
 
-out vec4 finalColor;
+out vec4 final_color;
 
 const vec3 WATER_COLOR = vec3(0.1, 0.45, 0.6);
 const vec3 SAND_COLOR = vec3(0.8, 0.7, 0.5);
@@ -69,5 +69,5 @@ void main() {
 
     color *= (1.0 - shadow);
 
-    finalColor = vec4(color, 1.0);
+    final_color = vec4(color, 1.0);
 }

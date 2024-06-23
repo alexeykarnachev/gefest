@@ -2,7 +2,7 @@
 
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
-#include "shaders.hpp"
+#include "resources.hpp"
 
 namespace gefest {
 namespace planet {
@@ -22,38 +22,22 @@ float ROCK_LEVEL = 0.8;
 static float GEOSPHERE_RADIUS = 5.0;
 static Vector3 SUN_POSITION = {20.0, 20.0, 20.0};
 
-static Mesh GEOSPHERE;
-static Material MATERIAL_GEOSPHERE;
-
-static Matrix PLANET_TRANSFORM;
-
-void load() {
-    int n_rings = 64;
-    int n_slices = 64;
-
-    GEOSPHERE = GenMeshSphere(GEOSPHERE_RADIUS, n_rings, n_slices);
-
-    MATERIAL_GEOSPHERE = LoadMaterialDefault();
-    MATERIAL_GEOSPHERE.shader = shaders::load_shader("base.vert", "geosphere.frag");
-}
-
-void unload() {
-    UnloadMesh(GEOSPHERE);
-}
+static Matrix PLANET_MATRIX;
 
 void update() {
-    Matrix translate = MatrixTranslate(
-        PLANET_POSITION.x, PLANET_POSITION.y, PLANET_POSITION.z
-    );
-    Matrix rotate = MatrixRotate({0.0, 1.0, 0.0}, GetTime() / 10.0);
-    PLANET_TRANSFORM = MatrixMultiply(rotate, translate);
+    Matrix t = MatrixTranslate(PLANET_POSITION.x, PLANET_POSITION.y, PLANET_POSITION.z);
+    Matrix r = MatrixRotate({0.0, 1.0, 0.0}, GetTime() / 10.0);
+    Matrix s = MatrixScale(GEOSPHERE_RADIUS, GEOSPHERE_RADIUS, GEOSPHERE_RADIUS);
+    PLANET_MATRIX = MatrixMultiply(MatrixMultiply(r, s), t);
 }
 
 void draw_planet_body() {
     // tmp: keep sun here for now
     DrawSphere(SUN_POSITION, 2.0, RED);
 
-    auto shader = MATERIAL_GEOSPHERE.shader;
+    auto mesh = resources::SPHERE_MESH;
+    auto material = resources::GEOSPHERE_MATERIAL;
+    auto shader = material.shader;
 
     // perlin noise uniforms
     int n_levels_loc = GetShaderLocation(shader, "n_levels");
@@ -87,7 +71,7 @@ void draw_planet_body() {
     SetShaderValue(shader, sun_position_loc, &SUN_POSITION, SHADER_UNIFORM_VEC3);
 
     // draw sphere
-    DrawMesh(GEOSPHERE, MATERIAL_GEOSPHERE, PLANET_TRANSFORM);
+    DrawMesh(mesh, material, PLANET_MATRIX);
 }
 
 void draw() {
