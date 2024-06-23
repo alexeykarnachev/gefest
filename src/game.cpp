@@ -22,7 +22,7 @@ entt::entity create_ship(Vector3 position, ship::ControllerType controller_type)
 
     ship::Ship ship(entity, controller_type);
     transform::Transform transform(position);
-    dynamic_body::DynamicBody body(entity, 100.0, 1000.0, 1.0, 10.0);
+    dynamic_body::DynamicBody body(entity, 500.0, 500.0, 10.0, 10.0);
 
     registry::registry.emplace<ship::Ship>(entity, ship);
     registry::registry.emplace<transform::Transform>(entity, transform);
@@ -50,7 +50,6 @@ void load() {
     editor::load();
 
     create_player_ship({0.0, 4.0, 25.0});
-    // camera::set_mode(camera::Mode::EDITOR);
     camera::set_mode(camera::Mode::FOLLOW_PLAYER);
 }
 

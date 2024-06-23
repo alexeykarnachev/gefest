@@ -58,6 +58,7 @@ void update_editor_mode() {
 
 void update_follow_player_mode() {
     static constexpr float follow_distance = 5.0;
+    static constexpr float smoothness = 0.95;
 
     auto entity = registry::registry.view<registry::Player>().front();
     auto tr = registry::registry.get<transform::Transform>(entity);
@@ -66,20 +67,23 @@ void update_follow_player_mode() {
     Vector3 forward = {0.0, 0.0, -1.0};
     forward = Vector3RotateByQuaternion(forward, tr.rotation);
 
-    // up
-    Vector3 right = GetCameraRight(&CAMERA);
-    Vector3 target_to_camera = Vector3Subtract(CAMERA.position, CAMERA.target);
-    Vector3 up = Vector3Normalize(Vector3CrossProduct(target_to_camera, right));
-
     // target
-    Vector3 target = tr.position;
+    Vector3 target = Vector3Lerp(tr.position, CAMERA.target, smoothness);
 
     // position
     Vector3 offset = Vector3Scale(forward, follow_distance);
     Vector3 position = Vector3Subtract(target, offset);
+    position = Vector3Lerp(position, CAMERA.position, smoothness);
 
+    // set camera values
     CAMERA.position = position;
     CAMERA.target = target;
+
+    // update up vector
+    Vector3 right = GetCameraRight(&CAMERA);
+    Vector3 target_to_camera = Vector3Subtract(CAMERA.position, CAMERA.target);
+    Vector3 up = Vector3Normalize(Vector3CrossProduct(target_to_camera, right));
+
     CAMERA.up = up;
 }
 
