@@ -30,7 +30,7 @@ public:
     entt::entity entity;
     ControllerType controller_type;
 
-    float max_engine_force = 4000.0;
+    float max_engine_force = 1000.0;
     float max_pitch_magnitude = 30.0;
     float max_roll_magnitude = 15.0;
 

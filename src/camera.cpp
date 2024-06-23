@@ -16,17 +16,26 @@ Camera3D CAMERA = {
     .fovy = 60.0,
     .projection = CAMERA_PERSPECTIVE,
 };
+Vector3 POSITION_OFFSET = {0.0, -0.1, 3.8};
+Vector3 TARGET_OFFSET = {0.0, 0.8, -1.6};
+float FOLLOW_SMOOTHNESS = 0.0;
 
-Mode MODE = Mode::FOLLOW_PLAYER;
+Mode MODE = Mode::FOLLOW;
 
 void set_mode(Mode mode) {
     MODE = mode;
+}
+
+Mode get_mode() {
+    return MODE;
 }
 
 void update_editor_mode() {
     static constexpr float camera_rot_speed = 0.003;
     static constexpr float camera_move_speed = 0.01;
     static constexpr float camera_zoom_speed = 1.0;
+
+    CAMERA.up = {0.0, 1.0, 0.0};
 
     bool is_mmb_down = IsMouseButtonDown(2);
     bool is_shift_down = IsKeyDown(KEY_LEFT_SHIFT);
@@ -56,10 +65,7 @@ void update_editor_mode() {
     CameraMoveToTarget(&CAMERA, -GetMouseWheelMove() * camera_zoom_speed);
 }
 
-void update_follow_player_mode() {
-    static constexpr float follow_distance = 5.0;
-    static constexpr float smoothness = 0.95;
-
+void update_follow_mode() {
     auto entity = registry::registry.view<registry::Player>().front();
     auto tr = registry::registry.get<transform::Transform>(entity);
 
@@ -67,13 +73,28 @@ void update_follow_player_mode() {
     Vector3 forward = {0.0, 0.0, -1.0};
     forward = Vector3RotateByQuaternion(forward, tr.rotation);
 
+    // rotation
+    Quaternion rotation = QuaternionFromVector3ToVector3({0.0, 0.0, -1.0}, forward);
+
+    // position offset
+    Vector3 position_offset = Vector3RotateByQuaternion(
+        Vector3Normalize(POSITION_OFFSET), rotation
+    );
+    position_offset = Vector3Scale(position_offset, Vector3Length(POSITION_OFFSET));
+
+    // target offset
+    Vector3 target_offset = Vector3RotateByQuaternion(
+        Vector3Normalize(TARGET_OFFSET), rotation
+    );
+    target_offset = Vector3Scale(target_offset, Vector3Length(TARGET_OFFSET));
+
     // target
-    Vector3 target = Vector3Lerp(tr.position, CAMERA.target, smoothness);
+    Vector3 target = Vector3Add(tr.position, target_offset);
+    target = Vector3Lerp(target, CAMERA.target, FOLLOW_SMOOTHNESS);
 
     // position
-    Vector3 offset = Vector3Scale(forward, follow_distance);
-    Vector3 position = Vector3Subtract(target, offset);
-    position = Vector3Lerp(position, CAMERA.position, smoothness);
+    Vector3 position = Vector3Add(target, position_offset);
+    position = Vector3Lerp(position, CAMERA.position, FOLLOW_SMOOTHNESS);
 
     // set camera values
     CAMERA.position = position;
@@ -90,7 +111,7 @@ void update_follow_player_mode() {
 void update() {
     switch (MODE) {
         case Mode::EDITOR: update_editor_mode(); break;
-        case Mode::FOLLOW_PLAYER: update_follow_player_mode(); break;
+        case Mode::FOLLOW: update_follow_mode(); break;
     }
 }
 

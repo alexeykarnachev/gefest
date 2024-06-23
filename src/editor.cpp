@@ -1,6 +1,7 @@
 #include "editor.hpp"
 
 #include "GLFW/glfw3.h"
+#include "camera.hpp"
 #include "dynamic_body.hpp"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -9,6 +10,7 @@
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 #include "registry.hpp"
+#include "ship.hpp"
 
 namespace gefest {
 namespace editor {
@@ -49,18 +51,38 @@ void end() {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+void update_camera() {
+    static camera::Mode mode = camera::get_mode();
+
+    ImGui::SliderFloat("FOV", &camera::CAMERA.fovy, 10.0, 170.0);
+    ImGui::Text("Mode:");
+    ImGui::RadioButton("Editor", (int *)&mode, (int)camera::Mode::EDITOR);
+    ImGui::SameLine();
+    ImGui::RadioButton("Player", (int *)&mode, (int)camera::Mode::FOLLOW);
+
+    if (mode == camera::Mode::FOLLOW) {
+        ImGui::SliderFloat3(
+            "Position Offset", (float *)&camera::POSITION_OFFSET, -10.0, 10.0
+        );
+        ImGui::SliderFloat3(
+            "Target Offset", (float *)&camera::TARGET_OFFSET, -10.0, 10.0
+        );
+        ImGui::SliderFloat("Smoothness", &camera::FOLLOW_SMOOTHNESS, 0.0, 0.99);
+    }
+
+    camera::set_mode(mode);
+}
+
 void update_planet() {
     ImGui::SliderFloat3("Position", (float *)&planet::PLANET_POSITION, -50.0, 50.0);
 
-    ImGui::Separator();
-
+    ImGui::SeparatorText("Perlin Noise");
     ImGui::SliderInt("N Levels", &planet::N_LEVELS, 1, 8);
     ImGui::SliderFloat("Freq. Mult.", &planet::FREQ_MULT, 1.0, 4.0);
     ImGui::SliderFloat("Ampl. Mult.", &planet::AMPL_MULT, 0.05, 1.0);
     ImGui::SliderFloat("Freq. Init.", &planet::FREQ_INIT, 0.05, 4.0);
 
-    ImGui::Separator();
-
+    ImGui::SeparatorText("Terrain");
     ImGui::SliderFloat("Water Level", &planet::WATER_LEVEL, 0.0, planet::SAND_LEVEL);
     ImGui::SliderFloat(
         "Sand Level",
@@ -82,11 +104,18 @@ void update_planet() {
 void update_ship() {
     auto entity = registry::registry.view<registry::Player>().front();
     auto &body = registry::registry.get<dynamic_body::DynamicBody>(entity);
+    auto &ship = registry::registry.get<ship::Ship>(entity);
 
-    ImGui::SliderFloat("Mass", &body.mass, 1.0, 1000.0);
+    ImGui::SeparatorText("Dynamic Body");
+    ImGui::SliderFloat("Mass", &body.mass, 10.0, 1000.0);
     ImGui::SliderFloat("Linear Damp.", &body.linear_damping, 1.0, 1000.0);
     ImGui::SliderFloat("Moment of Inertia", &body.moment_of_inertia, 1.0, 1000.0);
     ImGui::SliderFloat("Angular Damping", &body.angular_damping, 1.0, 1000.0);
+
+    ImGui::SeparatorText("Characteristics");
+    ImGui::SliderFloat("Engine Force", &ship.max_engine_force, 1.0, 2000.0);
+    ImGui::SliderFloat("Pitch Magnitude", &ship.max_pitch_magnitude, 1.0, 50.0);
+    ImGui::SliderFloat("Roll Magnitude", &ship.max_roll_magnitude, 1.0, 50.0);
 }
 
 void update_and_draw() {
@@ -95,6 +124,7 @@ void update_and_draw() {
     int flags = ImGuiWindowFlags_AlwaysAutoResize;
     ImGui::Begin("Inspector", NULL, flags);
     {
+        if (collapsing_header("Camera")) update_camera();
         if (collapsing_header("Planet")) update_planet();
         if (collapsing_header("Ship")) update_ship();
     }
