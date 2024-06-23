@@ -61,13 +61,6 @@ void update_camera() {
     ImGui::RadioButton("Player", (int *)&mode, (int)camera::Mode::FOLLOW);
 
     if (mode == camera::Mode::FOLLOW) {
-        ImGui::SliderFloat3(
-            "Position Offset", (float *)&camera::POSITION_OFFSET, -10.0, 10.0
-        );
-        ImGui::SliderFloat3(
-            "Target Offset", (float *)&camera::TARGET_OFFSET, -10.0, 10.0
-        );
-        ImGui::SliderFloat("Smoothness", &camera::FOLLOW_SMOOTHNESS, 0.0, 0.99);
     }
 
     camera::set_mode(mode);

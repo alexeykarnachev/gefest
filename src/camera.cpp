@@ -9,6 +9,9 @@
 namespace gefest {
 namespace camera {
 
+static Vector3 UP = {0.0, 1.0, 0.0};
+static Vector3 FORWARD = {0.0, 0.0, -1.0};
+
 Camera3D CAMERA = {
     .position = {0.0, 5.0, 30.0},
     .target = {0.0, 5.0, 0.0},
@@ -69,43 +72,12 @@ void update_follow_mode() {
     auto entity = registry::registry.view<registry::Player>().front();
     auto tr = registry::registry.get<transform::Transform>(entity);
 
-    // forward
-    Vector3 forward = {0.0, 0.0, -1.0};
-    forward = Vector3RotateByQuaternion(forward, tr.rotation);
+    Vector3 forward = Vector3RotateByQuaternion(FORWARD, tr.rotation);
+    Vector3 offset = Vector3Scale(forward, -5.0);
 
-    // rotation
-    Quaternion rotation = QuaternionFromVector3ToVector3({0.0, 0.0, -1.0}, forward);
-
-    // position offset
-    Vector3 position_offset = Vector3RotateByQuaternion(
-        Vector3Normalize(POSITION_OFFSET), rotation
-    );
-    position_offset = Vector3Scale(position_offset, Vector3Length(POSITION_OFFSET));
-
-    // target offset
-    Vector3 target_offset = Vector3RotateByQuaternion(
-        Vector3Normalize(TARGET_OFFSET), rotation
-    );
-    target_offset = Vector3Scale(target_offset, Vector3Length(TARGET_OFFSET));
-
-    // target
-    Vector3 target = Vector3Add(tr.position, target_offset);
-    target = Vector3Lerp(target, CAMERA.target, FOLLOW_SMOOTHNESS);
-
-    // position
-    Vector3 position = Vector3Add(target, position_offset);
-    position = Vector3Lerp(position, CAMERA.position, FOLLOW_SMOOTHNESS);
-
-    // set camera values
-    CAMERA.position = position;
-    CAMERA.target = target;
-
-    // update up vector
-    Vector3 right = GetCameraRight(&CAMERA);
-    Vector3 target_to_camera = Vector3Subtract(CAMERA.position, CAMERA.target);
-    Vector3 up = Vector3Normalize(Vector3CrossProduct(target_to_camera, right));
-
-    CAMERA.up = up;
+    CAMERA.position = Vector3Add(tr.position, offset);
+    CAMERA.target = Vector3Add(tr.position, Vector3Scale(forward, 10.0));
+    CAMERA.up = Vector3RotateByQuaternion(UP, tr.rotation);
 }
 
 void update() {
