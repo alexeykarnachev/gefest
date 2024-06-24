@@ -16,7 +16,7 @@ Material SKYBOX_MATERIAL;
 
 Model RED_FIGHTER_MODEL;
 
-static float RED_FIGHTER_SCALE = 1.0;
+static float RED_FIGHTER_SCALE = 0.1;
 
 std::string get_shader_file_path(const std::string &file_name) {
     auto file_path = "resources/shaders/" + file_name;

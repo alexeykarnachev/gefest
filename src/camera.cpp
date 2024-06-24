@@ -79,12 +79,12 @@ void update_follow_mode() {
     Vector3 target_up = Vector3RotateByQuaternion(UP, tr.rotation);
     Vector3 up = Vector3Lerp(target_up, CAMERA.up, FOLLOW_SMOOTHNESS);
 
-    Vector3 forward_offset = Vector3Scale(forward, -20.0);
-    Vector3 up_offset = Vector3Scale(up, 10.0);
+    Vector3 forward_offset = Vector3Scale(forward, -2.0);
+    Vector3 up_offset = Vector3Scale(up, 1.0);
     Vector3 offset = Vector3Add(forward_offset, up_offset);
 
     Vector3 position = Vector3Add(tr.position, offset);
-    Vector3 target = Vector3Add(tr.position, Vector3Scale(up, 5.0));
+    Vector3 target = Vector3Add(tr.position, Vector3Scale(up, 0.5));
 
     position = Vector3Lerp(position, CAMERA.position, FOLLOW_SMOOTHNESS);
     target = Vector3Lerp(target, CAMERA.target, FOLLOW_SMOOTHNESS);

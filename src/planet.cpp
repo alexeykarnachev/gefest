@@ -19,9 +19,9 @@ float SAND_LEVEL = 0.51;
 float GRASS_LEVEL = 0.57;
 float ROCK_LEVEL = 0.61;
 
-static float GEOSPHERE_RADIUS = 500.0;
+static float GEOSPHERE_RADIUS = 50.0;
 static float PLANET_ROTATION_SPEED = 0.001 * PI;
-static Vector3 SUN_POSITION = {1000.0, 1000.0, 1000.0};
+static Vector3 SUN_POSITION = {100.0, 100.0, 100.0};
 
 static Matrix PLANET_MATRIX;
 

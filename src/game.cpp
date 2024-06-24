@@ -17,7 +17,7 @@
 namespace gefest {
 namespace game {
 
-static Vector3 PLAYER_SPAWN_POSITION = {0.0, 800.0, 800.0};
+static Vector3 PLAYER_SPAWN_POSITION = {0.0, 80.0, 80.0};
 static bool WINDOW_SHOULD_CLOSE = false;
 
 entt::entity create_ship(Vector3 position, ship::ControllerType controller_type) {
@@ -27,7 +27,7 @@ entt::entity create_ship(Vector3 position, ship::ControllerType controller_type)
     float linear_damping = 70.0;
     float moment_of_inertia = 50.0;
     float angular_damping = 600.0;
-    float engine_force = 2000.0;
+    float engine_force = 400.0;
     float pitch_magnitude = 500.0;
     float roll_magnitude = 500.0;
 
