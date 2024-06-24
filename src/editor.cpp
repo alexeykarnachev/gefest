@@ -16,6 +16,20 @@
 namespace gefest {
 namespace editor {
 
+static int ID = 0;
+
+void push_id() {
+    ImGui::PushID(ID++);
+}
+
+void pop_id() {
+    ImGui::PopID();
+}
+
+void reset_id() {
+    ID = 0;
+}
+
 bool collapsing_header(const char *name, bool is_opened) {
     int flags = is_opened ? ImGuiTreeNodeFlags_DefaultOpen : 0;
     return ImGui::CollapsingHeader(name, flags);
@@ -42,6 +56,7 @@ void unload() {
 }
 
 void begin() {
+    reset_id();
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -68,9 +83,17 @@ void update_camera() {
 }
 
 void update_skybox() {
+    push_id();
     ImGui::SeparatorText("Stars");
     ImGui::SliderFloat("Frequency", &skybox::STARS_FREQUENCY, 10.0, 500.0);
     ImGui::SliderFloat("Min. Brightness", &skybox::STARS_MIN_BRIGHTNESS, 0.0, 1.0);
+    pop_id();
+
+    push_id();
+    ImGui::SeparatorText("Nebula");
+    ImGui::SliderFloat("Frequency", &skybox::NEBULA_FREQUENCY, 1.0, 10.0);
+    ImGui::SliderFloat("Min. Brightness", &skybox::NEBULA_MIN_BRIGHTNESS, 0.0, 1.0);
+    pop_id();
 }
 
 void update_planet() {
