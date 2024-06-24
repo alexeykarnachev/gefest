@@ -19,9 +19,6 @@ Camera3D CAMERA = {
     .fovy = 60.0,
     .projection = CAMERA_PERSPECTIVE,
 };
-Vector3 POSITION_OFFSET = {0.0, -0.1, 3.8};
-Vector3 TARGET_OFFSET = {0.0, 0.8, -1.6};
-float FOLLOW_SMOOTHNESS = 0.0;
 
 Mode MODE = Mode::FOLLOW;
 
@@ -73,11 +70,15 @@ void update_follow_mode() {
     auto tr = registry::registry.get<transform::Transform>(entity);
 
     Vector3 forward = Vector3RotateByQuaternion(FORWARD, tr.rotation);
-    Vector3 offset = Vector3Scale(forward, -5.0);
+    Vector3 up = Vector3RotateByQuaternion(UP, tr.rotation);
+
+    Vector3 forward_offset = Vector3Scale(forward, -20.0);
+    Vector3 up_offset = Vector3Scale(up, 10.0);
+    Vector3 offset = Vector3Add(forward_offset, up_offset);
 
     CAMERA.position = Vector3Add(tr.position, offset);
-    CAMERA.target = Vector3Add(tr.position, Vector3Scale(forward, 10.0));
-    CAMERA.up = Vector3RotateByQuaternion(UP, tr.rotation);
+    CAMERA.target = Vector3Add(tr.position, Vector3Scale(up, 5.0));
+    CAMERA.up = up;
 }
 
 void update() {

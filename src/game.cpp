@@ -15,14 +15,27 @@
 namespace gefest {
 namespace game {
 
+static Vector3 PLAYER_SPAWN_POSITION = {0.0, 800.0, 800.0};
 static bool WINDOW_SHOULD_CLOSE = false;
 
 entt::entity create_ship(Vector3 position, ship::ControllerType controller_type) {
     auto entity = registry::registry.create();
 
-    ship::Ship ship(entity, controller_type);
+    float mass = 50.0;
+    float linear_damping = 70.0;
+    float moment_of_inertia = 50.0;
+    float angular_damping = 600.0;
+    float engine_force = 2000.0;
+    float pitch_magnitude = 500.0;
+    float roll_magnitude = 500.0;
+
     transform::Transform transform(position);
-    dynamic_body::DynamicBody body(entity, 500.0, 500.0, 10.0, 10.0);
+    ship::Ship ship(
+        entity, controller_type, engine_force, pitch_magnitude, roll_magnitude
+    );
+    dynamic_body::DynamicBody body(
+        entity, mass, linear_damping, moment_of_inertia, angular_damping
+    );
 
     registry::registry.emplace<ship::Ship>(entity, ship);
     registry::registry.emplace<transform::Transform>(entity, transform);
@@ -49,7 +62,7 @@ void load() {
     resources::load();
     editor::load();
 
-    create_player_ship({0.0, 4.0, 25.0});
+    create_player_ship(PLAYER_SPAWN_POSITION);
 }
 
 void unload() {
@@ -103,7 +116,6 @@ void draw() {
 
     planet::draw();
     draw_ships();
-    DrawGrid(20, 1.0);
 
     EndMode3D();
 

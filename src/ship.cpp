@@ -12,9 +12,18 @@
 namespace gefest {
 namespace ship {
 
-Ship::Ship(entt::entity entity, ControllerType controller_type)
+Ship::Ship(
+    entt::entity entity,
+    ControllerType controller_type,
+    float engine_force,
+    float pitch_magnitude,
+    float roll_magnitude
+)
     : entity(entity)
-    , controller_type(controller_type) {}
+    , controller_type(controller_type)
+    , engine_force(engine_force)
+    , pitch_magnitude(pitch_magnitude)
+    , roll_magnitude(roll_magnitude) {}
 
 void Ship::reset_controls() {
     this->thrust = 0.0;
@@ -40,15 +49,15 @@ void Ship::apply_controls() {
     forward = Vector3RotateByQuaternion(forward, tr.rotation);
 
     float thrust = std::clamp(this->thrust, -1.0f, 1.0f);
-    float engine_force = thrust * this->max_engine_force;
+    float engine_force = thrust * this->engine_force;
     body.apply_force(forward, engine_force);
 
     float pitch = std::clamp(this->pitch, -1.0f, 1.0f);
-    float pitch_magnitude = pitch * this->max_pitch_magnitude;
+    float pitch_magnitude = pitch * this->pitch_magnitude;
     body.apply_torque({pitch_magnitude, 0.0, 0.0});
 
     float roll = std::clamp(this->roll, -1.0f, 1.0f);
-    float roll_magnitude = roll * this->max_roll_magnitude;
+    float roll_magnitude = roll * this->roll_magnitude;
     body.apply_torque({0.0, 0.0, roll_magnitude});
 }
 

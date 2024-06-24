@@ -105,9 +105,9 @@ void update_ship() {
     ImGui::SliderFloat("Angular Damping", &body.angular_damping, 1.0, 1000.0);
 
     ImGui::Separator();
-    ImGui::SliderFloat("Engine Force", &ship.max_engine_force, 1.0, 2000.0);
-    ImGui::SliderFloat("Pitch Magnitude", &ship.max_pitch_magnitude, 1.0, 50.0);
-    ImGui::SliderFloat("Roll Magnitude", &ship.max_roll_magnitude, 1.0, 50.0);
+    ImGui::SliderFloat("Engine Force", &ship.engine_force, 1.0, 5000.0);
+    ImGui::SliderFloat("Pitch Magnitude", &ship.pitch_magnitude, 1.0, 1000.0);
+    ImGui::SliderFloat("Roll Magnitude", &ship.roll_magnitude, 1.0, 1000.0);
 
     ImGui::Separator();
     ImGui::Text("Linear Speed: %f", body.get_linear_speed());

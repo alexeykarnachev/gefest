@@ -7,7 +7,7 @@
 namespace gefest {
 namespace planet {
 
-Vector3 PLANET_POSITION = {0.0, 7.0, 0.0};
+Vector3 PLANET_POSITION = {0.0, 0.0, 0.0};
 
 int N_LEVELS = 8;
 float FREQ_MULT = 2.0;
@@ -19,15 +19,19 @@ float SAND_LEVEL = 0.6;
 float GRASS_LEVEL = 0.7;
 float ROCK_LEVEL = 0.8;
 
-static float GEOSPHERE_RADIUS = 5.0;
-static Vector3 SUN_POSITION = {20.0, 20.0, 20.0};
+static float GEOSPHERE_RADIUS = 500.0;
+static float PLANET_ROTATION_SPEED = 0.001 * PI;
+static Vector3 SUN_POSITION = {1000.0, 1000.0, 1000.0};
 
 static Matrix PLANET_MATRIX;
 
 void update() {
+    float rotation_angle = PLANET_ROTATION_SPEED * GetTime();
+
     Matrix t = MatrixTranslate(PLANET_POSITION.x, PLANET_POSITION.y, PLANET_POSITION.z);
-    Matrix r = MatrixRotate({0.0, 1.0, 0.0}, GetTime() / 10.0);
+    Matrix r = MatrixRotate({0.0, 1.0, 0.0}, rotation_angle);
     Matrix s = MatrixScale(GEOSPHERE_RADIUS, GEOSPHERE_RADIUS, GEOSPHERE_RADIUS);
+
     PLANET_MATRIX = MatrixMultiply(MatrixMultiply(r, s), t);
 }
 
