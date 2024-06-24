@@ -12,6 +12,7 @@ namespace resources {
 Mesh SPHERE_MESH;
 
 Material GEOSPHERE_MATERIAL;
+Material SKYBOX_MATERIAL;
 
 Model RED_FIGHTER_MODEL;
 
@@ -61,6 +62,11 @@ void load() {
     material.shader = load_shader("base.vert", "geosphere.frag");
     GEOSPHERE_MATERIAL = material;
 
+    // skybox material
+    material = LoadMaterialDefault();
+    material.shader = load_shader("skybox.vert", "skybox.frag");
+    SKYBOX_MATERIAL = material;
+
     // red fighter model
     Model model = LoadModel("./resources/models/red_fighter/RedFighter.obj");
     Matrix mat = MatrixScale(RED_FIGHTER_SCALE, RED_FIGHTER_SCALE, RED_FIGHTER_SCALE);
@@ -70,7 +76,10 @@ void load() {
 
 void unload() {
     UnloadMesh(SPHERE_MESH);
+
     UnloadMaterial(GEOSPHERE_MATERIAL);
+    UnloadMaterial(SKYBOX_MATERIAL);
+
     UnloadModel(RED_FIGHTER_MODEL);
 }
 

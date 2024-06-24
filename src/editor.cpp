@@ -11,6 +11,7 @@
 #include "raylib/raymath.h"
 #include "registry.hpp"
 #include "ship.hpp"
+#include "skybox.hpp"
 
 namespace gefest {
 namespace editor {
@@ -64,6 +65,12 @@ void update_camera() {
     }
 
     camera::set_mode(mode);
+}
+
+void update_skybox() {
+    ImGui::SeparatorText("Stars");
+    ImGui::SliderFloat("Frequency", &skybox::STARS_FREQUENCY, 10.0, 500.0);
+    ImGui::SliderFloat("Min. Brightness", &skybox::STARS_MIN_BRIGHTNESS, 0.0, 1.0);
 }
 
 void update_planet() {
@@ -121,6 +128,7 @@ void update_and_draw() {
     ImGui::Begin("Inspector", NULL, flags);
     {
         if (collapsing_header("Camera")) update_camera();
+        if (collapsing_header("Skybox")) update_skybox();
         if (collapsing_header("Planet")) update_planet();
         if (collapsing_header("Ship")) update_ship();
     }

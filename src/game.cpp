@@ -7,9 +7,11 @@
 #include "entt/entt.hpp"
 #include "planet.hpp"
 #include "raylib/raylib.h"
+#include "raylib/rlgl.h"
 #include "registry.hpp"
 #include "resources.hpp"
 #include "ship.hpp"
+#include "skybox.hpp"
 #include "transform.hpp"
 
 namespace gefest {
@@ -94,8 +96,10 @@ void update_dynamic_bodies() {
 
 void update() {
     update_window_should_close();
+
     camera::update();
     planet::update();
+    skybox::update();
     update_ships();
     update_dynamic_bodies();
 }
@@ -113,6 +117,12 @@ void draw() {
     ClearBackground(BLANK);
 
     BeginMode3D(camera::CAMERA);
+
+    rlDisableDepthTest();
+    rlDisableBackfaceCulling();
+    skybox::draw();
+    rlEnableDepthTest();
+    rlEnableBackfaceCulling();
 
     planet::draw();
     draw_ships();

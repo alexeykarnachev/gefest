@@ -7,8 +7,7 @@
 #include "registry.hpp"
 #include "transform.hpp"
 
-namespace gefest {
-namespace camera {
+namespace gefest::camera {
 
 static Vector3 UP = {0.0, 1.0, 0.0};
 static Vector3 FORWARD = {0.0, 0.0, -1.0};
@@ -105,5 +104,4 @@ void update() {
     }
 }
 
-}  // namespace camera
-}  // namespace gefest
+}  // namespace gefest::camera
