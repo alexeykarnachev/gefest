@@ -10,14 +10,14 @@ namespace planet {
 Vector3 PLANET_POSITION = {0.0, 0.0, 0.0};
 
 int N_LEVELS = 8;
-float FREQ_MULT = 2.0;
-float AMPL_MULT = 0.5;
-float FREQ_INIT = 1.0;
+float FREQ_MULT = 1.84;
+float AMPL_MULT = 0.60;
+float FREQ_INIT = 1.27;
 
-float WATER_LEVEL = 0.5;
-float SAND_LEVEL = 0.6;
-float GRASS_LEVEL = 0.7;
-float ROCK_LEVEL = 0.8;
+float WATER_LEVEL = 0.50;
+float SAND_LEVEL = 0.51;
+float GRASS_LEVEL = 0.57;
+float ROCK_LEVEL = 0.61;
 
 static float GEOSPHERE_RADIUS = 500.0;
 static float PLANET_ROTATION_SPEED = 0.001 * PI;
