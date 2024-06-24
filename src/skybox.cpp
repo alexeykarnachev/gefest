@@ -1,22 +1,21 @@
 #include "skybox.hpp"
 
-#include "registry.hpp"
+#include "camera.hpp"
+#include "raylib/raymath.h"
 #include "resources.hpp"
-#include "transform.hpp"
 
 namespace gefest::skybox {
 
-float STARS_FREQUENCY = 200.0;
-float STARS_MIN_BRIGHTNESS = 0.9;
+float STARS_FREQUENCY = 300.0;
+float STARS_MIN_BRIGHTNESS = 0.83;
 
 static float SKYBOX_RADIUS = 1000000.0;
-static Matrix SKYBOX_MATRIX;
+static Matrix SKYBOX_MATRIX = MatrixIdentity();
 
 void update() {
-    auto entity = registry::registry.view<registry::Player>().front();
-    auto tr = registry::registry.get<transform::Transform>(entity);
+    Vector3 position = camera::CAMERA.position;
 
-    Matrix t = MatrixTranslate(tr.position.x, tr.position.y, tr.position.z);
+    Matrix t = MatrixTranslate(position.x, position.y, position.z);
     Matrix s = MatrixScale(SKYBOX_RADIUS, SKYBOX_RADIUS, SKYBOX_RADIUS);
 
     SKYBOX_MATRIX = MatrixMultiply(s, t);
