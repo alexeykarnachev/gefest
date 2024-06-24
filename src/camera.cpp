@@ -1,5 +1,6 @@
 #include "camera.hpp"
 
+#include "dynamic_body.hpp"
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 #include "raylib/rcamera.h"
@@ -11,12 +12,16 @@ namespace camera {
 
 static Vector3 UP = {0.0, 1.0, 0.0};
 static Vector3 FORWARD = {0.0, 0.0, -1.0};
+static float FOV = 60.0;
+
+static float FOLLOW_SMOOTHNESS = 0.85;
+static float FOLLOW_SPEED_FOV_MULTIPLIER = 0.2;
 
 Camera3D CAMERA = {
     .position = {0.0, 5.0, 30.0},
     .target = {0.0, 5.0, 0.0},
     .up = {0.0, 1.0, 0.0},
-    .fovy = 60.0,
+    .fovy = FOV,
     .projection = CAMERA_PERSPECTIVE,
 };
 
@@ -68,17 +73,29 @@ void update_editor_mode() {
 void update_follow_mode() {
     auto entity = registry::registry.view<registry::Player>().front();
     auto tr = registry::registry.get<transform::Transform>(entity);
+    auto body = registry::registry.get<dynamic_body::DynamicBody>(entity);
+    float speed = body.get_linear_speed();
 
     Vector3 forward = Vector3RotateByQuaternion(FORWARD, tr.rotation);
-    Vector3 up = Vector3RotateByQuaternion(UP, tr.rotation);
+    Vector3 target_up = Vector3RotateByQuaternion(UP, tr.rotation);
+    Vector3 up = Vector3Lerp(target_up, CAMERA.up, FOLLOW_SMOOTHNESS);
 
     Vector3 forward_offset = Vector3Scale(forward, -20.0);
     Vector3 up_offset = Vector3Scale(up, 10.0);
     Vector3 offset = Vector3Add(forward_offset, up_offset);
 
-    CAMERA.position = Vector3Add(tr.position, offset);
-    CAMERA.target = Vector3Add(tr.position, Vector3Scale(up, 5.0));
+    Vector3 position = Vector3Add(tr.position, offset);
+    Vector3 target = Vector3Add(tr.position, Vector3Scale(up, 5.0));
+
+    position = Vector3Lerp(position, CAMERA.position, FOLLOW_SMOOTHNESS);
+    target = Vector3Lerp(target, CAMERA.target, FOLLOW_SMOOTHNESS);
+
+    float fov = FOV + speed * FOLLOW_SPEED_FOV_MULTIPLIER;
+
+    CAMERA.position = position;
+    CAMERA.target = target;
     CAMERA.up = up;
+    CAMERA.fovy = fov;
 }
 
 void update() {
