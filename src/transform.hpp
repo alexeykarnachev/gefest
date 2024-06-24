@@ -3,8 +3,7 @@
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 
-namespace gefest {
-namespace transform {
+namespace gefest::transform {
 
 class Transform {
 public:
@@ -15,5 +14,4 @@ public:
     Transform(Vector3 position, Quaternion rotation);
 };
 
-}  // namespace transform
-}  // namespace gefest
+}  // namespace gefest::transform

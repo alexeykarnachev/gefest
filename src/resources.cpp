@@ -6,8 +6,7 @@
 #include <sstream>
 #include <string>
 
-namespace gefest {
-namespace resources {
+namespace gefest::resources {
 
 Mesh SPHERE_MESH;
 
@@ -83,6 +82,4 @@ void unload() {
     UnloadModel(RED_FIGHTER_MODEL);
 }
 
-}  // namespace resources
-
-}  // namespace gefest
+}  // namespace gefest::resources

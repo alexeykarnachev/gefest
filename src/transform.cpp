@@ -2,8 +2,7 @@
 
 #include "raylib/raymath.h"
 
-namespace gefest {
-namespace transform {
+namespace gefest::transform {
 
 Transform::Transform(Vector3 position)
     : position(position)
@@ -13,5 +12,4 @@ Transform::Transform(Vector3 position, Quaternion rotation)
     : position(position)
     , rotation(rotation) {}
 
-}  // namespace transform
-}  // namespace gefest
+}  // namespace gefest::transform

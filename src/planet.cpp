@@ -4,8 +4,7 @@
 #include "raylib/raymath.h"
 #include "resources.hpp"
 
-namespace gefest {
-namespace planet {
+namespace gefest::planet {
 
 Vector3 PLANET_POSITION = {0.0, 0.0, 0.0};
 
@@ -82,5 +81,4 @@ void draw() {
     draw_planet_body();
 }
 
-}  // namespace planet
-}  // namespace gefest
+}  // namespace gefest::planet

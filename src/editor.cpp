@@ -13,8 +13,7 @@
 #include "ship.hpp"
 #include "skybox.hpp"
 
-namespace gefest {
-namespace editor {
+namespace gefest::editor {
 
 static int ID = 0;
 
@@ -160,5 +159,4 @@ void update_and_draw() {
     end();
 }
 
-}  // namespace editor
-}  // namespace gefest
+}  // namespace gefest::editor

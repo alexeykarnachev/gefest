@@ -14,8 +14,7 @@
 #include "skybox.hpp"
 #include "transform.hpp"
 
-namespace gefest {
-namespace game {
+namespace gefest::game {
 
 static Vector3 PLAYER_SPAWN_POSITION = {0.0, 80.0, 80.0};
 static bool WINDOW_SHOULD_CLOSE = false;
@@ -153,5 +152,4 @@ void run() {
     unload();
 }
 
-}  // namespace game
-}  // namespace gefest
+}  // namespace gefest::game

@@ -1,11 +1,10 @@
 #pragma once
 
-namespace gefest {
-namespace editor {
+namespace gefest::editor {
 
 void load();
 void unload();
 
 void update_and_draw();
 
-}}
+}  // namespace gefest::editor

@@ -9,8 +9,7 @@
 #include "transform.hpp"
 #include <algorithm>
 
-namespace gefest {
-namespace ship {
+namespace gefest::ship {
 
 Ship::Ship(
     entt::entity entity,
@@ -92,5 +91,4 @@ void Ship::draw() {
     rlPopMatrix();
 }
 
-}  // namespace ship
-}  // namespace gefest
+}  // namespace gefest::ship

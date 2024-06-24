@@ -5,8 +5,7 @@
 #include "registry.hpp"
 #include "transform.hpp"
 
-namespace gefest {
-namespace dynamic_body {
+namespace gefest::dynamic_body {
 
 DynamicBody::DynamicBody(
     entt::entity entity,
@@ -88,5 +87,4 @@ void DynamicBody::update() {
     }
 }
 
-}  // namespace dynamic_body
-}  // namespace gefest
+}  // namespace gefest::dynamic_body

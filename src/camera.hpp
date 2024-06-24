@@ -2,8 +2,7 @@
 
 #include "raylib/raylib.h"
 
-namespace gefest {
-namespace camera {
+namespace gefest::camera {
 
 enum class Mode {
     EDITOR,
@@ -16,5 +15,4 @@ void set_mode(Mode);
 Mode get_mode();
 void update();
 
-}  // namespace camera
-}  // namespace gefest
+}  // namespace gefest::camera

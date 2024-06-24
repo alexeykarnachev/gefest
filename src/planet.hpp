@@ -2,8 +2,7 @@
 
 #include "raylib/raylib.h"
 
-namespace gefest {
-namespace planet {
+namespace gefest::planet {
 
 extern Vector3 PLANET_POSITION;
 
@@ -23,5 +22,4 @@ extern float ATMOSPHERE_ALPHA;
 void update();
 void draw();
 
-}  // namespace planet
-}  // namespace gefest
+}  // namespace gefest::planet

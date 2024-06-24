@@ -3,12 +3,10 @@
 #include "entt/entity/fwd.hpp"
 #include "entt/entt.hpp"
 
-namespace gefest {
-namespace registry {
+namespace gefest::registry {
 
 struct Player {};
 
 extern entt::registry registry;
 
-}  // namespace registry
-}  // namespace gefest
+}  // namespace gefest::registry

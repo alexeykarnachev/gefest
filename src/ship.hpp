@@ -4,8 +4,7 @@
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 
-namespace gefest {
-namespace ship {
+namespace gefest::ship {
 
 enum class ControllerType {
     MANUAL,
@@ -46,5 +45,4 @@ public:
     void draw();
 };
 
-}  // namespace ship
-}  // namespace gefest
+}  // namespace gefest::ship

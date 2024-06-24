@@ -3,8 +3,7 @@
 #include "entt/entity/fwd.hpp"
 #include "raylib/raylib.h"
 
-namespace gefest {
-namespace dynamic_body {
+namespace gefest::dynamic_body {
 
 class DynamicBody {
 public:
@@ -40,5 +39,4 @@ public:
     void update();
 };
 
-}  // namespace dynamic_body
-}  // namespace gefest
+}  // namespace gefest::dynamic_body

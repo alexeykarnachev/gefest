@@ -3,10 +3,8 @@
 #include "entt/entity/fwd.hpp"
 #include "entt/entt.hpp"
 
-namespace gefest {
-namespace registry {
+namespace gefest::registry {
 
 entt::registry registry;
 
-}  // namespace registry
-}  // namespace gefest
+}  // namespace gefest::registry

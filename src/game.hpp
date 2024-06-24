@@ -1,9 +1,7 @@
 #pragma once
 
-namespace gefest {
-namespace game {
+namespace gefest::game {
 
 void run();
 
-}  // namespace game
-}  // namespace gefest
+}  // namespace gefest::game
