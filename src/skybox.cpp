@@ -12,22 +12,22 @@ float STARS_MIN_BRIGHTNESS = 0.83;
 float NEBULA_FREQUENCY = 1.3;
 float NEBULA_MIN_BRIGHTNESS = 0.3;
 
-static float SKYBOX_RADIUS = 1000000.0;
-static Matrix SKYBOX_MATRIX = MatrixIdentity();
+static float RADIUS = 1000000.0;
+static Matrix MATRIX = MatrixIdentity();
 
 void update() {
     Vector3 position = camera::CAMERA.position;
 
     Matrix t = MatrixTranslate(position.x, position.y, position.z);
-    Matrix s = MatrixScale(SKYBOX_RADIUS, SKYBOX_RADIUS, SKYBOX_RADIUS);
+    Matrix s = MatrixScale(RADIUS, RADIUS, RADIUS);
 
-    SKYBOX_MATRIX = MatrixMultiply(s, t);
+    MATRIX = MatrixMultiply(s, t);
 }
 
 void draw() {
-    auto mesh = resources::SPHERE_MESH;
-    auto material = resources::SKYBOX_MATERIAL;
-    auto shader = material.shader;
+    Mesh mesh = resources::SPHERE_MESH;
+    Material material = resources::SKYBOX_MATERIAL;
+    Shader shader = material.shader;
 
     // stars uniforms
     int stars_frequency_loc = GetShaderLocation(shader, "stars_frequency");
@@ -48,7 +48,7 @@ void draw() {
     );
 
     // draw sphere
-    DrawMesh(mesh, material, SKYBOX_MATRIX);
+    DrawMesh(mesh, material, MATRIX);
 }
 
 }  // namespace gefest::skybox

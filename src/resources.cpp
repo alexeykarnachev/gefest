@@ -8,10 +8,12 @@
 
 namespace gefest::resources {
 
+Mesh PLANE_MESH;
 Mesh SPHERE_MESH;
 
 Material GEOSPHERE_MATERIAL;
 Material SKYBOX_MATERIAL;
+Material CROSSHAIR_MATERIAL;
 
 Model RED_FIGHTER_MODEL;
 
@@ -50,10 +52,14 @@ Shader load_shader(const std::string &vs_file_name, const std::string &fs_file_n
 }
 
 void load() {
+    // plane mesh
+    Mesh mesh = GenMeshPlane(1.0, 1.0, 1, 1);
+    PLANE_MESH = mesh;
+
     // sphere mesh
     int n_rings = 64;
     int n_slices = 64;
-    Mesh mesh = GenMeshSphere(1.0, n_rings, n_slices);
+    mesh = GenMeshSphere(1.0, n_rings, n_slices);
     SPHERE_MESH = mesh;
 
     // geosphere material
@@ -66,6 +72,11 @@ void load() {
     material.shader = load_shader("skybox.vert", "skybox.frag");
     SKYBOX_MATERIAL = material;
 
+    // crosshair material
+    material = LoadMaterialDefault();
+    material.shader = load_shader("base.vert", "crosshair.frag");
+    CROSSHAIR_MATERIAL = material;
+
     // red fighter model
     Model model = LoadModel("./resources/models/red_fighter/RedFighter.obj");
     Matrix mat = MatrixScale(RED_FIGHTER_SCALE, RED_FIGHTER_SCALE, RED_FIGHTER_SCALE);
@@ -74,10 +85,12 @@ void load() {
 }
 
 void unload() {
+    UnloadMesh(PLANE_MESH);
     UnloadMesh(SPHERE_MESH);
 
     UnloadMaterial(GEOSPHERE_MATERIAL);
     UnloadMaterial(SKYBOX_MATERIAL);
+    UnloadMaterial(CROSSHAIR_MATERIAL);
 
     UnloadModel(RED_FIGHTER_MODEL);
 }

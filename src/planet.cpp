@@ -22,7 +22,7 @@ static float GEOSPHERE_RADIUS = 50.0;
 static float PLANET_ROTATION_SPEED = 0.001 * PI;
 static Vector3 SUN_POSITION = {100.0, 100.0, 100.0};
 
-static Matrix PLANET_MATRIX;
+static Matrix MATRIX;
 
 void update() {
     float rotation_angle = PLANET_ROTATION_SPEED * GetTime();
@@ -31,16 +31,16 @@ void update() {
     Matrix r = MatrixRotate({0.0, 1.0, 0.0}, rotation_angle);
     Matrix s = MatrixScale(GEOSPHERE_RADIUS, GEOSPHERE_RADIUS, GEOSPHERE_RADIUS);
 
-    PLANET_MATRIX = MatrixMultiply(MatrixMultiply(r, s), t);
+    MATRIX = MatrixMultiply(MatrixMultiply(r, s), t);
 }
 
 void draw_planet_body() {
     // tmp: keep sun here for now
     DrawSphere(SUN_POSITION, 2.0, RED);
 
-    auto mesh = resources::SPHERE_MESH;
-    auto material = resources::GEOSPHERE_MATERIAL;
-    auto shader = material.shader;
+    Mesh mesh = resources::SPHERE_MESH;
+    Material material = resources::GEOSPHERE_MATERIAL;
+    Shader shader = material.shader;
 
     // perlin noise uniforms
     int n_levels_loc = GetShaderLocation(shader, "n_levels");
@@ -74,7 +74,7 @@ void draw_planet_body() {
     SetShaderValue(shader, sun_position_loc, &SUN_POSITION, SHADER_UNIFORM_VEC3);
 
     // draw sphere
-    DrawMesh(mesh, material, PLANET_MATRIX);
+    DrawMesh(mesh, material, MATRIX);
 }
 
 void draw() {

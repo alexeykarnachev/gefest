@@ -2,6 +2,7 @@
 
 #include "camera.hpp"
 #include "constants.hpp"
+#include "crosshair.hpp"
 #include "dynamic_body.hpp"
 #include "editor.hpp"
 #include "entt/entt.hpp"
@@ -100,6 +101,7 @@ void update() {
     planet::update();
     skybox::update();
     update_ships();
+    crosshair::update();
     update_dynamic_bodies();
 }
 
@@ -125,6 +127,7 @@ void draw() {
 
     planet::draw();
     draw_ships();
+    crosshair::draw();
 
     EndMode3D();
 

@@ -4,10 +4,12 @@
 
 namespace gefest::resources {
 
+extern Mesh PLANE_MESH;
 extern Mesh SPHERE_MESH;
 
 extern Material GEOSPHERE_MATERIAL;
 extern Material SKYBOX_MATERIAL;
+extern Material CROSSHAIR_MATERIAL;
 
 extern Model RED_FIGHTER_MODEL;
 
