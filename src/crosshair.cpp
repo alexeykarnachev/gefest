@@ -12,7 +12,7 @@ namespace gefest::crosshair {
 float THICKNESS = 0.2;
 
 static Vector3 OFFSET = {0.0, 0.0, -1.0};
-static float SIZE = 0.2;
+static float SIZE = 0.1;
 
 static Matrix MATRIX;
 
