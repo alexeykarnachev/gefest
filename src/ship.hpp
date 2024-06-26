@@ -23,11 +23,12 @@ private:
     float last_shot_time = -FLT_MAX;
 
     void reset_controls();
-    void update_shooting();
     void update_manual_controller();
     void update_dummy_controller();
     void apply_controls();
     void update_matrix();
+
+    void shoot();
 
 public:
     entt::entity entity;
@@ -37,16 +38,23 @@ public:
     float pitch_magnitude;
     float roll_magnitude;
 
+    float shoot_rate;
+
     Ship(
         entt::entity entity,
         ControllerType controller_type,
         float engine_force,
         float pitch_magnitude,
-        float roll_magnitude
+        float roll_magnitude,
+        float shoot_rate,
+        Vector3 projectile_spawn_position
     );
 
     void update();
     void draw();
+
+private:
+    const Vector3 projectile_spawn_position;
 };
 
 }  // namespace gefest::ship

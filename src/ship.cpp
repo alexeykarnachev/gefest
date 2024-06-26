@@ -1,6 +1,7 @@
 #include "ship.hpp"
 
 #include "dynamic_body.hpp"
+#include "prefabs.hpp"
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 #include "raylib/rlgl.h"
@@ -16,21 +17,22 @@ Ship::Ship(
     ControllerType controller_type,
     float engine_force,
     float pitch_magnitude,
-    float roll_magnitude
+    float roll_magnitude,
+    float shoot_rate,
+    Vector3 projectile_spawn_position
 )
     : entity(entity)
     , controller_type(controller_type)
     , engine_force(engine_force)
     , pitch_magnitude(pitch_magnitude)
-    , roll_magnitude(roll_magnitude) {}
+    , roll_magnitude(roll_magnitude)
+    , shoot_rate(shoot_rate)
+    , projectile_spawn_position(projectile_spawn_position) {}
 
 void Ship::reset_controls() {
     this->thrust = 0.0;
     this->roll = 0.0;
     this->pitch = 0.0;
-}
-
-void Ship::update_shooting() {
 }
 
 void Ship::update_manual_controller() {
@@ -40,7 +42,7 @@ void Ship::update_manual_controller() {
     if (IsKeyDown(KEY_W)) this->pitch -= 1.0;
     if (IsKeyDown(KEY_S)) this->pitch += 1.0;
 
-    if (IsKeyDown(KEY_ENTER)) update_shooting();
+    if (IsKeyDown(KEY_ENTER)) shoot();
 }
 
 void Ship::update_dummy_controller() {}
@@ -73,6 +75,22 @@ void Ship::update_matrix() {
     Matrix mat = MatrixMultiply(r, t);
 
     this->matrix = mat;
+}
+
+void Ship::shoot() {
+    float time = GetTime();
+    float shoot_period = 1.0 / this->shoot_rate;
+    float allowed_shoot_time = this->last_shot_time + shoot_period;
+    bool can_shoot = allowed_shoot_time <= time;
+
+    if (!can_shoot) return;
+
+    auto &tr = registry::registry.get<transform::Transform>(this->entity);
+    Vector3 spawn_position = tr.apply_to_vector(this->projectile_spawn_position);
+    Vector3 direction = tr.get_forward();
+
+    prefabs::spawn_red_fighter_projectile(this->entity, spawn_position, direction);
+    this->last_shot_time = time;
 }
 
 void Ship::update() {

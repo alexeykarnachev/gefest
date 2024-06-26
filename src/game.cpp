@@ -8,6 +8,7 @@
 #include "entt/entt.hpp"
 #include "planet.hpp"
 #include "prefabs.hpp"
+#include "projectile.hpp"
 #include "raylib/raylib.h"
 #include "raylib/rlgl.h"
 #include "registry.hpp"
@@ -50,19 +51,19 @@ void update_window_should_close() {
     WINDOW_SHOULD_CLOSE = (WindowShouldClose() || is_alt_f4_pressed);
 }
 
-void update_ships() {
-    auto view = registry::registry.view<ship::Ship>();
+template <typename T> void update_components() {
+    auto view = registry::registry.view<T>();
     for (auto entity : view) {
-        auto &ship = registry::registry.get<ship::Ship>(entity);
-        ship.update();
+        auto &projectile = registry::registry.get<T>(entity);
+        projectile.update();
     }
 }
 
-void update_dynamic_bodies() {
-    auto view = registry::registry.view<dynamic_body::DynamicBody>();
+template <typename T> void draw_components() {
+    auto view = registry::registry.view<T>();
     for (auto entity : view) {
-        auto &body = registry::registry.get<dynamic_body::DynamicBody>(entity);
-        body.update();
+        auto &projectile = registry::registry.get<T>(entity);
+        projectile.draw();
     }
 }
 
@@ -72,17 +73,10 @@ void update() {
     camera::update();
     planet::update();
     skybox::update();
-    update_ships();
+    update_components<ship::Ship>();
     crosshair::update();
-    update_dynamic_bodies();
-}
-
-void draw_ships() {
-    auto view = registry::registry.view<ship::Ship>();
-    for (auto entity : view) {
-        auto &ship = registry::registry.get<ship::Ship>(entity);
-        ship.draw();
-    }
+    update_components<dynamic_body::DynamicBody>();
+    update_components<projectile::Projectile>();
 }
 
 void draw() {
@@ -98,8 +92,9 @@ void draw() {
     rlEnableBackfaceCulling();
 
     planet::draw();
-    draw_ships();
+    draw_components<ship::Ship>();
     crosshair::draw();
+    draw_components<projectile::Projectile>();
 
     EndMode3D();
 

@@ -1,5 +1,6 @@
 #include "camera.hpp"
 
+#include "constants.hpp"
 #include "dynamic_body.hpp"
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
@@ -9,8 +10,6 @@
 
 namespace gefest::camera {
 
-static Vector3 UP = {0.0, 1.0, 0.0};
-static Vector3 FORWARD = {0.0, 0.0, -1.0};
 static float FOV = 60.0;
 
 static float FOLLOW_SMOOTHNESS = 0.85;
@@ -39,7 +38,7 @@ void update_editor_mode() {
     static constexpr float camera_move_speed = 0.01;
     static constexpr float camera_zoom_speed = 1.0;
 
-    CAMERA.up = UP;
+    CAMERA.up = constants::UP;
 
     bool is_mmb_down = IsMouseButtonDown(2);
     bool is_shift_down = IsKeyDown(KEY_LEFT_SHIFT);
@@ -75,8 +74,9 @@ void update_follow_mode() {
     auto body = registry::registry.get<dynamic_body::DynamicBody>(entity);
     float speed = body.get_linear_speed();
 
-    Vector3 forward = Vector3RotateByQuaternion(FORWARD, tr.rotation);
-    Vector3 target_up = Vector3RotateByQuaternion(UP, tr.rotation);
+    // TODO: refactor using Transform::apply
+    Vector3 forward = tr.get_forward();
+    Vector3 target_up = tr.get_up();
     Vector3 up = Vector3Lerp(target_up, CAMERA.up, FOLLOW_SMOOTHNESS);
 
     Vector3 forward_offset = Vector3Scale(forward, -2.0);
