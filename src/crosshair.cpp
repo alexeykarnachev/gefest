@@ -10,7 +10,7 @@
 namespace gefest::crosshair {
 
 float LENGTH = 100.0;
-float THICKNESS = 0.008;
+float THICKNESS = 0.005;
 float ATTENUATION = 20.0;
 Vector3 START_OFFSET = {0.115, 0.0, -0.008};
 

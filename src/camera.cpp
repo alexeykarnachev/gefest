@@ -39,7 +39,7 @@ void update_editor_mode() {
     static constexpr float camera_move_speed = 0.01;
     static constexpr float camera_zoom_speed = 1.0;
 
-    CAMERA.up = {0.0, 1.0, 0.0};
+    CAMERA.up = UP;
 
     bool is_mmb_down = IsMouseButtonDown(2);
     bool is_shift_down = IsKeyDown(KEY_LEFT_SHIFT);
