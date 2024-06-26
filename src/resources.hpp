@@ -6,6 +6,7 @@ namespace gefest::resources {
 
 extern Mesh PLANE_MESH;
 extern Mesh SPHERE_MESH;
+extern Mesh CYLINDER_MESH;
 
 extern Material GEOSPHERE_MATERIAL;
 extern Material SKYBOX_MATERIAL;

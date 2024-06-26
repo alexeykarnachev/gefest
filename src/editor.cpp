@@ -2,6 +2,7 @@
 
 #include "GLFW/glfw3.h"
 #include "camera.hpp"
+#include "crosshair.hpp"
 #include "dynamic_body.hpp"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -128,17 +129,24 @@ void update_ship() {
     auto &body = registry::registry.get<dynamic_body::DynamicBody>(entity);
     auto &ship = registry::registry.get<ship::Ship>(entity);
 
+    ImGui::SeparatorText("Dynamic Body");
     ImGui::SliderFloat("Mass", &body.mass, 1.0, 1000.0);
     ImGui::SliderFloat("Linear Damp.", &body.linear_damping, 1.0, 1000.0);
     ImGui::SliderFloat("Moment of Inertia", &body.moment_of_inertia, 1.0, 1000.0);
     ImGui::SliderFloat("Angular Damping", &body.angular_damping, 1.0, 1000.0);
 
-    ImGui::Separator();
+    ImGui::SeparatorText("Ship");
     ImGui::SliderFloat("Engine Force", &ship.engine_force, 1.0, 5000.0);
     ImGui::SliderFloat("Pitch Magnitude", &ship.pitch_magnitude, 1.0, 1000.0);
     ImGui::SliderFloat("Roll Magnitude", &ship.roll_magnitude, 1.0, 1000.0);
 
-    ImGui::Separator();
+    ImGui::SeparatorText("Crosshair");
+    ImGui::SliderFloat("Length", &crosshair::LENGTH, 1.0, 100.0);
+    ImGui::SliderFloat("Thickness", &crosshair::THICKNESS, 0.0, 0.1);
+    ImGui::SliderFloat("Attenuation", &crosshair::ATTENUATION, 0.0, 20.0);
+    ImGui::SliderFloat3("Offset", (float *)&crosshair::START_OFFSET, -0.3, 0.3);
+
+    ImGui::SeparatorText("Speed");
     ImGui::Text("Linear Speed: %f", body.get_linear_speed());
     ImGui::Text("Angular Speed: %f", body.get_angular_speed());
 }

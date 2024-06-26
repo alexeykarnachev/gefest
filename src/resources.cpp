@@ -10,6 +10,7 @@ namespace gefest::resources {
 
 Mesh PLANE_MESH;
 Mesh SPHERE_MESH;
+Mesh CYLINDER_MESH;
 
 Material GEOSPHERE_MATERIAL;
 Material SKYBOX_MATERIAL;
@@ -61,6 +62,10 @@ void load() {
     int n_slices = 64;
     mesh = GenMeshSphere(1.0, n_rings, n_slices);
     SPHERE_MESH = mesh;
+
+    // cylinder mesh
+    mesh = GenMeshCylinder(1.0, 1.0, n_slices);
+    CYLINDER_MESH = mesh;
 
     // geosphere material
     Material material = LoadMaterialDefault();
