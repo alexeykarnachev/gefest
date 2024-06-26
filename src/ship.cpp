@@ -30,12 +30,17 @@ void Ship::reset_controls() {
     this->pitch = 0.0;
 }
 
+void Ship::update_shooting() {
+}
+
 void Ship::update_manual_controller() {
     if (IsKeyDown(KEY_SPACE)) this->thrust += 1.0;
     if (IsKeyDown(KEY_D)) this->roll -= 1.0;
     if (IsKeyDown(KEY_A)) this->roll += 1.0;
     if (IsKeyDown(KEY_W)) this->pitch -= 1.0;
     if (IsKeyDown(KEY_S)) this->pitch += 1.0;
+
+    if (IsKeyDown(KEY_ENTER)) update_shooting();
 }
 
 void Ship::update_dummy_controller() {}

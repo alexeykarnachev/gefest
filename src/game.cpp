@@ -7,50 +7,18 @@
 #include "editor.hpp"
 #include "entt/entt.hpp"
 #include "planet.hpp"
+#include "prefabs.hpp"
 #include "raylib/raylib.h"
 #include "raylib/rlgl.h"
 #include "registry.hpp"
 #include "resources.hpp"
 #include "ship.hpp"
 #include "skybox.hpp"
-#include "transform.hpp"
 
 namespace gefest::game {
 
 static Vector3 PLAYER_SPAWN_POSITION = {0.0, 80.0, 80.0};
 static bool WINDOW_SHOULD_CLOSE = false;
-
-entt::entity create_ship(Vector3 position, ship::ControllerType controller_type) {
-    auto entity = registry::registry.create();
-
-    float mass = 50.0;
-    float linear_damping = 70.0;
-    float moment_of_inertia = 50.0;
-    float angular_damping = 600.0;
-    float engine_force = 400.0;
-    float pitch_magnitude = 500.0;
-    float roll_magnitude = 500.0;
-
-    transform::Transform transform(position);
-    ship::Ship ship(
-        entity, controller_type, engine_force, pitch_magnitude, roll_magnitude
-    );
-    dynamic_body::DynamicBody body(
-        entity, mass, linear_damping, moment_of_inertia, angular_damping
-    );
-
-    registry::registry.emplace<ship::Ship>(entity, ship);
-    registry::registry.emplace<transform::Transform>(entity, transform);
-    registry::registry.emplace<dynamic_body::DynamicBody>(entity, body);
-
-    return entity;
-}
-
-entt::entity create_player_ship(Vector3 position) {
-    auto entity = create_ship(position, ship::ControllerType::MANUAL);
-    registry::registry.emplace<registry::Player>(entity);
-    return entity;
-}
 
 void load_window() {
     SetConfigFlags(FLAG_MSAA_4X_HINT);
@@ -64,7 +32,11 @@ void load() {
     resources::load();
     editor::load();
 
-    create_player_ship(PLAYER_SPAWN_POSITION);
+    // player ship
+    auto entity = prefabs::spawn_red_fighter(
+        PLAYER_SPAWN_POSITION, ship::ControllerType::MANUAL
+    );
+    registry::registry.emplace<registry::Player>(entity);
 }
 
 void unload() {

@@ -3,6 +3,7 @@
 #include "entt/entity/fwd.hpp"
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
+#include <cfloat>
 
 namespace gefest::ship {
 
@@ -19,7 +20,10 @@ private:
 
     Matrix matrix = MatrixIdentity();
 
+    float last_shot_time = -FLT_MAX;
+
     void reset_controls();
+    void update_shooting();
     void update_manual_controller();
     void update_dummy_controller();
     void apply_controls();
