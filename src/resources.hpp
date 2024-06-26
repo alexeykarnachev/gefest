@@ -11,6 +11,7 @@ extern Mesh CYLINDER_MESH;
 extern Material GEOSPHERE_MATERIAL;
 extern Material SKYBOX_MATERIAL;
 extern Material CROSSHAIR_MATERIAL;
+extern Material PROJECTILE_MATERIAL;
 
 extern Model RED_FIGHTER_MODEL;
 

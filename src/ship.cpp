@@ -19,7 +19,8 @@ Ship::Ship(
     float pitch_magnitude,
     float roll_magnitude,
     float shoot_rate,
-    Vector3 projectile_spawn_position
+    float projectile_speed,
+    Vector3 projectile_spawn_offset
 )
     : entity(entity)
     , controller_type(controller_type)
@@ -27,7 +28,8 @@ Ship::Ship(
     , pitch_magnitude(pitch_magnitude)
     , roll_magnitude(roll_magnitude)
     , shoot_rate(shoot_rate)
-    , projectile_spawn_position(projectile_spawn_position) {}
+    , projectile_speed(projectile_speed)
+    , projectile_spawn_offset(projectile_spawn_offset) {}
 
 void Ship::reset_controls() {
     this->thrust = 0.0;
@@ -85,11 +87,10 @@ void Ship::shoot() {
 
     if (!can_shoot) return;
 
-    auto &tr = registry::registry.get<transform::Transform>(this->entity);
-    Vector3 spawn_position = tr.apply_to_vector(this->projectile_spawn_position);
-    Vector3 direction = tr.get_forward();
+    auto tr = registry::registry.get<transform::Transform>(this->entity);
+    tr.position = Vector3Add(tr.position, this->projectile_spawn_offset);
 
-    prefabs::spawn_red_fighter_projectile(this->entity, spawn_position, direction);
+    prefabs::spawn_projectile(this->entity, tr, this->projectile_speed);
     this->last_shot_time = time;
 }
 

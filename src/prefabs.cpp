@@ -1,8 +1,8 @@
 #include "prefabs.hpp"
 
+#include "constants.hpp"
 #include "dynamic_body.hpp"
 #include "projectile.hpp"
-#include "raylib/raymath.h"
 #include "registry.hpp"
 #include "transform.hpp"
 
@@ -16,8 +16,9 @@ entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller
     static float engine_force = 400.0;
     static float pitch_magnitude = 500.0;
     static float roll_magnitude = 500.0;
-    static float shoot_rate = 2.5;
-    static Vector3 projectile_spawn_position = {0.0, 0.0, 0.0};
+    static float shoot_rate = 7.0;
+    static float projectile_speed = 80.0;
+    static Vector3 projectile_spawn_offset = {0.0, 0.0, 0.0};
 
     auto entity = registry::registry.create();
 
@@ -28,7 +29,8 @@ entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller
         pitch_magnitude,
         roll_magnitude,
         shoot_rate,
-        projectile_spawn_position
+        projectile_speed,
+        projectile_spawn_offset
     );
     transform::Transform transform(position);
     dynamic_body::DynamicBody body(
@@ -42,18 +44,12 @@ entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller
     return entity;
 }
 
-entt::entity spawn_red_fighter_projectile(
-    entt::entity owner, Vector3 position, Vector3 direction
+entt::entity spawn_projectile(
+    entt::entity owner, transform::Transform transform, float speed
 ) {
-    static float speed = 200.0;
-
-    direction = Vector3Normalize(direction);
-    Vector3 velocity = Vector3Scale(direction, speed);
-
     auto entity = registry::registry.create();
 
-    transform::Transform transform(position);
-    projectile::Projectile projectile(entity, owner, velocity);
+    projectile::Projectile projectile(entity, owner, speed);
 
     registry::registry.emplace<transform::Transform>(entity, transform);
     registry::registry.emplace<projectile::Projectile>(entity, projectile);

@@ -139,6 +139,9 @@ void update_ship() {
     ImGui::SliderFloat("Engine Force", &ship.engine_force, 1.0, 5000.0);
     ImGui::SliderFloat("Pitch Magnitude", &ship.pitch_magnitude, 1.0, 1000.0);
     ImGui::SliderFloat("Roll Magnitude", &ship.roll_magnitude, 1.0, 1000.0);
+    ImGui::SliderFloat("Shoot Rate", &ship.shoot_rate, 1.0, 30.0);
+    ImGui::SliderFloat("Proj. Speed", &ship.projectile_speed, 10.0, 1000.0);
+    ImGui::SliderFloat3("Proj. Spawn", (float *)&ship.projectile_spawn_offset, -0.6, 0.6);
 
     ImGui::SeparatorText("Crosshair");
     ImGui::SliderFloat("Length", &crosshair::LENGTH, 1.0, 100.0);

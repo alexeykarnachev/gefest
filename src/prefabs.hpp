@@ -2,13 +2,14 @@
 
 #include "entt/entity/fwd.hpp"
 #include "ship.hpp"
+#include "transform.hpp"
 
 namespace gefest::prefabs {
 
 entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller_type);
 
-entt::entity spawn_red_fighter_projectile(
-    entt::entity owner, Vector3 position, Vector3 direction
+entt::entity spawn_projectile(
+    entt::entity owner, transform::Transform transform, float speed
 );
 
 }  // namespace gefest::prefabs

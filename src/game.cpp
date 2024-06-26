@@ -73,9 +73,9 @@ void update() {
     camera::update();
     planet::update();
     skybox::update();
+    update_components<dynamic_body::DynamicBody>();
     update_components<ship::Ship>();
     crosshair::update();
-    update_components<dynamic_body::DynamicBody>();
     update_components<projectile::Projectile>();
 }
 

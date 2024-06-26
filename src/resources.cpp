@@ -15,6 +15,7 @@ Mesh CYLINDER_MESH;
 Material GEOSPHERE_MATERIAL;
 Material SKYBOX_MATERIAL;
 Material CROSSHAIR_MATERIAL;
+Material PROJECTILE_MATERIAL;
 
 Model RED_FIGHTER_MODEL;
 
@@ -81,6 +82,11 @@ void load() {
     material = LoadMaterialDefault();
     material.shader = load_shader("base.vert", "crosshair.frag");
     CROSSHAIR_MATERIAL = material;
+
+    // projectile material
+    material = LoadMaterialDefault();
+    material.shader = load_shader("base.vert", "projectile.frag");
+    PROJECTILE_MATERIAL = material;
 
     // red fighter model
     Model model = LoadModel("./resources/models/red_fighter/RedFighter.obj");

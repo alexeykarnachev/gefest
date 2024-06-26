@@ -4,14 +4,17 @@
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 #include "registry.hpp"
+#include "resources.hpp"
 #include "transform.hpp"
 
 namespace gefest::projectile {
 
-Projectile::Projectile(entt::entity entity, entt::entity owner, Vector3 velocity)
+static float THICKNESS = 0.015;
+
+Projectile::Projectile(entt::entity entity, entt::entity owner, float speed)
     : entity(entity)
     , owner(owner)
-    , velocity(velocity) {}
+    , speed(speed) {}
 
 void Projectile::update() {
     if (this->ttl <= 0.0) {
@@ -20,17 +23,30 @@ void Projectile::update() {
     }
 
     auto &tr = registry::registry.get<transform::Transform>(this->entity);
-    Vector3 step = Vector3Scale(this->velocity, constants::DT);
-    Vector3 position = Vector3Add(tr.position, step);
 
-    tr.position = position;
+    Vector3 position = tr.position;
+    Vector3 velocity = Vector3Scale(tr.get_forward(), this->speed);
+    Vector3 step = Vector3Scale(velocity, constants::DT);
+    float length = Vector3Length(step);
+
+    Matrix t = MatrixTranslate(position.x, position.y, position.z);
+    Matrix r = MatrixMultiply(
+        MatrixRotateX(DEG2RAD * -90.0), QuaternionToMatrix(tr.rotation)
+    );
+    Matrix s = MatrixScale(THICKNESS, length, THICKNESS);
+    Matrix mat = MatrixMultiply(s, MatrixMultiply(r, t));
+
+    tr.position = Vector3Add(position, step);
     this->ttl -= constants::DT;
+    this->matrix = mat;
 }
 
 void Projectile::draw() {
-    auto tr = registry::registry.get<transform::Transform>(this->entity);
+    Mesh mesh = resources::CYLINDER_MESH;
+    Material material = resources::PROJECTILE_MATERIAL;
+    Shader shader = material.shader;
 
-    DrawSphere(tr.position, 0.1, YELLOW);
+    DrawMesh(mesh, material, this->matrix);
 }
 
 }  // namespace gefest::projectile

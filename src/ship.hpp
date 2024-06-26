@@ -39,6 +39,8 @@ public:
     float roll_magnitude;
 
     float shoot_rate;
+    float projectile_speed;
+    Vector3 projectile_spawn_offset;
 
     Ship(
         entt::entity entity,
@@ -47,14 +49,12 @@ public:
         float pitch_magnitude,
         float roll_magnitude,
         float shoot_rate,
-        Vector3 projectile_spawn_position
+        float projectile_speed,
+        Vector3 projectile_spawn_offset
     );
 
     void update();
     void draw();
-
-private:
-    const Vector3 projectile_spawn_position;
 };
 
 }  // namespace gefest::ship
