@@ -428,3 +428,7 @@ float octave_perlin_noise(
     f /= ampl_sum;
     return f;
 }
+
+float lerp(float start, float end, float ratio) {
+    return start + ratio * (end - start);
+}

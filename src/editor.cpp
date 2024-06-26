@@ -144,6 +144,7 @@ void update_ship() {
     ImGui::SliderFloat("Length", &crosshair::LENGTH, 1.0, 100.0);
     ImGui::SliderFloat("Thickness", &crosshair::THICKNESS, 0.0, 0.1);
     ImGui::SliderFloat("Attenuation", &crosshair::ATTENUATION, 0.0, 20.0);
+    ImGui::SliderFloat("Start Alpha", &crosshair::START_ALPHA, 0.0, 1.0);
     ImGui::SliderFloat3("Offset", (float *)&crosshair::START_OFFSET, -0.3, 0.3);
 
     ImGui::SeparatorText("Speed");

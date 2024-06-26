@@ -7,6 +7,7 @@ namespace gefest::crosshair {
 extern float LENGTH;
 extern float THICKNESS;
 extern float ATTENUATION;
+extern float START_ALPHA;
 extern Vector3 START_OFFSET;
 
 void update();

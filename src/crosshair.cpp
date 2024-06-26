@@ -11,7 +11,8 @@ namespace gefest::crosshair {
 
 float LENGTH = 100.0;
 float THICKNESS = 0.005;
-float ATTENUATION = 20.0;
+float ATTENUATION = 10.0;
+float START_ALPHA = 0.93;
 Vector3 START_OFFSET = {0.115, 0.0, -0.008};
 
 static Vector3 START_POSITION;
@@ -42,10 +43,12 @@ void draw() {
 
     int length_loc = GetShaderLocation(shader, "length");
     int attenuation_loc = GetShaderLocation(shader, "attenuation");
+    int start_alpha_loc = GetShaderLocation(shader, "start_alpha");
     int start_position_loc = GetShaderLocation(shader, "start_position");
 
     SetShaderValue(shader, length_loc, &LENGTH, SHADER_UNIFORM_FLOAT);
     SetShaderValue(shader, attenuation_loc, &ATTENUATION, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(shader, start_alpha_loc, &START_ALPHA, SHADER_UNIFORM_FLOAT);
     SetShaderValue(shader, start_position_loc, &START_POSITION, SHADER_UNIFORM_VEC3);
 
     DrawMesh(mesh, material, MATRIX);
