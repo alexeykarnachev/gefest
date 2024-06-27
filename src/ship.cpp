@@ -99,16 +99,4 @@ void Ship::update() {
     this->apply_controls();
 }
 
-void Ship::draw() {
-    auto tr = registry::registry.get<transform::Transform>(this->entity);
-
-    Model model = resources::RED_FIGHTER_MODEL;
-    Matrix mat = tr.get_matrix();
-
-    rlPushMatrix();
-    rlMultMatrixf(MatrixToFloat(mat));
-    DrawModel(model, Vector3Zero(), 1.0, WHITE);
-    rlPopMatrix();
-}
-
 }  // namespace gefest::ship

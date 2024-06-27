@@ -55,7 +55,6 @@ public:
     );
 
     void update();
-    void draw();
 };
 
 }  // namespace gefest::ship

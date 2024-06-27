@@ -11,7 +11,6 @@ public:
     Asteroid(entt::entity entity);
 
     void update();
-    void draw();
 };
 
 }  // namespace gefest::asteroid

@@ -4,10 +4,12 @@
 #include "collider.hpp"
 #include "constants.hpp"
 #include "dynamic_body.hpp"
+#include "gmodel.hpp"
 #include "health.hpp"
 #include "projectile.hpp"
 #include "raylib/raymath.h"
 #include "registry.hpp"
+#include "resources.hpp"
 #include "transform.hpp"
 
 namespace gefest::prefabs {
@@ -42,12 +44,14 @@ entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller
         projectile_damage,
         projectile_spawn_offset
     );
+    gmodel::GModel gmodel(entity, resources::RED_FIGHTER_MODEL);
     transform::Transform transform(position, scale);
     dynamic_body::DynamicBody body(
         entity, mass, linear_damping, moment_of_inertia, angular_damping
     );
 
     registry::registry.emplace<ship::Ship>(entity, ship);
+    registry::registry.emplace<gmodel::GModel>(entity, gmodel);
     registry::registry.emplace<transform::Transform>(entity, transform);
     registry::registry.emplace<dynamic_body::DynamicBody>(entity, body);
 
@@ -74,13 +78,18 @@ entt::entity spawn_asteroid(Vector3 position) {
 
     auto entity = registry::registry.create();
 
+    Mesh mesh = resources::get_asteroid_mesh();
+    Material material = resources::ASTEROID_MATERIAL;
+
     asteroid::Asteroid asteroid(entity);
+    gmodel::GMesh gmesh(entity, mesh, material);
     transform::Transform transform(position, scale);
     collider::Collider collider(entity, collider_sphere_radius);
     health::Health health(entity, health_max_val);
 
-    registry::registry.emplace<transform::Transform>(entity, transform);
     registry::registry.emplace<asteroid::Asteroid>(entity, asteroid);
+    registry::registry.emplace<gmodel::GMesh>(entity, gmesh);
+    registry::registry.emplace<transform::Transform>(entity, transform);
     registry::registry.emplace<collider::Collider>(entity, collider);
     registry::registry.emplace<health::Health>(entity, health);
 

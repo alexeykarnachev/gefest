@@ -8,6 +8,7 @@
 #include "dynamic_body.hpp"
 #include "editor.hpp"
 #include "entt/entt.hpp"
+#include "gmodel.hpp"
 #include "health.hpp"
 #include "planet.hpp"
 #include "prefabs.hpp"
@@ -99,10 +100,10 @@ void draw() {
     rlEnableBackfaceCulling();
 
     planet::draw();
-    draw_components<ship::Ship>();
+    draw_components<gmodel::GModel>();
+    draw_components<gmodel::GMesh>();
     crosshair::draw();
     draw_components<projectile::Projectile>();
-    draw_components<asteroid::Asteroid>();
     draw_components<collider::Collider>();
 
     EndMode3D();
