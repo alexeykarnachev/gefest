@@ -8,6 +8,7 @@
 #include "dynamic_body.hpp"
 #include "editor.hpp"
 #include "entt/entt.hpp"
+#include "health.hpp"
 #include "planet.hpp"
 #include "prefabs.hpp"
 #include "projectile.hpp"
@@ -82,6 +83,7 @@ void update() {
     crosshair::update();
     update_components<projectile::Projectile>();
     update_components<asteroid::Asteroid>();
+    update_components<health::Health>();
 }
 
 void draw() {

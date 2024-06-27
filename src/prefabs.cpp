@@ -4,7 +4,9 @@
 #include "collider.hpp"
 #include "constants.hpp"
 #include "dynamic_body.hpp"
+#include "health.hpp"
 #include "projectile.hpp"
+#include "raylib/raymath.h"
 #include "registry.hpp"
 #include "transform.hpp"
 
@@ -64,18 +66,21 @@ entt::entity spawn_projectile(
 }
 
 entt::entity spawn_asteroid(Vector3 position) {
-    static Vector3 scale = {1.0, 1.0, 1.0};
+    static Vector3 scale = Vector3Scale(Vector3One(), 0.95);
     static float collider_sphere_radius = 1.0;
+    static float health_max_val = 1000.0;
 
     auto entity = registry::registry.create();
 
     asteroid::Asteroid asteroid(entity);
     transform::Transform transform(position, scale);
     collider::Collider collider(entity, collider_sphere_radius);
+    health::Health health(entity, health_max_val);
 
     registry::registry.emplace<transform::Transform>(entity, transform);
     registry::registry.emplace<asteroid::Asteroid>(entity, asteroid);
     registry::registry.emplace<collider::Collider>(entity, collider);
+    registry::registry.emplace<health::Health>(entity, health);
 
     return entity;
 }
