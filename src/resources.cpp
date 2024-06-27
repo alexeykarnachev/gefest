@@ -19,6 +19,7 @@ Material PROJECTILE_MATERIAL;
 Material ASTEROID_MATERIAL;
 
 Model RED_FIGHTER_MODEL;
+static Model ASTEROID_MODEL;
 
 std::string get_shader_file_path(const std::string &file_name) {
     auto file_path = "resources/shaders/" + file_name;
@@ -53,47 +54,52 @@ Shader load_shader(const std::string &vs_file_name, const std::string &fs_file_n
 }
 
 void load() {
-    // plane mesh
+    // plane
     Mesh mesh = GenMeshPlane(1.0, 1.0, 1, 1);
     PLANE_MESH = mesh;
 
-    // sphere mesh
+    // sphere
     int n_rings = 64;
     int n_slices = 64;
     mesh = GenMeshSphere(1.0, n_rings, n_slices);
     SPHERE_MESH = mesh;
 
-    // cylinder mesh
+    // cylinder
     mesh = GenMeshCylinder(1.0, 1.0, n_slices);
     CYLINDER_MESH = mesh;
 
-    // geosphere material
-    Material material = LoadMaterialDefault();
+    Model model;
+    Material material;
+
+    // geosphere
+    material = LoadMaterialDefault();
     material.shader = load_shader("base.vert", "geosphere.frag");
     GEOSPHERE_MATERIAL = material;
 
-    // skybox material
+    // skybox
     material = LoadMaterialDefault();
     material.shader = load_shader("skybox.vert", "skybox.frag");
     SKYBOX_MATERIAL = material;
 
-    // crosshair material
+    // crosshair
     material = LoadMaterialDefault();
     material.shader = load_shader("base.vert", "crosshair.frag");
     CROSSHAIR_MATERIAL = material;
 
-    // projectile material
+    // projectile
     material = LoadMaterialDefault();
     material.shader = load_shader("base.vert", "projectile.frag");
     PROJECTILE_MATERIAL = material;
 
-    // asteroid material
+    // asteroid
+    model = LoadModel("./resources/models/asteroids/asteroids.obj");
     material = LoadMaterialDefault();
     material.shader = load_shader("base.vert", "asteroid.frag");
+    ASTEROID_MODEL = model;
     ASTEROID_MATERIAL = material;
 
-    // red fighter model
-    Model model = LoadModel("./resources/models/red_fighter/RedFighter.obj");
+    // red fighter
+    model = LoadModel("./resources/models/red_fighter/RedFighter.obj");
     model.transform = MatrixIdentity();
     RED_FIGHTER_MODEL = model;
 }
@@ -109,6 +115,13 @@ void unload() {
     UnloadMaterial(ASTEROID_MATERIAL);
 
     UnloadModel(RED_FIGHTER_MODEL);
+    UnloadModel(ASTEROID_MODEL);
+}
+
+Mesh get_asteroid_mesh() {
+    int n_meshes = ASTEROID_MODEL.meshCount;
+    int idx = GetRandomValue(0, n_meshes - 1);
+    return ASTEROID_MODEL.meshes[idx];
 }
 
 }  // namespace gefest::resources

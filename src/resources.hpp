@@ -19,4 +19,6 @@ extern Model RED_FIGHTER_MODEL;
 void load();
 void unload();
 
+Mesh get_asteroid_mesh();
+
 }  // namespace gefest::resources
