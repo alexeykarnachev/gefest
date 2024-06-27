@@ -2,6 +2,7 @@
 
 #include "asteroid.hpp"
 #include "camera.hpp"
+#include "collider.hpp"
 #include "constants.hpp"
 #include "crosshair.hpp"
 #include "dynamic_body.hpp"
@@ -39,7 +40,7 @@ void load() {
     registry::registry.emplace<registry::Player>(entity);
 
     // asteroid
-    position = {10.0, 85.0, 60.0};
+    position = {0.0, 85.0, 60.0};
     entity = prefabs::spawn_asteroid(position);
 }
 
@@ -100,6 +101,7 @@ void draw() {
     crosshair::draw();
     draw_components<projectile::Projectile>();
     draw_components<asteroid::Asteroid>();
+    draw_components<collider::Collider>();
 
     EndMode3D();
 

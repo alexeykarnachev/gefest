@@ -1,0 +1,50 @@
+#include "collider.hpp"
+
+#include "raylib/raylib.h"
+#include "registry.hpp"
+#include "transform.hpp"
+
+namespace gefest::collider {
+
+Collider::Collider(entt::entity entity, float sphere_radius)
+    : entity(entity)
+    , type(Type::SPHERE)
+    , sphere(Sphere{.radius = sphere_radius}) {}
+
+Collider::Collider(
+    entt::entity entity, float box_width, float box_height, float box_length
+)
+    : entity(entity)
+    , type(Type::BOX)
+    , box(Box{
+          .width = box_width,
+          .height = box_height,
+          .length = box_length,
+      }) {}
+
+void Collider::draw_sphere() {
+    static int n_rings = 16;
+    static int n_slices = 16;
+
+    auto tr = registry::registry.get<transform::Transform>(this->entity);
+
+    DrawSphereWires(tr.position, this->sphere.radius, n_rings, n_slices, WHITE);
+}
+
+void Collider::draw_box() {
+    auto tr = registry::registry.get<transform::Transform>(this->entity);
+
+    DrawCubeWires(
+        tr.position, this->box.width, this->box.height, this->box.length, WHITE
+    );
+}
+
+void Collider::draw() {
+
+    switch (this->type) {
+        case Type::SPHERE: this->draw_sphere(); break;
+        case Type::BOX: this->draw_box(); break;
+    }
+}
+
+}  // namespace gefest::collider

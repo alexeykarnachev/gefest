@@ -26,7 +26,6 @@ private:
     void update_manual_controller();
     void update_dummy_controller();
     void apply_controls();
-    void update_matrix();
 
     void shoot();
 

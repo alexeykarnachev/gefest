@@ -69,16 +69,6 @@ void Ship::apply_controls() {
     body.apply_torque({0.0, 0.0, roll_magnitude});
 }
 
-void Ship::update_matrix() {
-    auto &tr = registry::registry.get<transform::Transform>(this->entity);
-
-    Matrix r = QuaternionToMatrix(tr.rotation);
-    Matrix t = MatrixTranslate(tr.position.x, tr.position.y, tr.position.z);
-    Matrix mat = MatrixMultiply(r, t);
-
-    this->matrix = mat;
-}
-
 void Ship::shoot() {
     float time = GetTime();
     float shoot_period = 1.0 / this->shoot_rate;
@@ -103,14 +93,16 @@ void Ship::update() {
     }
 
     this->apply_controls();
-    this->update_matrix();
 }
 
 void Ship::draw() {
+    auto tr = registry::registry.get<transform::Transform>(this->entity);
+
     Model model = resources::RED_FIGHTER_MODEL;
+    Matrix mat = tr.get_matrix();
 
     rlPushMatrix();
-    rlMultMatrixf(MatrixToFloat(this->matrix));
+    rlMultMatrixf(MatrixToFloat(mat));
     DrawModel(model, Vector3Zero(), 1.0, WHITE);
     rlPopMatrix();
 }

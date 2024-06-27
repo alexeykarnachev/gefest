@@ -16,10 +16,9 @@ Material GEOSPHERE_MATERIAL;
 Material SKYBOX_MATERIAL;
 Material CROSSHAIR_MATERIAL;
 Material PROJECTILE_MATERIAL;
+Material ASTEROID_MATERIAL;
 
 Model RED_FIGHTER_MODEL;
-
-static float RED_FIGHTER_SCALE = 0.1;
 
 std::string get_shader_file_path(const std::string &file_name) {
     auto file_path = "resources/shaders/" + file_name;
@@ -88,10 +87,14 @@ void load() {
     material.shader = load_shader("base.vert", "projectile.frag");
     PROJECTILE_MATERIAL = material;
 
+    // asteroid material
+    material = LoadMaterialDefault();
+    material.shader = load_shader("base.vert", "asteroid.frag");
+    ASTEROID_MATERIAL = material;
+
     // red fighter model
     Model model = LoadModel("./resources/models/red_fighter/RedFighter.obj");
-    Matrix mat = MatrixScale(RED_FIGHTER_SCALE, RED_FIGHTER_SCALE, RED_FIGHTER_SCALE);
-    model.transform = mat;
+    model.transform = MatrixIdentity();
     RED_FIGHTER_MODEL = model;
 }
 
@@ -102,6 +105,8 @@ void unload() {
     UnloadMaterial(GEOSPHERE_MATERIAL);
     UnloadMaterial(SKYBOX_MATERIAL);
     UnloadMaterial(CROSSHAIR_MATERIAL);
+    UnloadMaterial(PROJECTILE_MATERIAL);
+    UnloadMaterial(ASTEROID_MATERIAL);
 
     UnloadModel(RED_FIGHTER_MODEL);
 }
