@@ -46,7 +46,7 @@ void DynamicBody::apply_torque(Vector3 magnitude) {
 }
 
 void DynamicBody::update() {
-    auto &transform = registry::registry.get<transform::Transform>(this->entity);
+    auto &tr = registry::registry.get<transform::Transform>(this->entity);
 
     // Update linear velocity
     Vector3 damping_force = Vector3Scale(this->linear_velocity, -this->linear_damping);
@@ -70,17 +70,16 @@ void DynamicBody::update() {
 
     // Apply linear velocity
     Vector3 linear_step = Vector3Scale(this->linear_velocity, constants::DT);
-    Vector3 position = Vector3Add(transform.position, linear_step);
-    transform.position = position;
+    Vector3 position = Vector3Add(tr.position, linear_step);
+    tr.position = position;
     if (Vector3Length(this->linear_velocity) < EPSILON) {
         this->linear_velocity = Vector3Zero();
     }
 
     // Apply angular velocity
     Vector3 angular_step = Vector3Scale(this->angular_velocity, constants::DT);
-    transform.rotation = QuaternionMultiply(
-        transform.rotation,
-        QuaternionFromEuler(angular_step.x, angular_step.y, angular_step.z)
+    tr.rotation = QuaternionMultiply(
+        tr.rotation, QuaternionFromEuler(angular_step.x, angular_step.y, angular_step.z)
     );
     if (Vector3Length(this->angular_velocity) < EPSILON) {
         this->angular_velocity = Vector3Zero();

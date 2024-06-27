@@ -1,5 +1,6 @@
 #include "game.hpp"
 
+#include "asteroid.hpp"
 #include "camera.hpp"
 #include "constants.hpp"
 #include "crosshair.hpp"
@@ -18,7 +19,6 @@
 
 namespace gefest::game {
 
-static Vector3 PLAYER_SPAWN_POSITION = {0.0, 80.0, 80.0};
 static bool WINDOW_SHOULD_CLOSE = false;
 
 void load_window() {
@@ -34,10 +34,13 @@ void load() {
     editor::load();
 
     // player ship
-    auto entity = prefabs::spawn_red_fighter(
-        PLAYER_SPAWN_POSITION, ship::ControllerType::MANUAL
-    );
+    Vector3 position = {0.0, 80.0, 80.0};
+    auto entity = prefabs::spawn_red_fighter(position, ship::ControllerType::MANUAL);
     registry::registry.emplace<registry::Player>(entity);
+
+    // asteroid
+    position = {10.0, 85.0, 60.0};
+    entity = prefabs::spawn_asteroid(position);
 }
 
 void unload() {
@@ -77,6 +80,7 @@ void update() {
     update_components<ship::Ship>();
     crosshair::update();
     update_components<projectile::Projectile>();
+    update_components<asteroid::Asteroid>();
 }
 
 void draw() {
@@ -95,6 +99,7 @@ void draw() {
     draw_components<ship::Ship>();
     crosshair::draw();
     draw_components<projectile::Projectile>();
+    draw_components<asteroid::Asteroid>();
 
     EndMode3D();
 

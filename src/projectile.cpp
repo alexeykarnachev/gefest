@@ -44,7 +44,6 @@ void Projectile::update() {
 void Projectile::draw() {
     Mesh mesh = resources::CYLINDER_MESH;
     Material material = resources::PROJECTILE_MATERIAL;
-    Shader shader = material.shader;
 
     DrawMesh(mesh, material, this->matrix);
 }

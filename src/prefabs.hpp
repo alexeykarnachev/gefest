@@ -12,4 +12,6 @@ entt::entity spawn_projectile(
     entt::entity owner, transform::Transform transform, float speed
 );
 
+entt::entity spawn_asteroid(Vector3 position);
+
 }  // namespace gefest::prefabs

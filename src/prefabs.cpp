@@ -1,5 +1,6 @@
 #include "prefabs.hpp"
 
+#include "asteroid.hpp"
 #include "constants.hpp"
 #include "dynamic_body.hpp"
 #include "projectile.hpp"
@@ -53,6 +54,18 @@ entt::entity spawn_projectile(
 
     registry::registry.emplace<transform::Transform>(entity, transform);
     registry::registry.emplace<projectile::Projectile>(entity, projectile);
+
+    return entity;
+}
+
+entt::entity spawn_asteroid(Vector3 position) {
+    auto entity = registry::registry.create();
+
+    asteroid::Asteroid asteroid(entity);
+    transform::Transform transform(position);
+
+    registry::registry.emplace<transform::Transform>(entity, transform);
+    registry::registry.emplace<asteroid::Asteroid>(entity, asteroid);
 
     return entity;
 }
