@@ -72,8 +72,8 @@ entt::entity spawn_projectile(
 }
 
 entt::entity spawn_asteroid(Vector3 position) {
-    static Vector3 scale = Vector3Scale(Vector3One(), 0.95);
-    static float collider_sphere_radius = 1.0;
+    static Vector3 scale = Vector3One();
+    static float collider_sphere_radius = 2.0;
     static float health_max_val = 1000.0;
 
     auto entity = registry::registry.create();
