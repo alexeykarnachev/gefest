@@ -8,6 +8,7 @@ extern Mesh PLANE_MESH;
 extern Mesh SPHERE_MESH;
 extern Mesh CYLINDER_MESH;
 
+extern Material SUN_MATERIAL;
 extern Material GEOSPHERE_MATERIAL;
 extern Material SKYBOX_MATERIAL;
 extern Material CROSSHAIR_MATERIAL;

@@ -3,10 +3,11 @@
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 #include "resources.hpp"
+#include "sun.hpp"
 
 namespace gefest::planet {
 
-Vector3 PLANET_POSITION = {0.0, 0.0, 0.0};
+Vector3 POSITION = {0.0, 0.0, 0.0};
 
 int N_LEVELS = 8;
 float FREQ_MULT = 1.84;
@@ -18,26 +19,22 @@ float SAND_LEVEL = 0.51;
 float GRASS_LEVEL = 0.57;
 float ROCK_LEVEL = 0.61;
 
-static float GEOSPHERE_RADIUS = 50.0;
+static float GEOSPHERE_RADIUS = 30.0;
 static float PLANET_ROTATION_SPEED = 0.001 * PI;
-static Vector3 SUN_POSITION = {100.0, 100.0, 100.0};
 
 static Matrix MATRIX;
 
 void update() {
     float rotation_angle = PLANET_ROTATION_SPEED * GetTime();
 
-    Matrix t = MatrixTranslate(PLANET_POSITION.x, PLANET_POSITION.y, PLANET_POSITION.z);
+    Matrix t = MatrixTranslate(POSITION.x, POSITION.y, POSITION.z);
     Matrix r = MatrixRotate({0.0, 1.0, 0.0}, rotation_angle);
     Matrix s = MatrixScale(GEOSPHERE_RADIUS, GEOSPHERE_RADIUS, GEOSPHERE_RADIUS);
 
     MATRIX = MatrixMultiply(MatrixMultiply(r, s), t);
 }
 
-void draw_planet_body() {
-    // tmp: keep sun here for now
-    DrawSphere(SUN_POSITION, 2.0, RED);
-
+void draw_geosphere() {
     Mesh mesh = resources::SPHERE_MESH;
     Material material = resources::GEOSPHERE_MATERIAL;
     Shader shader = material.shader;
@@ -64,21 +61,15 @@ void draw_planet_body() {
     SetShaderValue(shader, grass_level_loc, &GRASS_LEVEL, SHADER_UNIFORM_FLOAT);
     SetShaderValue(shader, rock_level_loc, &ROCK_LEVEL, SHADER_UNIFORM_FLOAT);
 
-    // geometry uniforms
-    int planet_radius_loc = GetShaderLocation(shader, "geosphere_radius");
-    int planet_position_loc = GetShaderLocation(shader, "planet_position");
-    int sun_position_loc = GetShaderLocation(shader, "sun_position");
-
-    SetShaderValue(shader, planet_radius_loc, &GEOSPHERE_RADIUS, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, planet_position_loc, &PLANET_POSITION, SHADER_UNIFORM_VEC3);
-    SetShaderValue(shader, sun_position_loc, &SUN_POSITION, SHADER_UNIFORM_VEC3);
+    // sun light uniforms
+    sun::set_shader_point_light(shader);
 
     // draw sphere
     DrawMesh(mesh, material, MATRIX);
 }
 
 void draw() {
-    draw_planet_body();
+    draw_geosphere();
 }
 
 }  // namespace gefest::planet

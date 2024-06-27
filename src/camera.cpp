@@ -10,10 +10,10 @@
 
 namespace gefest::camera {
 
-static float FOV = 60.0;
+float FOLLOW_SMOOTHNESS = 0.4;
+float FOLLOW_SPEED_FOV_MULTIPLIER = 10.0;
 
-static float FOLLOW_SMOOTHNESS = 0.85;
-static float FOLLOW_SPEED_FOV_MULTIPLIER = 0.2;
+static float FOV = 60.0;
 
 Camera3D CAMERA = {
     .position = {0.0, 5.0, 30.0},
@@ -35,8 +35,8 @@ Mode get_mode() {
 
 void update_editor_mode() {
     static constexpr float camera_rot_speed = 0.003;
-    static constexpr float camera_move_speed = 0.01;
-    static constexpr float camera_zoom_speed = 1.0;
+    static constexpr float camera_move_speed = 0.0001;
+    static constexpr float camera_zoom_speed = 0.01;
 
     CAMERA.up = constants::UP;
 
@@ -79,12 +79,12 @@ void update_follow_mode() {
     Vector3 target_up = tr.get_up();
     Vector3 up = Vector3Lerp(target_up, CAMERA.up, FOLLOW_SMOOTHNESS);
 
-    Vector3 forward_offset = Vector3Scale(forward, -2.0);
-    Vector3 up_offset = Vector3Scale(up, 1.0);
+    Vector3 forward_offset = Vector3Scale(forward, -0.015);
+    Vector3 up_offset = Vector3Scale(up, 0.008);
     Vector3 offset = Vector3Add(forward_offset, up_offset);
 
     Vector3 position = Vector3Add(tr.position, offset);
-    Vector3 target = Vector3Add(tr.position, Vector3Scale(up, 0.5));
+    Vector3 target = Vector3Add(tr.position, Vector3Scale(up, 0.005));
 
     position = Vector3Lerp(position, CAMERA.position, FOLLOW_SMOOTHNESS);
     target = Vector3Lerp(target, CAMERA.target, FOLLOW_SMOOTHNESS);

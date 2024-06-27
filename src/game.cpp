@@ -19,6 +19,7 @@
 #include "resources.hpp"
 #include "ship.hpp"
 #include "skybox.hpp"
+#include "sun.hpp"
 
 namespace gefest::game {
 
@@ -37,12 +38,12 @@ void load() {
     editor::load();
 
     // player ship
-    Vector3 position = {0.0, 80.0, 80.0};
+    Vector3 position = {0.0, 30.0, 30.0};
     auto entity = prefabs::spawn_red_fighter(position, ship::ControllerType::MANUAL);
     registry::registry.emplace<registry::Player>(entity);
 
     // asteroid
-    position = {0.0, 85.0, 60.0};
+    position = {0.0, 30.2, 28.0};
     entity = prefabs::spawn_asteroid(position);
 }
 
@@ -76,11 +77,12 @@ template <typename T> void draw_components() {
 void update() {
     update_window_should_close();
 
-    camera::update();
+    sun::update();
     planet::update();
     skybox::update();
     update_components<dynamic_body::DynamicBody>();
     update_components<ship::Ship>();
+    camera::update();
     crosshair::update();
     update_components<projectile::Projectile>();
     update_components<asteroid::Asteroid>();
@@ -99,6 +101,7 @@ void draw() {
     rlEnableDepthTest();
     rlEnableBackfaceCulling();
 
+    sun::draw();
     planet::draw();
     draw_components<gmodel::GModel>();
     draw_components<gmodel::GMesh>();

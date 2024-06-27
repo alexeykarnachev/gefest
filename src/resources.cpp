@@ -12,6 +12,7 @@ Mesh PLANE_MESH;
 Mesh SPHERE_MESH;
 Mesh CYLINDER_MESH;
 
+Material SUN_MATERIAL;
 Material GEOSPHERE_MATERIAL;
 Material SKYBOX_MATERIAL;
 Material CROSSHAIR_MATERIAL;
@@ -70,6 +71,11 @@ void load() {
 
     Model model;
     Material material;
+
+    // geosphere
+    material = LoadMaterialDefault();
+    material.shader = load_shader("base.vert", "sun.frag");
+    SUN_MATERIAL = material;
 
     // geosphere
     material = LoadMaterialDefault();

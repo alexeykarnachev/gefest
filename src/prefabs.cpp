@@ -15,19 +15,19 @@
 namespace gefest::prefabs {
 
 entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller_type) {
-    static Vector3 scale = {0.1, 0.1, 0.1};
+    static Vector3 scale = {0.001, 0.001, 0.001};
 
-    static float mass = 50.0;
+    static float mass = 20.0;
     static float linear_damping = 70.0;
     static float moment_of_inertia = 50.0;
     static float angular_damping = 600.0;
 
-    static float engine_force = 400.0;
+    static float engine_force = 40.0;
     static float pitch_magnitude = 500.0;
     static float roll_magnitude = 500.0;
 
     static float shoot_rate = 7.0;
-    static float projectile_speed = 80.0;
+    static float projectile_speed = 1.5;
     static float projectile_damage = 500.0;
     static Vector3 projectile_spawn_offset = {0.0, 0.0, 0.0};
 
@@ -72,8 +72,8 @@ entt::entity spawn_projectile(
 }
 
 entt::entity spawn_asteroid(Vector3 position) {
-    static Vector3 scale = Vector3One();
-    static float collider_sphere_radius = 2.0;
+    static Vector3 scale = {0.01, 0.01, 0.01};
+    static float collider_sphere_radius = 0.02;
     static float health_max_val = 1000.0;
 
     auto entity = registry::registry.create();

@@ -4,6 +4,7 @@
 #include "raylib/rlgl.h"
 #include "registry.hpp"
 #include "transform.hpp"
+#include <cstdio>
 
 namespace gefest::gmodel {
 

@@ -77,6 +77,10 @@ void update_camera() {
     ImGui::RadioButton("Player", (int *)&mode, (int)camera::Mode::FOLLOW);
 
     if (mode == camera::Mode::FOLLOW) {
+        ImGui::SliderFloat("Smoothness", &camera::FOLLOW_SMOOTHNESS, 0.0, 0.99);
+        ImGui::SliderFloat(
+            "FOV multiplier", &camera::FOLLOW_SPEED_FOV_MULTIPLIER, 1.0, 30.0
+        );
     }
 
     camera::set_mode(mode);
@@ -97,7 +101,7 @@ void update_skybox() {
 }
 
 void update_planet() {
-    ImGui::SliderFloat3("Position", (float *)&planet::PLANET_POSITION, -50.0, 50.0);
+    ImGui::SliderFloat3("Position", (float *)&planet::POSITION, -50.0, 50.0);
 
     ImGui::SeparatorText("Perlin Noise");
     ImGui::SliderInt("N Levels", &planet::N_LEVELS, 1, 8);
@@ -136,19 +140,21 @@ void update_ship() {
     ImGui::SliderFloat("Angular Damping", &body.angular_damping, 1.0, 1000.0);
 
     ImGui::SeparatorText("Ship");
-    ImGui::SliderFloat("Engine Force", &ship.engine_force, 1.0, 5000.0);
+    ImGui::SliderFloat("Engine Force", &ship.engine_force, 1.0, 50.0);
     ImGui::SliderFloat("Pitch Magnitude", &ship.pitch_magnitude, 1.0, 1000.0);
     ImGui::SliderFloat("Roll Magnitude", &ship.roll_magnitude, 1.0, 1000.0);
     ImGui::SliderFloat("Shoot Rate", &ship.shoot_rate, 1.0, 30.0);
-    ImGui::SliderFloat("Proj. Speed", &ship.projectile_speed, 10.0, 1000.0);
-    ImGui::SliderFloat3("Proj. Spawn", (float *)&ship.projectile_spawn_offset, -0.6, 0.6);
+    ImGui::SliderFloat("Proj. Speed", &ship.projectile_speed, 0.5, 10.0);
+    ImGui::SliderFloat3(
+        "Proj. Spawn", (float *)&ship.projectile_spawn_offset, -0.006, 0.006
+    );
 
     ImGui::SeparatorText("Crosshair");
-    ImGui::SliderFloat("Length", &crosshair::LENGTH, 1.0, 100.0);
-    ImGui::SliderFloat("Thickness", &crosshair::THICKNESS, 0.0, 0.1);
+    ImGui::SliderFloat("Length", &crosshair::LENGTH, 0.01, 1.0);
+    ImGui::SliderFloat("Thickness", &crosshair::THICKNESS, 0.0, 0.001);
     ImGui::SliderFloat("Attenuation", &crosshair::ATTENUATION, 0.0, 20.0);
     ImGui::SliderFloat("Start Alpha", &crosshair::START_ALPHA, 0.0, 1.0);
-    ImGui::SliderFloat3("Offset", (float *)&crosshair::START_OFFSET, -0.3, 0.3);
+    ImGui::SliderFloat3("Offset", (float *)&crosshair::START_OFFSET, -0.003, 0.003);
 
     ImGui::SeparatorText("Speed");
     ImGui::Text("Linear Speed: %f", body.get_linear_speed());

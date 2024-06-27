@@ -9,11 +9,11 @@
 
 namespace gefest::crosshair {
 
-float LENGTH = 100.0;
-float THICKNESS = 0.005;
-float ATTENUATION = 10.0;
-float START_ALPHA = 0.93;
-Vector3 START_OFFSET = {0.115, 0.0, -0.008};
+float LENGTH = 1.0;
+float THICKNESS = 0.00005;
+float ATTENUATION = 15.0;
+float START_ALPHA = 0.95;
+Vector3 START_OFFSET = {0.00115, 0.0, -0.00008};
 
 static Vector3 START_POSITION;
 static Matrix MATRIX;
