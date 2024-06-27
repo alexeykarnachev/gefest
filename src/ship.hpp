@@ -39,6 +39,7 @@ public:
 
     float shoot_rate;
     float projectile_speed;
+    float projectile_damage;
     Vector3 projectile_spawn_offset;
 
     Ship(
@@ -49,6 +50,7 @@ public:
         float roll_magnitude,
         float shoot_rate,
         float projectile_speed,
+        float projectile_damage,
         Vector3 projectile_spawn_offset
     );
 

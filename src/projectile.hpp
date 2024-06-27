@@ -12,7 +12,7 @@ public:
     entt::entity entity;
     entt::entity owner;
 
-    Projectile(entt::entity entity, entt::entity owner, float speed);
+    Projectile(entt::entity entity, entt::entity owner, float speed, float damage);
 
     void update();
     void draw();
@@ -20,6 +20,7 @@ public:
 private:
     float ttl = 5.0;
     float speed;
+    float damage;
 
     Matrix matrix = MatrixIdentity();
 };

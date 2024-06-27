@@ -20,6 +20,7 @@ Ship::Ship(
     float roll_magnitude,
     float shoot_rate,
     float projectile_speed,
+    float projectile_damage,
     Vector3 projectile_spawn_offset
 )
     : entity(entity)
@@ -29,6 +30,7 @@ Ship::Ship(
     , roll_magnitude(roll_magnitude)
     , shoot_rate(shoot_rate)
     , projectile_speed(projectile_speed)
+    , projectile_damage(projectile_damage)
     , projectile_spawn_offset(projectile_spawn_offset) {}
 
 void Ship::reset_controls() {
@@ -80,7 +82,9 @@ void Ship::shoot() {
     auto tr = registry::registry.get<transform::Transform>(this->entity);
     tr.position = Vector3Add(tr.position, this->projectile_spawn_offset);
 
-    prefabs::spawn_projectile(this->entity, tr, this->projectile_speed);
+    prefabs::spawn_projectile(
+        this->entity, tr, this->projectile_speed, this->projectile_damage
+    );
     this->last_shot_time = time;
 }
 

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "entt/entity/fwd.hpp"
+#include "raylib/raylib.h"
+
 namespace gefest::collider {
 
 class Collider {
@@ -36,6 +38,8 @@ private:
 public:
     Collider(entt::entity entity, float sphere_radius);
     Collider(entt::entity entity, float box_width, float box_height, float box_length);
+
+    bool check_line_collision(Vector3 start, Vector3 end);
 
     void draw();
 };

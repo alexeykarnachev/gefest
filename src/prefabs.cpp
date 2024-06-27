@@ -26,6 +26,7 @@ entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller
 
     static float shoot_rate = 7.0;
     static float projectile_speed = 80.0;
+    static float projectile_damage = 500.0;
     static Vector3 projectile_spawn_offset = {0.0, 0.0, 0.0};
 
     auto entity = registry::registry.create();
@@ -38,6 +39,7 @@ entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller
         roll_magnitude,
         shoot_rate,
         projectile_speed,
+        projectile_damage,
         projectile_spawn_offset
     );
     transform::Transform transform(position, scale);
@@ -53,11 +55,11 @@ entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller
 }
 
 entt::entity spawn_projectile(
-    entt::entity owner, transform::Transform transform, float speed
+    entt::entity owner, transform::Transform transform, float speed, float damage
 ) {
     auto entity = registry::registry.create();
 
-    projectile::Projectile projectile(entity, owner, speed);
+    projectile::Projectile projectile(entity, owner, speed, damage);
 
     registry::registry.emplace<transform::Transform>(entity, transform);
     registry::registry.emplace<projectile::Projectile>(entity, projectile);
