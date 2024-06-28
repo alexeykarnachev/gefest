@@ -2,7 +2,6 @@
 
 #include "asteroid.hpp"
 #include "camera.hpp"
-#include "collider.hpp"
 #include "constants.hpp"
 #include "crosshair.hpp"
 #include "dynamic_body.hpp"
