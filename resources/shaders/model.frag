@@ -1,16 +1,23 @@
 /* vim: set filetype=glsl : */
 
-in vec4 frag_color;
+in vec3 frag_model_pos;
+in vec3 frag_world_pos;
 in vec2 frag_tex_coord;
+in vec3 frag_normal;
 
+uniform PointLight point_light;
 uniform sampler2D texture0;
 
 out vec4 final_color;
 
 void main() {
-    vec4 tex_color = texture(texture0, frag_tex_coord);
+    vec3 base_color = texture(texture0, frag_tex_coord).rgb;
+    vec3 total_color = get_total_color(
+            frag_world_pos,
+            frag_normal,
+            base_color,
+            point_light
+        );
 
-    vec3 color = (tex_color * frag_color).rgb;
-    final_color = vec4(color, 1.0);
-    final_color = frag_color;
+    final_color = vec4(total_color, 1.0);
 }

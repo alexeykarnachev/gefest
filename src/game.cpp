@@ -111,7 +111,6 @@ void draw() {
     draw_components<gmodel::GMesh>();
     crosshair::draw();
     draw_components<projectile::Projectile>();
-    draw_components<collider::Collider>();
 
     EndMode3D();
 

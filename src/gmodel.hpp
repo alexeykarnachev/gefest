@@ -23,6 +23,7 @@ public:
     Mesh mesh;
     Material material;
 
+    GMesh(entt::entity entity, Mesh mesh);
     GMesh(entt::entity entity, Mesh mesh, Material material);
 
     void draw();

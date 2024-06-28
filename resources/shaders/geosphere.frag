@@ -35,8 +35,6 @@ void main() {
             freq_init
         );
 
-    // -------------------------------------------------------------------
-    // base color
     vec3 base_color = vec3(1.0, 0.0, 0.0);
     if (height <= water_level) base_color = WATER_COLOR;
     else if (height <= sand_level) base_color = SAND_COLOR;
@@ -44,26 +42,12 @@ void main() {
     else if (height <= rock_level) base_color = ROCK_COLOR;
     else base_color = SNOW_COLOR;
 
-    vec3 total_light = vec3(0.0, 0.0, 0.0);
-
-    // -------------------------------------------------------------------
-    // diffuse lighting
-    vec3 direction = normalize(frag_world_pos - point_light.position);
-    vec3 diffuse_color = get_diffuse_color(
+    vec3 total_color = get_total_color(
+            frag_world_pos,
             frag_normal,
-            point_light.color,
-            direction,
-            point_light.intensity
+            base_color,
+            point_light
         );
-    float dist = distance(point_light.position, frag_world_pos);
-    float attenuation = 1.0 / dot(
-                point_light.attenuation,
-                vec3(1.0, dist, dist * dist)
-            );
-    total_light += diffuse_color * attenuation;
 
-    // -------------------------------------------------------------------
-    // final color
-    vec3 color = total_light * base_color;
-    final_color = vec4(color, 1.0);
+    final_color = vec4(total_color, 1.0);
 }

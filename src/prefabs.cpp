@@ -78,17 +78,16 @@ entt::entity spawn_asteroid(Vector3 position) {
 
     auto entity = registry::registry.create();
 
-    Mesh mesh = resources::get_asteroid_mesh();
-    Material material = resources::ASTEROID_MATERIAL;
+    Model model = resources::get_asteroid_model();
 
     asteroid::Asteroid asteroid(entity);
-    gmodel::GMesh gmesh(entity, mesh, material);
+    gmodel::GModel gmodel(entity, model);
     transform::Transform transform(position, scale);
     collider::Collider collider(entity, collider_sphere_radius);
     health::Health health(entity, health_max_val);
 
     registry::registry.emplace<asteroid::Asteroid>(entity, asteroid);
-    registry::registry.emplace<gmodel::GMesh>(entity, gmesh);
+    registry::registry.emplace<gmodel::GModel>(entity, gmodel);
     registry::registry.emplace<transform::Transform>(entity, transform);
     registry::registry.emplace<collider::Collider>(entity, collider);
     registry::registry.emplace<health::Health>(entity, health);

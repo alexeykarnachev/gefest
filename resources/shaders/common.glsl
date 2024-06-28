@@ -21,6 +21,37 @@ vec3 get_diffuse_color(vec3 normal, vec3 color, vec3 direction, float intensity)
     return color * intensity * factor;
 }
 
+vec3 get_total_color(
+    vec3 frag_world_pos,
+    vec3 frag_normal,
+    vec3 base_color,
+    PointLight point_light
+) {
+    vec3 total_light = vec3(0.0, 0.0, 0.0);
+
+    // -------------------------------------------------------------------
+    // diffuse lighting
+    vec3 direction = normalize(frag_world_pos - point_light.position);
+    vec3 diffuse_color = get_diffuse_color(
+            frag_normal,
+            point_light.color,
+            direction,
+            point_light.intensity
+        );
+    float dist = distance(point_light.position, frag_world_pos);
+    float attenuation = 1.0 / dot(
+                point_light.attenuation,
+                vec3(1.0, dist, dist * dist)
+            );
+    total_light += diffuse_color * attenuation;
+
+    // -------------------------------------------------------------------
+    // final color
+    vec3 total_color = total_light * base_color;
+
+    return total_color;
+}
+
 // -----------------------------------------------------------------------
 // utils
 float lerp(float start, float end, float ratio) {

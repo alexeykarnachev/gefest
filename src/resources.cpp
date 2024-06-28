@@ -2,9 +2,12 @@
 
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
+#include <cstdio>
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 namespace gefest::resources {
 
@@ -12,15 +15,29 @@ Mesh PLANE_MESH;
 Mesh SPHERE_MESH;
 Mesh CYLINDER_MESH;
 
+Material MODEL_MATERIAL;
 Material SUN_MATERIAL;
 Material GEOSPHERE_MATERIAL;
 Material SKYBOX_MATERIAL;
 Material CROSSHAIR_MATERIAL;
 Material PROJECTILE_MATERIAL;
-Material ASTEROID_MATERIAL;
 
 Model RED_FIGHTER_MODEL;
-static Model ASTEROID_MODEL;
+std::vector<Model> ASTEROID_MODELS;
+
+namespace fs = std::filesystem;
+
+std::vector<std::string> get_file_paths(const std::string &dir_path) {
+    std::vector<std::string> file_paths;
+
+    for (const auto &entry : fs::recursive_directory_iterator(dir_path)) {
+        if (fs::is_regular_file(entry.path())) {
+            file_paths.push_back(entry.path().string());
+        }
+    }
+
+    return file_paths;
+}
 
 std::string get_shader_file_path(const std::string &file_name) {
     auto file_path = "resources/shaders/" + file_name;
@@ -72,7 +89,12 @@ void load() {
     Model model;
     Material material;
 
-    // geosphere
+    // model
+    material = LoadMaterialDefault();
+    material.shader = load_shader("base.vert", "model.frag");
+    MODEL_MATERIAL = material;
+
+    // sun
     material = LoadMaterialDefault();
     material.shader = load_shader("base.vert", "sun.frag");
     SUN_MATERIAL = material;
@@ -97,16 +119,17 @@ void load() {
     material.shader = load_shader("base.vert", "projectile.frag");
     PROJECTILE_MATERIAL = material;
 
-    // asteroid
-    model = LoadModel("./resources/models/asteroids/asteroids.obj");
-    material = LoadMaterialDefault();
-    material.shader = load_shader("base.vert", "asteroid.frag");
-    ASTEROID_MODEL = model;
-    ASTEROID_MATERIAL = material;
+    // asteroids
+    for (auto file_path : get_file_paths("./resources/models/asteroids")) {
+        model = LoadModel(file_path.c_str());
+        model.materials[0].shader = load_shader("base.vert", "model.frag");
+        ASTEROID_MODELS.push_back(model);
+    }
 
     // red fighter
     model = LoadModel("./resources/models/red_fighter/RedFighter.obj");
     model.transform = MatrixIdentity();
+    model.materials[0].shader = load_shader("base.vert", "model.frag");
     RED_FIGHTER_MODEL = model;
 }
 
@@ -114,20 +137,22 @@ void unload() {
     UnloadMesh(PLANE_MESH);
     UnloadMesh(SPHERE_MESH);
 
+    UnloadMaterial(MODEL_MATERIAL);
     UnloadMaterial(GEOSPHERE_MATERIAL);
     UnloadMaterial(SKYBOX_MATERIAL);
     UnloadMaterial(CROSSHAIR_MATERIAL);
     UnloadMaterial(PROJECTILE_MATERIAL);
-    UnloadMaterial(ASTEROID_MATERIAL);
 
     UnloadModel(RED_FIGHTER_MODEL);
-    UnloadModel(ASTEROID_MODEL);
+    for (auto model : ASTEROID_MODELS) {
+        UnloadModel(model);
+    }
 }
 
-Mesh get_asteroid_mesh() {
-    int n_meshes = ASTEROID_MODEL.meshCount;
-    int idx = GetRandomValue(0, n_meshes - 1);
-    return ASTEROID_MODEL.meshes[idx];
+Model get_asteroid_model() {
+    int n_models = ASTEROID_MODELS.size();
+    int idx = GetRandomValue(0, n_models - 1);
+    return ASTEROID_MODELS[idx];
 }
 
 }  // namespace gefest::resources
