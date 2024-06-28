@@ -22,12 +22,12 @@ entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller
     static float moment_of_inertia = 50.0;
     static float angular_damping = 600.0;
 
-    static float engine_force = constants::SCALE * 4e4;
+    static float engine_force = constants::SCALE * 1.5e4;
     static float pitch_magnitude = 500.0;
     static float roll_magnitude = 500.0;
 
     static float shoot_rate = 7.0;
-    static float projectile_speed = constants::SCALE * 1e3;
+    static float projectile_speed = constants::SCALE * 500.0;
     static float projectile_damage = 500.0;
     static Vector3 projectile_spawn_offset = {0.0, 0.0, 0.0};
 
