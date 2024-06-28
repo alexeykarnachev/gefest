@@ -1,5 +1,6 @@
 #include "planet.hpp"
 
+#include "constants.hpp"
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 #include "resources.hpp"
@@ -19,7 +20,7 @@ float SAND_LEVEL = 0.51;
 float GRASS_LEVEL = 0.57;
 float ROCK_LEVEL = 0.61;
 
-static float GEOSPHERE_RADIUS = 30.0;
+static float GEOSPHERE_RADIUS = constants::SCALE * 3e4;
 static float PLANET_ROTATION_SPEED = 0.001 * PI;
 
 static Matrix MATRIX;

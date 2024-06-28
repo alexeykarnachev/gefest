@@ -14,6 +14,7 @@
 #include "prefabs.hpp"
 #include "projectile.hpp"
 #include "raylib/raylib.h"
+#include "raylib/raymath.h"
 #include "raylib/rlgl.h"
 #include "registry.hpp"
 #include "resources.hpp"
@@ -30,6 +31,7 @@ void load_window() {
     InitWindow(1500, 1000, "Gefest");
     SetExitKey(KEY_NULL);
     SetTargetFPS(60);
+    rlSetClipPlanes(constants::SCALE * 0.1f, constants::SCALE * 1e6);
 }
 
 void load() {
@@ -38,12 +40,14 @@ void load() {
     editor::load();
 
     // player ship
-    Vector3 position = {0.0, 30.0, 30.0};
+    Vector3 position = {0.0, constants::SCALE * 3e4f, constants::SCALE * 3e4f};
     auto entity = prefabs::spawn_red_fighter(position, ship::ControllerType::MANUAL);
     registry::registry.emplace<registry::Player>(entity);
 
     // asteroid
-    position = {0.0, 30.2, 28.0};
+    position = Vector3Add(
+        position, {0.0, constants::SCALE * 100.0f, -constants::SCALE * 1e3f}
+    );
     entity = prefabs::spawn_asteroid(position);
 }
 

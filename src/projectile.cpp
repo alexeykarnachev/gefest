@@ -11,7 +11,7 @@
 
 namespace gefest::projectile {
 
-static float THICKNESS = 0.00015;
+static float THICKNESS = 0.15f * constants::SCALE;
 
 Matrix get_matrix(transform::Transform tr, float length) {
     Matrix t = MatrixTranslate(tr.position.x, tr.position.y, tr.position.z);

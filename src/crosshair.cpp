@@ -1,5 +1,6 @@
 #include "crosshair.hpp"
 
+#include "constants.hpp"
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 #include "raylib/rlgl.h"
@@ -9,11 +10,11 @@
 
 namespace gefest::crosshair {
 
-float LENGTH = 1.0;
-float THICKNESS = 0.00005;
+float LENGTH = constants::SCALE * 1e3;
+float THICKNESS = constants::SCALE * 0.05f;
 float ATTENUATION = 15.0;
 float START_ALPHA = 0.95;
-Vector3 START_OFFSET = {0.00115, 0.0, -0.00008};
+Vector3 START_OFFSET = {constants::SCALE * 1.15f, 0.0, -constants::SCALE * 0.08f};
 
 static Vector3 START_POSITION;
 static Matrix MATRIX;

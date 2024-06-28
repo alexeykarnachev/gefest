@@ -67,6 +67,11 @@ void end() {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
+void update_camera_follow() {
+    ImGui::SliderFloat("Smoothness", &camera::FOLLOW_SMOOTHNESS, 0.0, 0.99);
+    ImGui::SliderFloat("FOV multiplier", &camera::FOLLOW_SPEED_FOV_MULTIPLIER, 1.0, 30.0);
+}
+
 void update_camera() {
     static camera::Mode mode = camera::get_mode();
 
@@ -76,12 +81,7 @@ void update_camera() {
     ImGui::SameLine();
     ImGui::RadioButton("Player", (int *)&mode, (int)camera::Mode::FOLLOW);
 
-    if (mode == camera::Mode::FOLLOW) {
-        ImGui::SliderFloat("Smoothness", &camera::FOLLOW_SMOOTHNESS, 0.0, 0.99);
-        ImGui::SliderFloat(
-            "FOV multiplier", &camera::FOLLOW_SPEED_FOV_MULTIPLIER, 1.0, 30.0
-        );
-    }
+    if (mode == camera::Mode::FOLLOW) update_camera_follow();
 
     camera::set_mode(mode);
 }
@@ -133,25 +133,45 @@ void update_ship() {
     auto &body = registry::registry.get<dynamic_body::DynamicBody>(entity);
     auto &ship = registry::registry.get<ship::Ship>(entity);
 
+    static float engine_force_min = ship.engine_force * 0.1f;
+    static float engine_force_max = ship.engine_force * 10.0f;
+    static float projectile_speed_min = ship.projectile_speed * 0.1f;
+    static float projectile_speed_max = ship.projectile_speed * 10.0f;
+    static float crosshair_length_min = crosshair::LENGTH * 0.1f;
+    static float crosshair_length_max = crosshair::LENGTH * 10.0f;
+    static float crosshair_thickness_min = crosshair::THICKNESS * 0.1f;
+    static float crosshair_thickness_max = crosshair::THICKNESS * 10.0f;
+
     ImGui::SeparatorText("Dynamic Body");
-    ImGui::SliderFloat("Mass", &body.mass, 1.0, 1000.0);
+    ImGui::SliderFloat("Mass", &body.mass, 1.0, 200.0);
     ImGui::SliderFloat("Linear Damp.", &body.linear_damping, 1.0, 1000.0);
     ImGui::SliderFloat("Moment of Inertia", &body.moment_of_inertia, 1.0, 1000.0);
     ImGui::SliderFloat("Angular Damping", &body.angular_damping, 1.0, 1000.0);
 
     ImGui::SeparatorText("Ship");
-    ImGui::SliderFloat("Engine Force", &ship.engine_force, 1.0, 50.0);
+    ImGui::SliderFloat(
+        "Engine Force", &ship.engine_force, engine_force_min, engine_force_max
+    );
     ImGui::SliderFloat("Pitch Magnitude", &ship.pitch_magnitude, 1.0, 1000.0);
     ImGui::SliderFloat("Roll Magnitude", &ship.roll_magnitude, 1.0, 1000.0);
     ImGui::SliderFloat("Shoot Rate", &ship.shoot_rate, 1.0, 30.0);
-    ImGui::SliderFloat("Proj. Speed", &ship.projectile_speed, 0.5, 10.0);
+    ImGui::SliderFloat(
+        "Proj. Speed", &ship.projectile_speed, projectile_speed_min, projectile_speed_max
+    );
     ImGui::SliderFloat3(
         "Proj. Spawn", (float *)&ship.projectile_spawn_offset, -0.006, 0.006
     );
 
     ImGui::SeparatorText("Crosshair");
-    ImGui::SliderFloat("Length", &crosshair::LENGTH, 0.01, 1.0);
-    ImGui::SliderFloat("Thickness", &crosshair::THICKNESS, 0.0, 0.001);
+    ImGui::SliderFloat(
+        "Length", &crosshair::LENGTH, crosshair_length_min, crosshair_length_max
+    );
+    ImGui::SliderFloat(
+        "Thickness",
+        &crosshair::THICKNESS,
+        crosshair_thickness_min,
+        crosshair_thickness_max
+    );
     ImGui::SliderFloat("Attenuation", &crosshair::ATTENUATION, 0.0, 20.0);
     ImGui::SliderFloat("Start Alpha", &crosshair::START_ALPHA, 0.0, 1.0);
     ImGui::SliderFloat3("Offset", (float *)&crosshair::START_OFFSET, -0.003, 0.003);

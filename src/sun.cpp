@@ -1,13 +1,16 @@
 #include "sun.hpp"
 
+#include "constants.hpp"
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 #include "resources.hpp"
 
 namespace gefest::sun {
 
-Vector3 POSITION = {600.0, 500.0, -600.0};
-static float RADIUS = 50.0;
+Vector3 POSITION = {
+    constants::SCALE * 6e5f, constants::SCALE * 7e5f, -constants::SCALE * 6e5f
+};
+static float RADIUS = constants::SCALE * 5e4;
 
 static Color COLOR = {255, 240, 255, 255};
 static Vector3 ATTENUATION = {1.0, 0.0, 0.0};

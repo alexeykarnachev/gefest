@@ -6,7 +6,6 @@
 #include "raylib/raymath.h"
 #include "raylib/rlgl.h"
 #include "registry.hpp"
-#include "resources.hpp"
 #include "transform.hpp"
 #include <algorithm>
 
@@ -79,12 +78,12 @@ void Ship::shoot() {
 
     if (!can_shoot) return;
 
+    auto body = registry::registry.get<dynamic_body::DynamicBody>(this->entity);
     auto tr = registry::registry.get<transform::Transform>(this->entity);
     tr.position = Vector3Add(tr.position, this->projectile_spawn_offset);
+    float speed = this->projectile_speed + body.get_linear_speed();
 
-    prefabs::spawn_projectile(
-        this->entity, tr, this->projectile_speed, this->projectile_damage
-    );
+    prefabs::spawn_projectile(this->entity, tr, speed, this->projectile_damage);
     this->last_shot_time = time;
 }
 
