@@ -9,6 +9,8 @@ extern Mesh PLANE_MESH;
 extern Mesh SPHERE_MESH;
 extern Mesh CYLINDER_MESH;
 
+extern Shader GEOSPHERE_TEXTURE_SHADER;
+
 extern Material MODEL_MATERIAL;
 extern Material SUN_MATERIAL;
 extern Material GEOSPHERE_MATERIAL;

@@ -26,11 +26,18 @@ namespace gefest::game {
 static bool WINDOW_SHOULD_CLOSE = false;
 
 void load_window() {
+    int screen_width = 2560;
+    int screen_height = 1440;
+
     SetConfigFlags(FLAG_MSAA_4X_HINT);
-    InitWindow(1500, 1000, "Gefest");
+    InitWindow(screen_width, screen_height, "Gefest");
     SetExitKey(KEY_NULL);
-    SetTargetFPS(60);
+    SetTargetFPS(500);
     rlSetClipPlanes(constants::SCALE * 0.1f, constants::SCALE * 1e6);
+}
+
+void _debug_load() {
+    planet::generate();
 }
 
 void load() {
@@ -48,6 +55,8 @@ void load() {
         position, {0.0, constants::SCALE * 100.0f, -constants::SCALE * 1e3f}
     );
     entity = prefabs::spawn_asteroid(position);
+
+    _debug_load();
 }
 
 void unload() {

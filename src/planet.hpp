@@ -16,6 +16,8 @@ extern float SAND_LEVEL;
 extern float GRASS_LEVEL;
 extern float ROCK_LEVEL;
 
+void generate();
+
 void update();
 void draw();
 

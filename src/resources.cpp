@@ -15,6 +15,8 @@ Mesh PLANE_MESH;
 Mesh SPHERE_MESH;
 Mesh CYLINDER_MESH;
 
+Shader GEOSPHERE_TEXTURE_SHADER;
+
 Material MODEL_MATERIAL;
 Material SUN_MATERIAL;
 Material GEOSPHERE_MATERIAL;
@@ -86,8 +88,13 @@ void load() {
     mesh = GenMeshCylinder(1.0, 1.0, n_slices);
     CYLINDER_MESH = mesh;
 
+    Shader shader;
     Model model;
     Material material;
+
+    // geosphere texture shader
+    shader = load_shader("screen_rect.vert", "geosphere_texture.frag");
+    GEOSPHERE_TEXTURE_SHADER = shader;
 
     // model
     material = LoadMaterialDefault();

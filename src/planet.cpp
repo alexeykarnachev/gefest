@@ -1,10 +1,14 @@
 #include "planet.hpp"
 
+#include "camera.hpp"
 #include "constants.hpp"
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
+#include "raylib/rlgl.h"
 #include "resources.hpp"
 #include "sun.hpp"
+#include <cstdio>
+#include <stdexcept>
 
 namespace gefest::planet {
 
@@ -23,7 +27,30 @@ float ROCK_LEVEL = 0.61;
 static float GEOSPHERE_RADIUS = constants::SCALE * 3e4;
 static float PLANET_ROTATION_SPEED = 0.001 * PI;
 
+static RenderTexture TEXTURE;
 static Matrix MATRIX;
+
+void generate() {
+    if (IsRenderTextureReady(TEXTURE)) {
+        UnloadRenderTexture(TEXTURE);
+    }
+
+    TEXTURE = LoadRenderTexture(2048, 2048);
+
+    BeginTextureMode(TEXTURE);
+    rlDisableDepthTest();
+    rlDisableBackfaceCulling();
+    BeginShaderMode(resources::GEOSPHERE_TEXTURE_SHADER);
+    DrawRectangle(0, 0, 1, 1, BLANK);
+    EndShaderMode();
+    rlEnableDepthTest();
+    rlEnableBackfaceCulling();
+    EndTextureMode();
+
+    auto image = LoadImageFromTexture(TEXTURE.texture);
+    bool is_ok = ExportImage(image, "geosphere_texture.png");
+    if (!is_ok) throw std::runtime_error("SUUUKAA!");
+}
 
 void update() {
     float rotation_angle = PLANET_ROTATION_SPEED * GetTime();
