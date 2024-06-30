@@ -17,12 +17,13 @@ Mesh SPHERE_MESH;
 Mesh CYLINDER_MESH;
 
 Shader GEOSPHERE_TEXTURE_SHADER;
+Shader SKYBOX_TEXTURE_SHADER;
 
 Material MODEL_MATERIAL;
 Material SUN_MATERIAL;
-Material SKYBOX_MATERIAL;
 Material CROSSHAIR_MATERIAL;
 Material PROJECTILE_MATERIAL;
+static Material SKYBOX_MATERIAL;
 static Material SPHERE_MATERIAL;
 
 Model RED_FIGHTER_MODEL;
@@ -97,6 +98,10 @@ void load() {
     shader = load_shader("screen_rect.vert", "geosphere_texture.frag");
     GEOSPHERE_TEXTURE_SHADER = shader;
 
+    // skybox texture shader
+    shader = load_shader("screen_rect.vert", "skybox_texture.frag");
+    SKYBOX_TEXTURE_SHADER = shader;
+
     // model
     material = LoadMaterialDefault();
     material.shader = load_shader("base.vert", "model.frag");
@@ -107,15 +112,15 @@ void load() {
     material.shader = load_shader("base.vert", "sun.frag");
     SUN_MATERIAL = material;
 
-    // geosphere
-    material = LoadMaterialDefault();
-    material.shader = load_shader("base.vert", "sphere.frag");
-    SPHERE_MATERIAL = material;
-
     // skybox
     material = LoadMaterialDefault();
     material.shader = load_shader("skybox.vert", "skybox.frag");
     SKYBOX_MATERIAL = material;
+
+    // geosphere
+    material = LoadMaterialDefault();
+    material.shader = load_shader("base.vert", "sphere.frag");
+    SPHERE_MATERIAL = material;
 
     // crosshair
     material = LoadMaterialDefault();
@@ -145,9 +150,11 @@ void unload() {
     UnloadMesh(PLANE_MESH);
     UnloadMesh(SPHERE_MESH);
 
+    UnloadShader(SKYBOX_TEXTURE_SHADER);
+    UnloadShader(GEOSPHERE_TEXTURE_SHADER);
+
     UnloadMaterial(MODEL_MATERIAL);
     UnloadMaterial(SPHERE_MATERIAL);
-    UnloadMaterial(SKYBOX_MATERIAL);
     UnloadMaterial(CROSSHAIR_MATERIAL);
     UnloadMaterial(PROJECTILE_MATERIAL);
 
@@ -155,6 +162,14 @@ void unload() {
     for (auto model : ASTEROID_MODELS) {
         UnloadModel(model);
     }
+}
+
+Material get_skybox_material(Texture texture) {
+    Material material = resources::SKYBOX_MATERIAL;
+
+    material.maps[0].texture = texture;
+
+    return material;
 }
 
 Material get_sphere_material(Texture texture, light::PointLight point_light) {

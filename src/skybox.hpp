@@ -8,7 +8,8 @@ extern float STARS_MIN_BRIGHTNESS;
 extern float NEBULA_FREQUENCY;
 extern float NEBULA_MIN_BRIGHTNESS;
 
-void update();
+void generate();
+
 void draw();
 
 }  // namespace gefest::skybox

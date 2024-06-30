@@ -32,12 +32,13 @@ void load_window() {
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     InitWindow(screen_width, screen_height, "Gefest");
     SetExitKey(KEY_NULL);
-    SetTargetFPS(500);
+    SetTargetFPS(60);
     rlSetClipPlanes(constants::SCALE * 0.1f, constants::SCALE * 1e6);
 }
 
 void _debug_load() {
     planet::generate();
+    skybox::generate();
 }
 
 void load() {
@@ -91,7 +92,6 @@ void update() {
 
     sun::update();
     planet::update();
-    skybox::update();
     update_components<dynamic_body::DynamicBody>();
     update_components<ship::Ship>();
     camera::update();

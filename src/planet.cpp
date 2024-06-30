@@ -83,14 +83,10 @@ void update() {
     MATRIX = MatrixMultiply(MatrixMultiply(r, s), t);
 }
 
-void draw_geosphere() {
+void draw() {
     light::PointLight point_light = sun::get_point_light();
     Texture texture = RENDER_TEXTURE.texture;
-    drawing::draw_textured_sphere(texture, point_light, MATRIX);
-}
-
-void draw() {
-    draw_geosphere();
+    drawing::draw_sphere(texture, MATRIX, point_light);
 }
 
 }  // namespace gefest::planet

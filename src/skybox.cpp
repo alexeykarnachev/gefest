@@ -1,7 +1,7 @@
 #include "skybox.hpp"
 
-#include "camera.hpp"
-#include "raylib/raymath.h"
+#include "drawing.hpp"
+#include "raylib/rlgl.h"
 #include "resources.hpp"
 
 namespace gefest::skybox {
@@ -12,22 +12,21 @@ float STARS_MIN_BRIGHTNESS = 0.83;
 float NEBULA_FREQUENCY = 1.3;
 float NEBULA_MIN_BRIGHTNESS = 0.3;
 
-static float RADIUS = 1000000.0;
-static Matrix MATRIX = MatrixIdentity();
+static int RENDER_TEXTURE_SIZE = 4096;
+static RenderTexture RENDER_TEXTURE;
+static Matrix MATRIX;
 
-void update() {
-    Vector3 position = camera::CAMERA.position;
+void generate() {
+    if (IsRenderTextureReady(RENDER_TEXTURE)) {
+        UnloadRenderTexture(RENDER_TEXTURE);
+    }
 
-    Matrix t = MatrixTranslate(position.x, position.y, position.z);
-    Matrix s = MatrixScale(RADIUS, RADIUS, RADIUS);
+    RENDER_TEXTURE = LoadRenderTexture(RENDER_TEXTURE_SIZE, RENDER_TEXTURE_SIZE);
+    auto shader = resources::SKYBOX_TEXTURE_SHADER;
 
-    MATRIX = MatrixMultiply(s, t);
-}
-
-void draw() {
-    Mesh mesh = resources::SPHERE_MESH;
-    Material material = resources::SKYBOX_MATERIAL;
-    Shader shader = material.shader;
+    rlDisableBackfaceCulling();
+    BeginTextureMode(RENDER_TEXTURE);
+    BeginShaderMode(shader);
 
     // stars uniforms
     int stars_frequency_loc = GetShaderLocation(shader, "stars_frequency");
@@ -47,8 +46,17 @@ void draw() {
         shader, nebula_min_brightness_loc, &NEBULA_MIN_BRIGHTNESS, SHADER_UNIFORM_FLOAT
     );
 
-    // draw sphere
-    DrawMesh(mesh, material, MATRIX);
+    DrawRectangle(0, 0, 1, 1, BLANK);
+
+    EndShaderMode();
+    EndTextureMode();
+
+    rlEnableBackfaceCulling();
+}
+
+void draw() {
+    Texture texture = RENDER_TEXTURE.texture;
+    drawing::draw_skybox(texture);
 }
 
 }  // namespace gefest::skybox
