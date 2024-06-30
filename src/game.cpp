@@ -37,8 +37,9 @@ void load_window() {
 }
 
 void _debug_load() {
-    planet::generate();
     skybox::generate();
+    planet::generate();
+    sun::generate();
 }
 
 void load() {

@@ -11,6 +11,12 @@
 
 namespace gefest::drawing {
 
+void draw_sphere(Texture texture, Matrix matrix) {
+    Mesh mesh = resources::SPHERE_MESH;
+    Material material = resources::get_sphere_material(texture);
+    DrawMesh(mesh, material, matrix);
+}
+
 void draw_sphere(Texture texture, Matrix matrix, light::PointLight point_light) {
     Mesh mesh = resources::SPHERE_MESH;
     Material material = resources::get_sphere_material(texture, point_light);

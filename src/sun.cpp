@@ -1,9 +1,11 @@
 #include "sun.hpp"
 
 #include "constants.hpp"
+#include "drawing.hpp"
 #include "light.hpp"
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
+#include "raylib/rlgl.h"
 #include "resources.hpp"
 
 namespace gefest::sun {
@@ -17,7 +19,31 @@ static Color COLOR = {255, 240, 255, 255};
 static Vector3 ATTENUATION = {1.0, 0.0, 0.0};
 static float INTENSITY = 1.0;
 
+static int RENDER_TEXTURE_SIZE = 4096;
+static RenderTexture RENDER_TEXTURE;
 static Matrix MATRIX;
+
+void generate() {
+    if (IsRenderTextureReady(RENDER_TEXTURE)) {
+        UnloadRenderTexture(RENDER_TEXTURE);
+    }
+
+    RENDER_TEXTURE = LoadRenderTexture(RENDER_TEXTURE_SIZE, RENDER_TEXTURE_SIZE);
+    auto shader = resources::SUN_TEXTURE_SHADER;
+
+    rlDisableBackfaceCulling();
+    BeginTextureMode(RENDER_TEXTURE);
+    BeginShaderMode(shader);
+
+    DrawRectangle(0, 0, 1, 1, BLANK);
+
+    EndShaderMode();
+    EndTextureMode();
+
+    rlEnableBackfaceCulling();
+
+    SetTextureFilter(RENDER_TEXTURE.texture, TEXTURE_FILTER_BILINEAR);
+}
 
 light::PointLight get_point_light() {
     light::PointLight point_light(COLOR, POSITION, ATTENUATION, INTENSITY);
@@ -31,16 +57,9 @@ void update() {
     MATRIX = MatrixMultiply(s, t);
 }
 
-void draw_geosphere() {
-    Mesh mesh = resources::SPHERE_MESH;
-    Material material = resources::SUN_MATERIAL;
-
-    // draw sphere
-    DrawMesh(mesh, material, MATRIX);
-}
-
 void draw() {
-    draw_geosphere();
+    Texture texture = RENDER_TEXTURE.texture;
+    drawing::draw_sphere(texture, MATRIX);
 }
 
 }  // namespace gefest::sun

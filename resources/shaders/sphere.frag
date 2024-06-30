@@ -6,18 +6,23 @@ in vec3 frag_normal;
 
 uniform sampler2D texture0;
 uniform PointLight point_light;
+uniform int is_light_disabled;
 
 out vec4 final_color;
 
 void main() {
     vec2 uv = sphere_to_uv(frag_model_pos);
     vec3 base_color = texture(texture0, uv).rgb;
-    vec3 total_color = get_total_color(
-            frag_world_pos,
-            frag_normal,
-            base_color,
-            point_light
-        );
+
+    vec3 total_color = base_color;
+    if (is_light_disabled == 0) {
+        total_color = get_total_color(
+                frag_world_pos,
+                frag_normal,
+                base_color,
+                point_light
+            );
+    }
 
     final_color = vec4(total_color, 1.0);
 }

@@ -5,6 +5,7 @@
 
 namespace gefest::drawing {
 
+void draw_sphere(Texture texture, Matrix matrix);
 void draw_sphere(Texture texture, Matrix matrix, light::PointLight point_light);
 void draw_skybox(Texture texture);
 

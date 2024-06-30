@@ -18,13 +18,14 @@ Mesh CYLINDER_MESH;
 
 Shader GEOSPHERE_TEXTURE_SHADER;
 Shader SKYBOX_TEXTURE_SHADER;
+Shader SUN_TEXTURE_SHADER;
 
 Material MODEL_MATERIAL;
-Material SUN_MATERIAL;
 Material CROSSHAIR_MATERIAL;
 Material PROJECTILE_MATERIAL;
 static Material SKYBOX_MATERIAL;
 static Material SPHERE_MATERIAL;
+static Material SUN_MATERIAL;
 
 Model RED_FIGHTER_MODEL;
 std::vector<Model> ASTEROID_MODELS;
@@ -102,25 +103,29 @@ void load() {
     shader = load_shader("screen_rect.vert", "skybox_texture.frag");
     SKYBOX_TEXTURE_SHADER = shader;
 
+    // skybox texture shader
+    shader = load_shader("screen_rect.vert", "sun_texture.frag");
+    SUN_TEXTURE_SHADER = shader;
+
     // model
     material = LoadMaterialDefault();
     material.shader = load_shader("base.vert", "model.frag");
     MODEL_MATERIAL = material;
-
-    // sun
-    material = LoadMaterialDefault();
-    material.shader = load_shader("base.vert", "sun.frag");
-    SUN_MATERIAL = material;
 
     // skybox
     material = LoadMaterialDefault();
     material.shader = load_shader("skybox.vert", "skybox.frag");
     SKYBOX_MATERIAL = material;
 
-    // geosphere
+    // sphere
     material = LoadMaterialDefault();
     material.shader = load_shader("base.vert", "sphere.frag");
     SPHERE_MATERIAL = material;
+
+    // sun
+    material = LoadMaterialDefault();
+    material.shader = load_shader("base.vert", "sphere.frag");
+    SUN_MATERIAL = material;
 
     // crosshair
     material = LoadMaterialDefault();
@@ -154,7 +159,9 @@ void unload() {
     UnloadShader(GEOSPHERE_TEXTURE_SHADER);
 
     UnloadMaterial(MODEL_MATERIAL);
+    UnloadMaterial(SKYBOX_MATERIAL);
     UnloadMaterial(SPHERE_MATERIAL);
+    UnloadMaterial(SUN_MATERIAL);
     UnloadMaterial(CROSSHAIR_MATERIAL);
     UnloadMaterial(PROJECTILE_MATERIAL);
 
@@ -172,10 +179,30 @@ Material get_skybox_material(Texture texture) {
     return material;
 }
 
+Material get_sphere_material(Texture texture) {
+    Material material = resources::SPHERE_MATERIAL;
+    material.maps[0].texture = texture;
+    int is_light_disabled = 1;
+
+    int is_light_disabled_loc = GetShaderLocation(material.shader, "is_light_disabled");
+
+    SetShaderValue(
+        material.shader, is_light_disabled_loc, &is_light_disabled, SHADER_UNIFORM_INT
+    );
+
+    return material;
+}
+
 Material get_sphere_material(Texture texture, light::PointLight point_light) {
     Material material = resources::SPHERE_MATERIAL;
-
     material.maps[0].texture = texture;
+    int is_light_disabled = 0;
+
+    int is_light_disabled_loc = GetShaderLocation(material.shader, "is_light_disabled");
+
+    SetShaderValue(
+        material.shader, is_light_disabled_loc, &is_light_disabled, SHADER_UNIFORM_INT
+    );
     point_light.set_shader_uniform(material.shader);
 
     return material;
