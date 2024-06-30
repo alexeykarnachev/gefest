@@ -76,99 +76,72 @@ Shader load_shader(const std::string &vs_file_name, const std::string &fs_file_n
     return shader;
 }
 
-void load() {
-    // plane
-    Mesh mesh = GenMeshPlane(1.0, 1.0, 1, 1);
-    PLANE_MESH = mesh;
+Material load_material(const std::string &vs_file_name, const std::string &fs_file_name) {
+    Material material = LoadMaterialDefault();
+    material.shader = load_shader(vs_file_name, fs_file_name);
+    return material;
+}
 
-    // sphere
-    int n_rings = 64;
-    int n_slices = 64;
-    mesh = GenMeshSphere(1.0, n_rings, n_slices);
-    SPHERE_MESH = mesh;
-
-    // cylinder
-    mesh = GenMeshCylinder(1.0, 1.0, n_slices);
-    CYLINDER_MESH = mesh;
-
-    Shader shader;
-    Model model;
-    Material material;
-
-    // geosphere texture shader
-    shader = load_shader("screen_rect.vert", "geosphere_texture.frag");
-    GEOSPHERE_TEXTURE_SHADER = shader;
-
-    // skybox texture shader
-    shader = load_shader("screen_rect.vert", "skybox_texture.frag");
-    SKYBOX_TEXTURE_SHADER = shader;
-
-    // skybox texture shader
-    shader = load_shader("screen_rect.vert", "sun_texture.frag");
-    SUN_TEXTURE_SHADER = shader;
-
-    // model
-    material = LoadMaterialDefault();
-    material.shader = load_shader("base.vert", "model.frag");
-    MODEL_MATERIAL = material;
-
-    // skybox
-    material = LoadMaterialDefault();
-    material.shader = load_shader("skybox.vert", "skybox.frag");
-    SKYBOX_MATERIAL = material;
-
-    // sphere
-    material = LoadMaterialDefault();
-    material.shader = load_shader("base.vert", "sphere.frag");
-    SPHERE_MATERIAL = material;
-
-    // sun
-    material = LoadMaterialDefault();
-    material.shader = load_shader("base.vert", "sphere.frag");
-    SUN_MATERIAL = material;
-
-    // crosshair
-    material = LoadMaterialDefault();
-    material.shader = load_shader("base.vert", "crosshair.frag");
-    CROSSHAIR_MATERIAL = material;
-
-    // projectile
-    material = LoadMaterialDefault();
-    material.shader = load_shader("base.vert", "projectile.frag");
-    PROJECTILE_MATERIAL = material;
-
-    // asteroids
-    for (auto file_path : get_file_paths("./resources/models/asteroids")) {
-        model = LoadModel(file_path.c_str());
-        model.materials[0].shader = load_shader("base.vert", "model.frag");
-        ASTEROID_MODELS.push_back(model);
-    }
-
-    // red fighter
-    model = LoadModel("./resources/models/red_fighter/RedFighter.obj");
+Model load_model(std::string file_path) {
+    Model model = LoadModel(file_path.c_str());
     model.transform = MatrixIdentity();
     model.materials[0].shader = load_shader("base.vert", "model.frag");
-    RED_FIGHTER_MODEL = model;
+    return model;
+}
+
+std::vector<Model> load_models(std::string dir_path) {
+    std::vector<Model> models;
+    for (auto file_path : get_file_paths(dir_path)) {
+        models.push_back(load_model(file_path));
+    }
+
+    return models;
+}
+
+void unload_models(std::vector<Model> models) {
+    for (auto model : models) {
+        UnloadModel(model);
+    }
+}
+
+void load() {
+    PLANE_MESH = GenMeshPlane(1.0, 1.0, 1, 1);
+    SPHERE_MESH = GenMeshSphere(1.0, 64, 64);
+    CYLINDER_MESH = GenMeshCylinder(1.0, 1.0, 64);
+
+    GEOSPHERE_TEXTURE_SHADER = load_shader("screen_rect.vert", "geosphere_texture.frag");
+    SKYBOX_TEXTURE_SHADER = load_shader("screen_rect.vert", "skybox_texture.frag");
+    SUN_TEXTURE_SHADER = load_shader("screen_rect.vert", "sun_texture.frag");
+
+    MODEL_MATERIAL = load_material("base.vert", "model.frag");
+    CROSSHAIR_MATERIAL = load_material("base.vert", "crosshair.frag");
+    PROJECTILE_MATERIAL = load_material("base.vert", "projectile.frag");
+    SKYBOX_MATERIAL = load_material("skybox.vert", "skybox.frag");
+    SPHERE_MATERIAL = load_material("base.vert", "sphere.frag");
+    SUN_MATERIAL = load_material("base.vert", "sphere.frag");
+
+    ASTEROID_MODELS = load_models("./resources/models/asteroids");
+    RED_FIGHTER_MODEL = load_model("./resources/models/red_fighter/RedFighter.obj");
 }
 
 void unload() {
     UnloadMesh(PLANE_MESH);
     UnloadMesh(SPHERE_MESH);
+    UnloadMesh(CYLINDER_MESH);
 
-    UnloadShader(SKYBOX_TEXTURE_SHADER);
     UnloadShader(GEOSPHERE_TEXTURE_SHADER);
+    UnloadShader(SKYBOX_TEXTURE_SHADER);
+    UnloadShader(SUN_TEXTURE_SHADER);
 
     UnloadMaterial(MODEL_MATERIAL);
+    UnloadMaterial(CROSSHAIR_MATERIAL);
+    UnloadMaterial(PROJECTILE_MATERIAL);
     UnloadMaterial(SKYBOX_MATERIAL);
     UnloadMaterial(SPHERE_MATERIAL);
     UnloadMaterial(SUN_MATERIAL);
-    UnloadMaterial(CROSSHAIR_MATERIAL);
-    UnloadMaterial(PROJECTILE_MATERIAL);
 
     UnloadModel(RED_FIGHTER_MODEL);
-    for (auto model : ASTEROID_MODELS) {
-        UnloadModel(model);
-    }
+    unload_models(ASTEROID_MODELS);
 }
 
 Material get_skybox_material(Texture texture) {

@@ -39,10 +39,6 @@ void generate() {
     RENDER_TEXTURE = LoadRenderTexture(RENDER_TEXTURE_SIZE, RENDER_TEXTURE_SIZE);
     auto shader = resources::GEOSPHERE_TEXTURE_SHADER;
 
-    rlDisableBackfaceCulling();
-    BeginTextureMode(RENDER_TEXTURE);
-    BeginShaderMode(shader);
-
     // perlin noise uniforms
     int n_levels_loc = GetShaderLocation(shader, "n_levels");
     int freq_mult_loc = GetShaderLocation(shader, "freq_mult");
@@ -65,14 +61,7 @@ void generate() {
     SetShaderValue(shader, grass_level_loc, &GRASS_LEVEL, SHADER_UNIFORM_FLOAT);
     SetShaderValue(shader, rock_level_loc, &ROCK_LEVEL, SHADER_UNIFORM_FLOAT);
 
-    DrawRectangle(0, 0, 1, 1, BLANK);
-
-    EndShaderMode();
-    EndTextureMode();
-
-    rlEnableBackfaceCulling();
-
-    SetTextureFilter(RENDER_TEXTURE.texture, TEXTURE_FILTER_BILINEAR);
+    drawing::draw_texture(RENDER_TEXTURE, shader);
 }
 
 void update() {

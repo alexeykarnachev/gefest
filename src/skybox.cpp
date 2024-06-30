@@ -14,7 +14,6 @@ float NEBULA_MIN_BRIGHTNESS = 0.3;
 
 static int RENDER_TEXTURE_SIZE = 4096;
 static RenderTexture RENDER_TEXTURE;
-static Matrix MATRIX;
 
 void generate() {
     if (IsRenderTextureReady(RENDER_TEXTURE)) {
@@ -23,10 +22,6 @@ void generate() {
 
     RENDER_TEXTURE = LoadRenderTexture(RENDER_TEXTURE_SIZE, RENDER_TEXTURE_SIZE);
     auto shader = resources::SKYBOX_TEXTURE_SHADER;
-
-    rlDisableBackfaceCulling();
-    BeginTextureMode(RENDER_TEXTURE);
-    BeginShaderMode(shader);
 
     // stars uniforms
     int stars_frequency_loc = GetShaderLocation(shader, "stars_frequency");
@@ -46,14 +41,7 @@ void generate() {
         shader, nebula_min_brightness_loc, &NEBULA_MIN_BRIGHTNESS, SHADER_UNIFORM_FLOAT
     );
 
-    DrawRectangle(0, 0, 1, 1, BLANK);
-
-    EndShaderMode();
-    EndTextureMode();
-
-    rlEnableBackfaceCulling();
-
-    SetTextureFilter(RENDER_TEXTURE.texture, TEXTURE_FILTER_BILINEAR);
+    drawing::draw_texture(RENDER_TEXTURE, shader);
 }
 
 void draw() {

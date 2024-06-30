@@ -31,18 +31,7 @@ void generate() {
     RENDER_TEXTURE = LoadRenderTexture(RENDER_TEXTURE_SIZE, RENDER_TEXTURE_SIZE);
     auto shader = resources::SUN_TEXTURE_SHADER;
 
-    rlDisableBackfaceCulling();
-    BeginTextureMode(RENDER_TEXTURE);
-    BeginShaderMode(shader);
-
-    DrawRectangle(0, 0, 1, 1, BLANK);
-
-    EndShaderMode();
-    EndTextureMode();
-
-    rlEnableBackfaceCulling();
-
-    SetTextureFilter(RENDER_TEXTURE.texture, TEXTURE_FILTER_BILINEAR);
+    drawing::draw_texture(RENDER_TEXTURE, shader);
 }
 
 light::PointLight get_point_light() {

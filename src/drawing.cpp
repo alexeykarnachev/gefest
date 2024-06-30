@@ -11,6 +11,22 @@
 
 namespace gefest::drawing {
 
+// NOTE: the fragment shader of the `shader` must be `screen_rect.vert`
+void draw_texture(RenderTexture render_texture, Shader shader) {
+    rlDisableBackfaceCulling();
+    BeginTextureMode(render_texture);
+    BeginShaderMode(shader);
+
+    DrawRectangle(0, 0, 1, 1, BLANK);
+
+    EndShaderMode();
+    EndTextureMode();
+
+    rlEnableBackfaceCulling();
+
+    SetTextureFilter(render_texture.texture, TEXTURE_FILTER_BILINEAR);
+}
+
 void draw_sphere(Texture texture, Matrix matrix) {
     Mesh mesh = resources::SPHERE_MESH;
     Material material = resources::get_sphere_material(texture);
