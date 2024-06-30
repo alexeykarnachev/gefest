@@ -101,7 +101,12 @@ void update_skybox() {
 }
 
 void update_planet() {
-    ImGui::SliderFloat3("Position", (float *)&planet::POSITION, -50.0, 50.0);
+    ImGui::SliderFloat3(
+        "Position",
+        (float *)&planet::POSITION,
+        -2.0 * planet::GEOSPHERE_RADIUS,
+        2.0 * planet::GEOSPHERE_RADIUS
+    );
 
     ImGui::SeparatorText("Perlin Noise");
     ImGui::SliderInt("N Levels", &planet::N_LEVELS, 1, 8);

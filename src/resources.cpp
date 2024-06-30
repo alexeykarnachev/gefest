@@ -1,5 +1,6 @@
 #include "resources.hpp"
 
+#include "light.hpp"
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 #include <cstdio>
@@ -19,10 +20,10 @@ Shader GEOSPHERE_TEXTURE_SHADER;
 
 Material MODEL_MATERIAL;
 Material SUN_MATERIAL;
-Material GEOSPHERE_MATERIAL;
 Material SKYBOX_MATERIAL;
 Material CROSSHAIR_MATERIAL;
 Material PROJECTILE_MATERIAL;
+static Material SPHERE_MATERIAL;
 
 Model RED_FIGHTER_MODEL;
 std::vector<Model> ASTEROID_MODELS;
@@ -108,8 +109,8 @@ void load() {
 
     // geosphere
     material = LoadMaterialDefault();
-    material.shader = load_shader("base.vert", "geosphere.frag");
-    GEOSPHERE_MATERIAL = material;
+    material.shader = load_shader("base.vert", "sphere.frag");
+    SPHERE_MATERIAL = material;
 
     // skybox
     material = LoadMaterialDefault();
@@ -145,7 +146,7 @@ void unload() {
     UnloadMesh(SPHERE_MESH);
 
     UnloadMaterial(MODEL_MATERIAL);
-    UnloadMaterial(GEOSPHERE_MATERIAL);
+    UnloadMaterial(SPHERE_MATERIAL);
     UnloadMaterial(SKYBOX_MATERIAL);
     UnloadMaterial(CROSSHAIR_MATERIAL);
     UnloadMaterial(PROJECTILE_MATERIAL);
@@ -154,6 +155,15 @@ void unload() {
     for (auto model : ASTEROID_MODELS) {
         UnloadModel(model);
     }
+}
+
+Material get_sphere_material(Texture texture, light::PointLight point_light) {
+    Material material = resources::SPHERE_MATERIAL;
+
+    material.maps[0].texture = texture;
+    point_light.set_shader_uniform(material.shader);
+
+    return material;
 }
 
 Model get_asteroid_model() {

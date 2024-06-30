@@ -1,12 +1,13 @@
 #pragma once
 
+#include "light.hpp"
 #include "raylib/raylib.h"
 
 namespace gefest::sun {
 
 extern Vector3 POSITION;
 
-void set_shader_point_light(Shader shader);
+light::PointLight get_point_light();
 
 void update();
 void draw();

@@ -5,6 +5,7 @@
 namespace gefest::planet {
 
 extern Vector3 POSITION;
+extern float GEOSPHERE_RADIUS;
 
 extern int N_LEVELS;
 extern float FREQ_MULT;

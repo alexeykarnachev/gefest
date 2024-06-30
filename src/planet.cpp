@@ -1,18 +1,19 @@
 #include "planet.hpp"
 
-#include "camera.hpp"
 #include "constants.hpp"
+#include "drawing.hpp"
+#include "light.hpp"
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 #include "raylib/rlgl.h"
 #include "resources.hpp"
 #include "sun.hpp"
 #include <cstdio>
-#include <stdexcept>
 
 namespace gefest::planet {
 
 Vector3 POSITION = {0.0, 0.0, 0.0};
+float GEOSPHERE_RADIUS = constants::SCALE * 3e4;
 
 int N_LEVELS = 8;
 float FREQ_MULT = 1.84;
@@ -24,48 +25,23 @@ float SAND_LEVEL = 0.51;
 float GRASS_LEVEL = 0.57;
 float ROCK_LEVEL = 0.61;
 
-static float GEOSPHERE_RADIUS = constants::SCALE * 3e4;
 static float PLANET_ROTATION_SPEED = 0.001 * PI;
 
-static RenderTexture TEXTURE;
+static int RENDER_TEXTURE_SIZE = 4096;
+static RenderTexture RENDER_TEXTURE;
 static Matrix MATRIX;
 
 void generate() {
-    if (IsRenderTextureReady(TEXTURE)) {
-        UnloadRenderTexture(TEXTURE);
+    if (IsRenderTextureReady(RENDER_TEXTURE)) {
+        UnloadRenderTexture(RENDER_TEXTURE);
     }
 
-    TEXTURE = LoadRenderTexture(2048, 2048);
+    RENDER_TEXTURE = LoadRenderTexture(RENDER_TEXTURE_SIZE, RENDER_TEXTURE_SIZE);
+    auto shader = resources::GEOSPHERE_TEXTURE_SHADER;
 
-    BeginTextureMode(TEXTURE);
-    rlDisableDepthTest();
     rlDisableBackfaceCulling();
-    BeginShaderMode(resources::GEOSPHERE_TEXTURE_SHADER);
-    DrawRectangle(0, 0, 1, 1, BLANK);
-    EndShaderMode();
-    rlEnableDepthTest();
-    rlEnableBackfaceCulling();
-    EndTextureMode();
-
-    auto image = LoadImageFromTexture(TEXTURE.texture);
-    bool is_ok = ExportImage(image, "geosphere_texture.png");
-    if (!is_ok) throw std::runtime_error("SUUUKAA!");
-}
-
-void update() {
-    float rotation_angle = PLANET_ROTATION_SPEED * GetTime();
-
-    Matrix t = MatrixTranslate(POSITION.x, POSITION.y, POSITION.z);
-    Matrix r = MatrixRotate({0.0, 1.0, 0.0}, rotation_angle);
-    Matrix s = MatrixScale(GEOSPHERE_RADIUS, GEOSPHERE_RADIUS, GEOSPHERE_RADIUS);
-
-    MATRIX = MatrixMultiply(MatrixMultiply(r, s), t);
-}
-
-void draw_geosphere() {
-    Mesh mesh = resources::SPHERE_MESH;
-    Material material = resources::GEOSPHERE_MATERIAL;
-    Shader shader = material.shader;
+    BeginTextureMode(RENDER_TEXTURE);
+    BeginShaderMode(shader);
 
     // perlin noise uniforms
     int n_levels_loc = GetShaderLocation(shader, "n_levels");
@@ -89,11 +65,28 @@ void draw_geosphere() {
     SetShaderValue(shader, grass_level_loc, &GRASS_LEVEL, SHADER_UNIFORM_FLOAT);
     SetShaderValue(shader, rock_level_loc, &ROCK_LEVEL, SHADER_UNIFORM_FLOAT);
 
-    // sun light uniforms
-    sun::set_shader_point_light(shader);
+    DrawRectangle(0, 0, 1, 1, BLANK);
 
-    // draw sphere
-    DrawMesh(mesh, material, MATRIX);
+    EndShaderMode();
+    EndTextureMode();
+
+    rlEnableBackfaceCulling();
+}
+
+void update() {
+    float rotation_angle = PLANET_ROTATION_SPEED * GetTime();
+
+    Matrix t = MatrixTranslate(POSITION.x, POSITION.y, POSITION.z);
+    Matrix r = MatrixRotate({0.0, 1.0, 0.0}, rotation_angle);
+    Matrix s = MatrixScale(GEOSPHERE_RADIUS, GEOSPHERE_RADIUS, GEOSPHERE_RADIUS);
+
+    MATRIX = MatrixMultiply(MatrixMultiply(r, s), t);
+}
+
+void draw_geosphere() {
+    light::PointLight point_light = sun::get_point_light();
+    Texture texture = RENDER_TEXTURE.texture;
+    drawing::draw_textured_sphere(texture, point_light, MATRIX);
 }
 
 void draw() {
