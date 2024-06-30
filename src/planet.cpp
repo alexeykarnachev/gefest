@@ -71,6 +71,8 @@ void generate() {
     EndTextureMode();
 
     rlEnableBackfaceCulling();
+
+    SetTextureFilter(RENDER_TEXTURE.texture, TEXTURE_FILTER_BILINEAR);
 }
 
 void update() {
