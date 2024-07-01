@@ -32,12 +32,21 @@ void GModel::draw() {
     this->model.materials[0] = this->material;
     this->model.materials[0].maps[0].texture = this->texture;
 
-    auto view = registry::registry.view<light::PointLight>();
-    for (auto entity : view) {
-        auto point_light = registry::registry.get<light::PointLight>(entity);
-        point_light.set_shader_uniform(this->model.materials[0].shader);
+    Shader shader = this->model.materials[0].shader;
 
-        // TODO: support more than 1 light
+    for (auto entity : registry::registry.view<light::PointLight>()) {
+        light::PointLight light = registry::registry.get<light::PointLight>(entity);
+        light.set_shader_uniform(shader);
+
+        // TODO: support more than 1 point light
+        break;
+    }
+
+    for (auto entity : registry::registry.view<light::AmbientLight>()) {
+        light::AmbientLight light = registry::registry.get<light::AmbientLight>(entity);
+        light.set_shader_uniform(shader);
+
+        // TODO: support more than 1 ambient light
         break;
     }
 

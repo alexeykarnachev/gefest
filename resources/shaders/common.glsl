@@ -5,6 +5,12 @@
 
 // -----------------------------------------------------------------------
 // lighting
+struct AmbientLight {
+    vec3 color;
+
+    float intensity;
+};
+
 struct PointLight {
     vec3 color;
     vec3 position;
@@ -26,9 +32,15 @@ vec3 get_total_color(
     vec3 frag_world_pos,
     vec3 frag_normal,
     vec3 base_color,
+    AmbientLight ambient_light,
     PointLight point_light
 ) {
     vec3 total_light = vec3(0.0, 0.0, 0.0);
+
+    // -------------------------------------------------------------------
+    // ambient lighting
+    vec3 ambient_color = ambient_light.color * ambient_light.intensity;
+    total_light += ambient_color;
 
     // -------------------------------------------------------------------
     // diffuse lighting

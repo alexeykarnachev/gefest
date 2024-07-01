@@ -101,6 +101,7 @@ void update() {
     update_components<projectile::Projectile>();
     update_components<asteroid::Asteroid>();
     update_components<health::Health>();
+    update_components<skybox::Skybox>();
 }
 
 void draw() {

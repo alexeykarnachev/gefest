@@ -5,6 +5,11 @@
 
 namespace gefest::light {
 
+AmbientLight::AmbientLight(entt::entity entity, Color color, float intensity)
+    : entity(entity)
+    , color(color)
+    , intensity(intensity) {}
+
 PointLight::PointLight(
     entt::entity entity, Color color, Vector3 attenuation, float intensity
 )
@@ -12,6 +17,16 @@ PointLight::PointLight(
     , color(color)
     , attenuation(attenuation)
     , intensity(intensity) {}
+
+void AmbientLight::set_shader_uniform(Shader shader) {
+    int color_loc = GetShaderLocation(shader, "ambient_light.color");
+    int intensity_loc = GetShaderLocation(shader, "ambient_light.intensity");
+
+    auto color = ColorNormalize(this->color);
+
+    SetShaderValue(shader, color_loc, &color, SHADER_UNIFORM_VEC3);
+    SetShaderValue(shader, intensity_loc, &this->intensity, SHADER_UNIFORM_FLOAT);
+}
 
 void PointLight::set_shader_uniform(Shader shader) {
     auto tr = registry::registry.get<transform::Transform>(entity);

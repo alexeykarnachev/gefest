@@ -5,6 +5,19 @@
 
 namespace gefest::light {
 
+class AmbientLight {
+private:
+    entt::entity entity;
+
+    Color color;
+    float intensity;
+
+public:
+    AmbientLight(entt::entity entity, Color color, float intensity);
+
+    void set_shader_uniform(Shader shader);
+};
+
 class PointLight {
 private:
     entt::entity entity;

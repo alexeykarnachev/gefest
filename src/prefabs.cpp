@@ -160,6 +160,8 @@ entt::entity spawn_sun(Vector3 position, float radius) {
 
 entt::entity spawn_skybox() {
     static Vector3 scale = Vector3Scale(Vector3One(), 1e4);
+    static Color ambient_light_color = {255, 255, 255, 255};
+    static float ambient_light_intensity = 0.075;
 
     auto entity = registry::registry.create();
 
@@ -171,10 +173,14 @@ entt::entity spawn_skybox() {
     skybox::Skybox skybox(entity);
     gmodel::GModel gmodel(entity, model, material, texture, true);
     transform::Transform transform(position, scale);
+    light::AmbientLight ambient_light(
+        entity, ambient_light_color, ambient_light_intensity
+    );
 
     registry::registry.emplace<skybox::Skybox>(entity, skybox);
     registry::registry.emplace<gmodel::GModel>(entity, gmodel);
     registry::registry.emplace<transform::Transform>(entity, transform);
+    registry::registry.emplace<light::AmbientLight>(entity, ambient_light);
 
     return entity;
 }

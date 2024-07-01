@@ -4,8 +4,9 @@ in vec3 frag_model_pos;
 in vec3 frag_world_pos;
 in vec3 frag_normal;
 
-uniform sampler2D texture0;
+uniform AmbientLight ambient_light;
 uniform PointLight point_light;
+uniform sampler2D texture0;
 
 out vec4 final_color;
 
@@ -16,6 +17,7 @@ void main() {
             frag_world_pos,
             frag_normal,
             base_color,
+            ambient_light,
             point_light
         );
 

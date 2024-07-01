@@ -5,6 +5,7 @@ in vec3 frag_world_pos;
 in vec2 frag_tex_coord;
 in vec3 frag_normal;
 
+uniform AmbientLight ambient_light;
 uniform PointLight point_light;
 uniform sampler2D texture0;
 
@@ -16,6 +17,7 @@ void main() {
             frag_world_pos,
             frag_normal,
             base_color,
+            ambient_light,
             point_light
         );
 
