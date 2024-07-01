@@ -50,7 +50,13 @@ entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller
         projectile_damage,
         projectile_spawn_offset
     );
-    gmodel::GModel gmodel(entity, resources::RED_FIGHTER_MODEL, false);
+    gmodel::GModel gmodel(
+        entity,
+        resources::RED_FIGHTER_MODEL,
+        resources::MODEL_MATERIAL,
+        resources::RED_FIGHTER_MODEL.materials[0].maps[0].texture,
+        false
+    );
     transform::Transform transform(position, scale);
     dynamic_body::DynamicBody body(
         entity, mass, linear_damping, moment_of_inertia, angular_damping
@@ -127,6 +133,9 @@ entt::entity spawn_planet(Vector3 position, float radius) {
 }
 
 entt::entity spawn_sun(Vector3 position, float radius) {
+    static float point_light_intensity = 1.0;
+    static Vector3 point_light_attenuation = {1.0, 0.0, 0.0};
+
     auto entity = registry::registry.create();
 
     Vector3 scale = Vector3Scale(Vector3One(), radius);
@@ -137,7 +146,9 @@ entt::entity spawn_sun(Vector3 position, float radius) {
     sun::Sun sun(entity);
     gmodel::GModel gmodel(entity, model, material, texture, false);
     transform::Transform transform(position, scale);
-    light::PointLight point_light(entity, WHITE, {1.0, 0.0, 0.0}, 1.0);
+    light::PointLight point_light(
+        entity, WHITE, point_light_attenuation, point_light_intensity
+    );
 
     registry::registry.emplace<sun::Sun>(entity, sun);
     registry::registry.emplace<gmodel::GModel>(entity, gmodel);

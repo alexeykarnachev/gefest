@@ -9,13 +9,6 @@
 
 namespace gefest::gmodel {
 
-GModel::GModel(entt::entity entity, Model model, bool is_culling_disabled)
-    : entity(entity)
-    , model(model)
-    , material(model.materials[0])
-    , texture(model.materials[0].maps[0].texture)
-    , is_culling_disabled(is_culling_disabled) {}
-
 GModel::GModel(
     entt::entity entity,
     Model model,

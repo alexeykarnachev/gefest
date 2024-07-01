@@ -15,7 +15,6 @@ public:
 
     bool is_culling_disabled;
 
-    GModel(entt::entity entity, Model model, bool is_culling_disabled);
     GModel(
         entt::entity entity,
         Model model,

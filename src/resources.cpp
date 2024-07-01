@@ -118,7 +118,7 @@ void load() {
     CROSSHAIR_MATERIAL = load_material("base.vert", "crosshair.frag");
     PROJECTILE_MATERIAL = load_material("base.vert", "projectile.frag");
 
-    SPHERE_MODEL = LoadModel("./resources/models/primitives/icosphere_6.obj");
+    SPHERE_MODEL = LoadModel("./resources/models/primitives/icosphere_4.obj");
     RED_FIGHTER_MODEL = LoadModel("./resources/models/red_fighter/RedFighter.obj");
     ASTEROID_MODELS = load_models("./resources/models/asteroids");
 }
