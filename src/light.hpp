@@ -1,18 +1,20 @@
 #pragma once
 
+#include "entt/entity/fwd.hpp"
 #include "raylib/raylib.h"
 
 namespace gefest::light {
 
 class PointLight {
 private:
+    entt::entity entity;
+
     Color color;
-    Vector3 position;
     Vector3 attenuation;
     float intensity;
 
 public:
-    PointLight(Color color, Vector3 position, Vector3 attenuation, float intensity);
+    PointLight(entt::entity entity, Color color, Vector3 attenuation, float intensity);
 
     void set_shader_uniform(Shader shader);
 };

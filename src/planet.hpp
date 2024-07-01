@@ -1,25 +1,31 @@
 #pragma once
 
+#include "entt/entity/fwd.hpp"
 #include "raylib/raylib.h"
 
 namespace gefest::planet {
 
-extern Vector3 POSITION;
-extern float GEOSPHERE_RADIUS;
+class Planet {
+private:
+    entt::entity entity;
+    Matrix matrix;
 
-extern int N_LEVELS;
-extern float FREQ_MULT;
-extern float AMPL_MULT;
-extern float FREQ_INIT;
+public:
+    Planet(entt::entity entity);
 
-extern float WATER_LEVEL;
-extern float SAND_LEVEL;
-extern float GRASS_LEVEL;
-extern float ROCK_LEVEL;
+    void update();
+};
 
-void generate();
-
-void update();
-void draw();
+Texture generate_geosphere_texture(
+    int size,
+    int n_levels,
+    float freq_mult,
+    float ampl_mult,
+    float freq_init,
+    float water_level,
+    float sand_level,
+    float grass_level,
+    float rock_level
+);
 
 }  // namespace gefest::planet

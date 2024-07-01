@@ -13,5 +13,8 @@ entt::entity spawn_projectile(
 );
 
 entt::entity spawn_asteroid(Vector3 position);
+entt::entity spawn_planet(Vector3 position, float radius);
+entt::entity spawn_sun(Vector3 position, float radius);
+entt::entity spawn_skybox();
 
 }  // namespace gefest::prefabs

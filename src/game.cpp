@@ -36,12 +36,6 @@ void load_window() {
     rlSetClipPlanes(constants::SCALE * 0.1f, constants::SCALE * 1e6);
 }
 
-void _debug_load() {
-    skybox::generate();
-    planet::generate();
-    sun::generate();
-}
-
 void load() {
     load_window();
     resources::load();
@@ -53,12 +47,19 @@ void load() {
     registry::registry.emplace<registry::Player>(entity);
 
     // asteroid
-    position = Vector3Add(
-        position, {0.0, constants::SCALE * 100.0f, -constants::SCALE * 1e3f}
-    );
-    entity = prefabs::spawn_asteroid(position);
+    prefabs::spawn_asteroid(Vector3Add(position, {0.0, 0.0, -constants::SCALE * 1e3f}));
 
-    _debug_load();
+    // planet
+    prefabs::spawn_planet(Vector3Zero(), constants::SCALE * 3e4);
+
+    // sun
+    prefabs::spawn_sun(
+        {constants::SCALE * 6e5f, constants::SCALE * 7e5f, -constants::SCALE * 6e5f},
+        constants::SCALE * 5e4
+    );
+
+    // skybox
+    prefabs::spawn_skybox();
 }
 
 void unload() {
@@ -91,8 +92,8 @@ template <typename T> void draw_components() {
 void update() {
     update_window_should_close();
 
-    sun::update();
-    planet::update();
+    update_components<sun::Sun>();
+    update_components<planet::Planet>();
     update_components<dynamic_body::DynamicBody>();
     update_components<ship::Ship>();
     camera::update();
@@ -108,16 +109,7 @@ void draw() {
 
     BeginMode3D(camera::CAMERA);
 
-    rlDisableDepthTest();
-    rlDisableBackfaceCulling();
-    skybox::draw();
-    rlEnableDepthTest();
-    rlEnableBackfaceCulling();
-
-    sun::draw();
-    planet::draw();
     draw_components<gmodel::GModel>();
-    draw_components<gmodel::GMesh>();
     crosshair::draw();
     draw_components<projectile::Projectile>();
 

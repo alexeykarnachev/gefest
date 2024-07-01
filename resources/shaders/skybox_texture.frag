@@ -2,10 +2,10 @@
 
 in vec2 uv;
 
-uniform float stars_frequency;
+uniform float stars_freq;
 uniform float stars_min_brightness;
 
-uniform float nebula_frequency;
+uniform float nebula_freq;
 uniform float nebula_min_brightness;
 
 out vec4 final_color;
@@ -16,13 +16,13 @@ void main() {
     vec3 frag_model_pos = uv_to_sphere(uv.x, uv.y, 1.0);
 
     // stars
-    vec3 pos = frag_model_pos * stars_frequency;
+    vec3 pos = frag_model_pos * stars_freq;
     float p = perlin_noise(pos.x, pos.y, pos.z);
     p = smoothstep(stars_min_brightness, 1.0, p);
     vec3 stars_color = vec3(p, p, p);
 
     // nebula
-    pos = frag_model_pos * nebula_frequency;
+    pos = frag_model_pos * nebula_freq;
     p = perlin_noise(pos.x, pos.y, pos.z);
     p = smoothstep(nebula_min_brightness, 1.0, p);
     vec3 nebula_color = p * NEBULA_COLOR;

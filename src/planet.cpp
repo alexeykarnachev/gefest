@@ -2,41 +2,33 @@
 
 #include "constants.hpp"
 #include "drawing.hpp"
-#include "light.hpp"
 #include "raylib/raylib.h"
-#include "raylib/raymath.h"
 #include "raylib/rlgl.h"
 #include "resources.hpp"
-#include "sun.hpp"
 #include <cstdio>
 
 namespace gefest::planet {
 
-Vector3 POSITION = {0.0, 0.0, 0.0};
-float GEOSPHERE_RADIUS = constants::SCALE * 3e4;
+Planet::Planet(entt::entity entity)
+    : entity(entity) {}
 
-int N_LEVELS = 8;
-float FREQ_MULT = 1.84;
-float AMPL_MULT = 0.60;
-float FREQ_INIT = 1.27;
+void Planet::update() {}
 
-float WATER_LEVEL = 0.50;
-float SAND_LEVEL = 0.51;
-float GRASS_LEVEL = 0.57;
-float ROCK_LEVEL = 0.61;
-
-static float PLANET_ROTATION_SPEED = 0.001 * PI;
-
-static int RENDER_TEXTURE_SIZE = 4096;
-static RenderTexture RENDER_TEXTURE;
-static Matrix MATRIX;
-
-void generate() {
-    if (IsRenderTextureReady(RENDER_TEXTURE)) {
-        UnloadRenderTexture(RENDER_TEXTURE);
-    }
-
-    RENDER_TEXTURE = LoadRenderTexture(RENDER_TEXTURE_SIZE, RENDER_TEXTURE_SIZE);
+// TODO: factor out texture generation function into a separate unit
+Texture generate_geosphere_texture(
+    int size,
+    int n_levels,
+    float freq_mult,
+    float ampl_mult,
+    float freq_init,
+    float water_level,
+    float sand_level,
+    float grass_level,
+    float rock_level
+) {
+    // TODO: this render texture should be registered
+    // and cleaned up by resources manager
+    RenderTexture render_texture = LoadRenderTexture(size, size);
     auto shader = resources::GEOSPHERE_TEXTURE_SHADER;
 
     // perlin noise uniforms
@@ -45,10 +37,10 @@ void generate() {
     int ampl_mult_loc = GetShaderLocation(shader, "ampl_mult");
     int freq_init_loc = GetShaderLocation(shader, "freq_init");
 
-    SetShaderValue(shader, n_levels_loc, &N_LEVELS, SHADER_UNIFORM_INT);
-    SetShaderValue(shader, freq_mult_loc, &FREQ_MULT, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, ampl_mult_loc, &AMPL_MULT, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, freq_init_loc, &FREQ_INIT, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(shader, n_levels_loc, &n_levels, SHADER_UNIFORM_INT);
+    SetShaderValue(shader, freq_mult_loc, &freq_mult, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(shader, ampl_mult_loc, &ampl_mult, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(shader, freq_init_loc, &freq_init, SHADER_UNIFORM_FLOAT);
 
     // terrain uniforms
     int water_level_loc = GetShaderLocation(shader, "water_level");
@@ -56,28 +48,13 @@ void generate() {
     int grass_level_loc = GetShaderLocation(shader, "grass_level");
     int rock_level_loc = GetShaderLocation(shader, "rock_level");
 
-    SetShaderValue(shader, water_level_loc, &WATER_LEVEL, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, sand_level_loc, &SAND_LEVEL, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, grass_level_loc, &GRASS_LEVEL, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, rock_level_loc, &ROCK_LEVEL, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(shader, water_level_loc, &water_level, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(shader, sand_level_loc, &sand_level, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(shader, grass_level_loc, &grass_level, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(shader, rock_level_loc, &rock_level, SHADER_UNIFORM_FLOAT);
 
-    drawing::draw_texture(RENDER_TEXTURE, shader);
-}
-
-void update() {
-    float rotation_angle = PLANET_ROTATION_SPEED * GetTime();
-
-    Matrix t = MatrixTranslate(POSITION.x, POSITION.y, POSITION.z);
-    Matrix r = MatrixRotate({0.0, 1.0, 0.0}, rotation_angle);
-    Matrix s = MatrixScale(GEOSPHERE_RADIUS, GEOSPHERE_RADIUS, GEOSPHERE_RADIUS);
-
-    MATRIX = MatrixMultiply(MatrixMultiply(r, s), t);
-}
-
-void draw() {
-    light::PointLight point_light = sun::get_point_light();
-    Texture texture = RENDER_TEXTURE.texture;
-    drawing::draw_sphere(texture, MATRIX, point_light);
+    drawing::draw_texture(render_texture, shader);
+    return render_texture.texture;
 }
 
 }  // namespace gefest::planet

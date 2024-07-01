@@ -1,15 +1,27 @@
 #pragma once
 
+#include "entt/entity/fwd.hpp"
+#include "raylib/raylib.h"
+
 namespace gefest::skybox {
 
-extern float STARS_FREQUENCY;
-extern float STARS_MIN_BRIGHTNESS;
+class Skybox {
+private:
+    entt::entity entity;
+    Matrix matrix;
 
-extern float NEBULA_FREQUENCY;
-extern float NEBULA_MIN_BRIGHTNESS;
+public:
+    Skybox(entt::entity entity);
 
-void generate();
+    void update();
+};
 
-void draw();
+Texture generate_geosphere_texture(
+    int size,
+    float stars_freq,
+    float stars_min_brightness,
+    float nebula_freq,
+    float nebula_min_brightness
+);
 
 }  // namespace gefest::skybox

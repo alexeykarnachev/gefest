@@ -10,23 +10,21 @@ public:
     entt::entity entity;
 
     Model model;
-
-    GModel(entt::entity entity, Model model);
-
-    void draw();
-};
-
-class GMesh {
-public:
-    entt::entity entity;
-
-    Mesh mesh;
     Material material;
+    Texture texture;
 
-    GMesh(entt::entity entity, Mesh mesh);
-    GMesh(entt::entity entity, Mesh mesh, Material material);
+    bool is_culling_disabled;
+
+    GModel(entt::entity entity, Model model, bool is_culling_disabled);
+    GModel(
+        entt::entity entity,
+        Model model,
+        Material material,
+        Texture texture,
+        bool is_culling_disabled
+    );
 
     void draw();
 };
 
-}
+}  // namespace gefest::gmodel

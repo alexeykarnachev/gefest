@@ -1,17 +1,21 @@
 #pragma once
 
-#include "light.hpp"
+#include "entt/entity/fwd.hpp"
 #include "raylib/raylib.h"
 
 namespace gefest::sun {
 
-extern Vector3 POSITION;
+class Sun {
+private:
+    entt::entity entity;
+    Matrix matrix;
 
-light::PointLight get_point_light();
+public:
+    Sun(entt::entity entity);
 
-void generate();
+    void update();
+};
 
-void update();
-void draw();
+Texture generate_geosphere_texture(int size);
 
 }  // namespace gefest::sun

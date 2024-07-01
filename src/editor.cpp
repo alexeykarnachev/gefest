@@ -7,12 +7,9 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
-#include "planet.hpp"
 #include "raylib/raylib.h"
-#include "raylib/raymath.h"
 #include "registry.hpp"
 #include "ship.hpp"
-#include "skybox.hpp"
 
 namespace gefest::editor {
 
@@ -86,53 +83,6 @@ void update_camera() {
     camera::set_mode(mode);
 }
 
-void update_skybox() {
-    push_id();
-    ImGui::SeparatorText("Stars");
-    ImGui::SliderFloat("Frequency", &skybox::STARS_FREQUENCY, 10.0, 500.0);
-    ImGui::SliderFloat("Min. Brightness", &skybox::STARS_MIN_BRIGHTNESS, 0.0, 1.0);
-    pop_id();
-
-    push_id();
-    ImGui::SeparatorText("Nebula");
-    ImGui::SliderFloat("Frequency", &skybox::NEBULA_FREQUENCY, 1.0, 10.0);
-    ImGui::SliderFloat("Min. Brightness", &skybox::NEBULA_MIN_BRIGHTNESS, 0.0, 1.0);
-    pop_id();
-}
-
-void update_planet() {
-    ImGui::SliderFloat3(
-        "Position",
-        (float *)&planet::POSITION,
-        -2.0 * planet::GEOSPHERE_RADIUS,
-        2.0 * planet::GEOSPHERE_RADIUS
-    );
-
-    ImGui::SeparatorText("Perlin Noise");
-    ImGui::SliderInt("N Levels", &planet::N_LEVELS, 1, 8);
-    ImGui::SliderFloat("Freq. Mult.", &planet::FREQ_MULT, 1.0, 4.0);
-    ImGui::SliderFloat("Ampl. Mult.", &planet::AMPL_MULT, 0.05, 1.0);
-    ImGui::SliderFloat("Freq. Init.", &planet::FREQ_INIT, 0.05, 4.0);
-
-    ImGui::SeparatorText("Terrain");
-    ImGui::SliderFloat("Water Level", &planet::WATER_LEVEL, 0.0, planet::SAND_LEVEL);
-    ImGui::SliderFloat(
-        "Sand Level",
-        &planet::SAND_LEVEL,
-        planet::WATER_LEVEL + EPSILON,
-        planet::GRASS_LEVEL
-    );
-    ImGui::SliderFloat(
-        "Grass Level",
-        &planet::GRASS_LEVEL,
-        planet::SAND_LEVEL + EPSILON,
-        planet::ROCK_LEVEL
-    );
-    ImGui::SliderFloat(
-        "Rock Level", &planet::ROCK_LEVEL, planet::GRASS_LEVEL + EPSILON, 1.0
-    );
-}
-
 void update_ship() {
     auto entity = registry::registry.view<registry::Player>().front();
     auto &body = registry::registry.get<dynamic_body::DynamicBody>(entity);
@@ -193,8 +143,6 @@ void update_and_draw() {
     ImGui::Begin("Inspector", NULL, flags);
     {
         if (collapsing_header("Camera")) update_camera();
-        if (collapsing_header("Skybox")) update_skybox();
-        if (collapsing_header("Planet")) update_planet();
         if (collapsing_header("Ship")) update_ship();
     }
     ImGui::End();

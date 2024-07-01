@@ -2,53 +2,28 @@
 
 #include "constants.hpp"
 #include "drawing.hpp"
-#include "light.hpp"
 #include "raylib/raylib.h"
-#include "raylib/raymath.h"
 #include "raylib/rlgl.h"
 #include "resources.hpp"
 
 namespace gefest::sun {
 
-Vector3 POSITION = {
-    constants::SCALE * 6e5f, constants::SCALE * 7e5f, -constants::SCALE * 6e5f
-};
-static float RADIUS = constants::SCALE * 5e4;
+Sun::Sun(entt::entity entity)
+    : entity(entity) {}
 
-static Color COLOR = {255, 240, 255, 255};
-static Vector3 ATTENUATION = {1.0, 0.0, 0.0};
-static float INTENSITY = 1.0;
+void Sun::update() {}
 
-static int RENDER_TEXTURE_SIZE = 4096;
-static RenderTexture RENDER_TEXTURE;
-static Matrix MATRIX;
-
-void generate() {
-    if (IsRenderTextureReady(RENDER_TEXTURE)) {
-        UnloadRenderTexture(RENDER_TEXTURE);
-    }
-
-    RENDER_TEXTURE = LoadRenderTexture(RENDER_TEXTURE_SIZE, RENDER_TEXTURE_SIZE);
+// TODO: factor out texture generation function into a separate unit
+Texture generate_geosphere_texture(int size) {
+    // TODO: this render texture should be registered
+    // and cleaned up by resources manager
+    RenderTexture render_texture = LoadRenderTexture(size, size);
     auto shader = resources::SUN_TEXTURE_SHADER;
 
-    drawing::draw_texture(RENDER_TEXTURE, shader);
+    drawing::draw_texture(render_texture, shader);
+    return render_texture.texture;
 }
 
-light::PointLight get_point_light() {
-    light::PointLight point_light(COLOR, POSITION, ATTENUATION, INTENSITY);
-    return point_light;
-}
-
-void update() {
-    Matrix t = MatrixTranslate(POSITION.x, POSITION.y, POSITION.z);
-    Matrix s = MatrixScale(RADIUS, RADIUS, RADIUS);
-
-    MATRIX = MatrixMultiply(s, t);
-}
-
-void draw() {
-    Texture texture = RENDER_TEXTURE.texture;
-    drawing::draw_sphere(texture, MATRIX);
-}
+void update() {}
 
 }  // namespace gefest::sun
