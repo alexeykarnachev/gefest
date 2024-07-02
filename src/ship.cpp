@@ -1,5 +1,6 @@
 #include "ship.hpp"
 
+#include "constants.hpp"
 #include "dynamic_body.hpp"
 #include "prefabs.hpp"
 #include "raylib/raylib.h"
@@ -8,6 +9,7 @@
 #include "registry.hpp"
 #include "transform.hpp"
 #include <algorithm>
+#include <cstdio>
 
 namespace gefest::ship {
 
@@ -54,8 +56,7 @@ void Ship::apply_controls() {
     auto &body = registry::registry.get<dynamic_body::DynamicBody>(this->entity);
     auto &tr = registry::registry.get<transform::Transform>(this->entity);
 
-    Vector3 forward = {0.0, 0.0, -1.0};
-    forward = Vector3RotateByQuaternion(forward, tr.rotation);
+    Vector3 forward = Vector3RotateByQuaternion(constants::FORWARD, tr.rotation);
 
     float thrust = std::clamp(this->thrust, -1.0f, 1.0f);
     float engine_force = thrust * this->engine_force;
@@ -79,11 +80,9 @@ void Ship::shoot() {
     if (!can_shoot) return;
 
     auto body = registry::registry.get<dynamic_body::DynamicBody>(this->entity);
-    auto tr = registry::registry.get<transform::Transform>(this->entity);
-    tr.position = Vector3Add(tr.position, this->projectile_spawn_offset);
     float speed = this->projectile_speed + body.get_linear_speed();
 
-    prefabs::spawn_projectile(this->entity, tr, speed, this->projectile_damage);
+    prefabs::spawn_projectile(this->entity, speed, this->projectile_damage);
     this->last_shot_time = time;
 }
 

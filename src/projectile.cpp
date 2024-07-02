@@ -6,24 +6,9 @@
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 #include "registry.hpp"
-#include "resources.hpp"
 #include "transform.hpp"
 
 namespace gefest::projectile {
-
-static float THICKNESS = 0.15f * constants::SCALE;
-
-Matrix get_matrix(transform::Transform tr, float length) {
-    Matrix t = MatrixTranslate(tr.position.x, tr.position.y, tr.position.z);
-    Matrix r = MatrixMultiply(
-        MatrixRotateX(DEG2RAD * -90.0), QuaternionToMatrix(tr.rotation)
-    );
-    Matrix s = MatrixScale(THICKNESS, length, THICKNESS);
-
-    Matrix mat = MatrixMultiply(s, MatrixMultiply(r, t));
-
-    return mat;
-}
 
 Projectile::Projectile(entt::entity entity, entt::entity owner, float speed, float damage)
     : entity(entity)
@@ -39,10 +24,8 @@ void Projectile::update() {
 
     auto &tr = registry::registry.get<transform::Transform>(this->entity);
 
-    Vector3 velocity = Vector3Scale(tr.get_forward(), this->speed);
+    Vector3 velocity = Vector3Scale(tr.get_up(), this->speed);
     Vector3 step = Vector3Scale(velocity, constants::DT);
-    float length = Vector3Length(step);
-    Matrix mat = get_matrix(tr, length);
 
     Vector3 start = tr.position;
     Vector3 end = Vector3Add(start, step);
@@ -62,15 +45,7 @@ void Projectile::update() {
     }
 
     this->ttl -= constants::DT;
-    this->matrix = mat;
     tr.position = end;
-}
-
-void Projectile::draw() {
-    Mesh mesh = resources::CYLINDER_MESH;
-    Material material = resources::PROJECTILE_MATERIAL;
-
-    DrawMesh(mesh, material, this->matrix);
 }
 
 }  // namespace gefest::projectile

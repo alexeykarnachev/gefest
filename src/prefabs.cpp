@@ -4,6 +4,7 @@
 #include "camera.hpp"
 #include "collider.hpp"
 #include "constants.hpp"
+#include "crosshair.hpp"
 #include "dynamic_body.hpp"
 #include "gmodel.hpp"
 #include "health.hpp"
@@ -14,6 +15,7 @@
 #include "raylib/raymath.h"
 #include "registry.hpp"
 #include "resources.hpp"
+#include "ship.hpp"
 #include "skybox.hpp"
 #include "sun.hpp"
 #include "transform.hpp"
@@ -21,34 +23,33 @@
 namespace gefest::prefabs {
 
 entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller_type) {
-    static Vector3 scale = Vector3Scale(Vector3One(), constants::SCALE);
-
-    static float mass = 20.0;
-    static float linear_damping = 70.0;
-    static float moment_of_inertia = 50.0;
-    static float angular_damping = 600.0;
-
-    static float engine_force = constants::SCALE * 1.5e4;
-    static float pitch_magnitude = 500.0;
-    static float roll_magnitude = 500.0;
-
-    static float shoot_rate = 7.0;
-    static float projectile_speed = constants::SCALE * 500.0;
-    static float projectile_damage = 500.0;
-    static Vector3 projectile_spawn_offset = {0.0, 0.0, 0.0};
-
     auto entity = registry::registry.create();
 
     ship::Ship ship(
         entity,
         controller_type,
-        engine_force,
-        pitch_magnitude,
-        roll_magnitude,
-        shoot_rate,
-        projectile_speed,
-        projectile_damage,
-        projectile_spawn_offset
+        constants::SCALE * 1.5e4,  // engine_force
+        500.0,  // pitch_magnitude
+        500.0,  // roll_magnitude
+        7.0,  // shoot_rate
+        constants::SCALE * 500.0,  // projectile_speed
+        500.0,  // projectile_damage
+        {0.0, 0.0, 0.0}  // projectile_spawn_offset
+    );
+    crosshair::Crosshair crosshair(
+        entity,
+        {constants::SCALE * 1.15f, 0.0, -constants::SCALE * 0.08f},  // start_offset
+        constants::SCALE * 1e3,  // length
+        constants::SCALE * 0.05f,  // thickness
+        15.0,  // attenuation
+        0.95  // start_alpha
+    );
+    dynamic_body::DynamicBody body(
+        entity,
+        20.0,  // mass
+        70.0,  // linear_damping
+        50.0,  // moment_of_inertia
+        600.0  // angular_damping
     );
     gmodel::GModel gmodel(
         entity,
@@ -57,38 +58,49 @@ entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller
         resources::RED_FIGHTER_MODEL.materials[0].maps[0].texture,
         false
     );
-    transform::Transform transform(position, scale);
-    dynamic_body::DynamicBody body(
-        entity, mass, linear_damping, moment_of_inertia, angular_damping
+    transform::Transform transform(
+        position, Vector3Scale(Vector3One(), constants::SCALE)
     );
 
     registry::registry.emplace<ship::Ship>(entity, ship);
+    registry::registry.emplace<crosshair::Crosshair>(entity, crosshair);
+    registry::registry.emplace<dynamic_body::DynamicBody>(entity, body);
     registry::registry.emplace<gmodel::GModel>(entity, gmodel);
     registry::registry.emplace<transform::Transform>(entity, transform);
-    registry::registry.emplace<dynamic_body::DynamicBody>(entity, body);
 
     return entity;
 }
 
-entt::entity spawn_projectile(
-    entt::entity owner, transform::Transform transform, float speed, float damage
-) {
+entt::entity spawn_projectile(entt::entity owner, float speed, float damage) {
+    static float thickness = 0.15f * constants::SCALE;
+    static float length = speed * constants::DT;
+
+    auto owner_ship = registry::registry.get<ship::Ship>(owner);
+    auto owner_tr = registry::registry.get<transform::Transform>(owner);
+
     auto entity = registry::registry.create();
 
-    projectile::Projectile projectile(entity, owner, speed, damage);
+    Model model = resources::CYLINDER_MODEL;
+    Material material = resources::PROJECTILE_MATERIAL;
+    Vector3 position = Vector3Add(owner_tr.position, owner_ship.projectile_spawn_offset);
+    Vector3 scale = {thickness, length, thickness};
+    Quaternion rotation = QuaternionMultiply(
+        owner_tr.rotation, QuaternionFromAxisAngle(constants::RIGHT, -0.5 * PI)
+    );
 
-    registry::registry.emplace<transform::Transform>(entity, transform);
+    gmodel::GModel gmodel(entity, model, material, {}, false);
+    projectile::Projectile projectile(entity, owner, speed, damage);
+    transform::Transform transform(position, scale, rotation);
+
+    registry::registry.emplace<gmodel::GModel>(entity, gmodel);
     registry::registry.emplace<projectile::Projectile>(entity, projectile);
+    registry::registry.emplace<transform::Transform>(entity, transform);
 
     return entity;
 }
 
 // TODO: celestial body prefabs look pretty similar. Maybe factor out...
 entt::entity spawn_asteroid(Vector3 position) {
-    static Vector3 scale = Vector3Scale(Vector3One(), constants::SCALE * 10.0);
-    static float collider_sphere_radius = constants::SCALE * 20.0;
-    static float health_max_val = 1000.0;
-
     auto entity = registry::registry.create();
 
     int idx = GetRandomValue(0, resources::ASTEROID_MODELS.size() - 1);
@@ -98,9 +110,17 @@ entt::entity spawn_asteroid(Vector3 position) {
 
     asteroid::Asteroid asteroid(entity);
     gmodel::GModel gmodel(entity, model, material, texture, false);
-    transform::Transform transform(position, scale);
-    collider::Collider collider(entity, collider_sphere_radius);
-    health::Health health(entity, health_max_val);
+    transform::Transform transform(
+        position, Vector3Scale(Vector3One(), constants::SCALE * 10.0)
+    );
+    collider::Collider collider(
+        entity,
+        constants::SCALE * 20.0  // sphere_radius
+    );
+    health::Health health(
+        entity,
+        1000.0  // max_val
+    );
 
     registry::registry.emplace<asteroid::Asteroid>(entity, asteroid);
     registry::registry.emplace<gmodel::GModel>(entity, gmodel);
@@ -133,9 +153,6 @@ entt::entity spawn_planet(Vector3 position, float radius) {
 }
 
 entt::entity spawn_sun(Vector3 position, float radius) {
-    static float point_light_intensity = 1.0;
-    static Vector3 point_light_attenuation = {1.0, 0.0, 0.0};
-
     auto entity = registry::registry.create();
 
     Vector3 scale = Vector3Scale(Vector3One(), radius);
@@ -147,7 +164,10 @@ entt::entity spawn_sun(Vector3 position, float radius) {
     gmodel::GModel gmodel(entity, model, material, texture, false);
     transform::Transform transform(position, scale);
     light::PointLight point_light(
-        entity, WHITE, point_light_attenuation, point_light_intensity
+        entity,
+        WHITE,
+        {1.0, 0.0, 0.0},  // attenuation
+        1.0  // intensity
     );
 
     registry::registry.emplace<sun::Sun>(entity, sun);
@@ -159,10 +179,6 @@ entt::entity spawn_sun(Vector3 position, float radius) {
 }
 
 entt::entity spawn_skybox() {
-    static Vector3 scale = Vector3Scale(Vector3One(), 1e4);
-    static Color ambient_light_color = {255, 255, 255, 255};
-    static float ambient_light_intensity = 0.075;
-
     auto entity = registry::registry.create();
 
     Vector3 position = camera::CAMERA.position;
@@ -172,9 +188,11 @@ entt::entity spawn_skybox() {
 
     skybox::Skybox skybox(entity);
     gmodel::GModel gmodel(entity, model, material, texture, true);
-    transform::Transform transform(position, scale);
+    transform::Transform transform(position, Vector3Scale(Vector3One(), 1e4));
     light::AmbientLight ambient_light(
-        entity, ambient_light_color, ambient_light_intensity
+        entity,
+        {255, 255, 255, 255},  // color
+        0.1  // intensity
     );
 
     registry::registry.emplace<skybox::Skybox>(entity, skybox);

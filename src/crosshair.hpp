@@ -1,17 +1,36 @@
 #pragma once
 
+#include "entt/entity/fwd.hpp"
 #include "raylib/raylib.h"
 
 namespace gefest::crosshair {
 
-extern float LENGTH;
-extern float THICKNESS;
-extern float ATTENUATION;
-extern float START_ALPHA;
-extern Vector3 START_OFFSET;
+class Crosshair {
+private:
+    entt::entity entity;
 
-void update();
+    Vector3 start_position;
+    Matrix matrix;
 
-void draw();
+public:
+    Vector3 start_offset;
+
+    float length;
+    float thickness;
+    float attenuation;
+    float start_alpha;
+
+    Crosshair(
+        entt::entity entity,
+        Vector3 start_offset,
+        float length,
+        float thickness,
+        float attenuation,
+        float start_alpha
+    );
+
+    void update();
+    void draw();
+};
 
 }  // namespace gefest::crosshair

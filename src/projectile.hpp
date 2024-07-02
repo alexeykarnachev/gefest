@@ -1,8 +1,6 @@
 #pragma once
 
 #include "entt/entity/fwd.hpp"
-#include "raylib/raylib.h"
-#include "raylib/raymath.h"
 
 namespace gefest::projectile {
 
@@ -15,14 +13,11 @@ public:
     Projectile(entt::entity entity, entt::entity owner, float speed, float damage);
 
     void update();
-    void draw();
 
 private:
     float ttl = 5.0;
     float speed;
     float damage;
-
-    Matrix matrix = MatrixIdentity();
 };
 
 }  // namespace gefest::projectile

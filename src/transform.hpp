@@ -20,6 +20,8 @@ public:
     Vector3 get_up();
     Vector3 get_forward();
 
+    void rotate_x(float rad);
+
     Vector3 apply_to_vector(Vector3 vec);
 };
 

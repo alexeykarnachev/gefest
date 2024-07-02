@@ -10,35 +10,40 @@
 
 namespace gefest::crosshair {
 
-float LENGTH = constants::SCALE * 1e3;
-float THICKNESS = constants::SCALE * 0.05f;
-float ATTENUATION = 15.0;
-float START_ALPHA = 0.95;
-Vector3 START_OFFSET = {constants::SCALE * 1.15f, 0.0, -constants::SCALE * 0.08f};
+Crosshair::Crosshair(
+    entt::entity entity,
+    Vector3 start_offset,
+    float length,
+    float thickness,
+    float attenuation,
+    float start_alpha
+)
+    : entity(entity)
+    , start_offset(start_offset)
+    , length(length)
+    , thickness(thickness)
+    , attenuation(attenuation)
+    , start_alpha(start_alpha) {}
 
-static Vector3 START_POSITION;
-static Matrix MATRIX;
+void Crosshair::update() {
+    auto tr = registry::registry.get<transform::Transform>(this->entity);
 
-void update() {
-    auto entity = registry::registry.view<registry::Player>().front();
-    auto tr = registry::registry.get<transform::Transform>(entity);
-
-    Vector3 start_offset = Vector3RotateByQuaternion(START_OFFSET, tr.rotation);
+    Vector3 start_offset = Vector3RotateByQuaternion(this->start_offset, tr.rotation);
     Vector3 start_position = Vector3Add(tr.position, start_offset);
 
     Matrix t = MatrixTranslate(start_position.x, start_position.y, start_position.z);
     Matrix r = MatrixMultiply(
         MatrixRotateX(DEG2RAD * -90.0), QuaternionToMatrix(tr.rotation)
     );
-    Matrix s = MatrixScale(THICKNESS, LENGTH, THICKNESS);
-    Matrix mat = MatrixMultiply(s, MatrixMultiply(r, t));
+    Matrix s = MatrixScale(this->thickness, this->length, this->thickness);
+    Matrix matrix = MatrixMultiply(s, MatrixMultiply(r, t));
 
-    START_POSITION = start_position;
-    MATRIX = mat;
+    this->start_position = start_position;
+    this->matrix = matrix;
 }
 
-void draw() {
-    Mesh mesh = resources::CYLINDER_MESH;
+void Crosshair::draw() {
+    Mesh mesh = resources::CYLINDER_MODEL.meshes[0];
     Material material = resources::CROSSHAIR_MATERIAL;
     Shader shader = material.shader;
 
@@ -47,12 +52,14 @@ void draw() {
     int start_alpha_loc = GetShaderLocation(shader, "start_alpha");
     int start_position_loc = GetShaderLocation(shader, "start_position");
 
-    SetShaderValue(shader, length_loc, &LENGTH, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, attenuation_loc, &ATTENUATION, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, start_alpha_loc, &START_ALPHA, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, start_position_loc, &START_POSITION, SHADER_UNIFORM_VEC3);
+    SetShaderValue(shader, length_loc, &this->length, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(shader, attenuation_loc, &this->attenuation, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(shader, start_alpha_loc, &this->start_alpha, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(
+        shader, start_position_loc, &this->start_position, SHADER_UNIFORM_VEC3
+    );
 
-    DrawMesh(mesh, material, MATRIX);
+    DrawMesh(mesh, material, this->matrix);
 }
 
 }  // namespace gefest::crosshair

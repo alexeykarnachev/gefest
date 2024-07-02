@@ -11,7 +11,6 @@
 namespace gefest::resources {
 
 Mesh PLANE_MESH;
-Mesh CYLINDER_MESH;
 
 Shader GEOSPHERE_TEXTURE_SHADER;
 Shader SKYBOX_TEXTURE_SHADER;
@@ -28,6 +27,7 @@ Material CROSSHAIR_MATERIAL;
 Material PROJECTILE_MATERIAL;
 
 Model SPHERE_MODEL;
+Model CYLINDER_MODEL;
 Model RED_FIGHTER_MODEL;
 std::vector<Model> ASTEROID_MODELS;
 
@@ -104,7 +104,6 @@ static void unload_models(std::vector<Model> models) {
 
 void load() {
     PLANE_MESH = GenMeshPlane(1.0, 1.0, 1, 1);
-    CYLINDER_MESH = GenMeshCylinder(1.0, 1.0, 64);
 
     GEOSPHERE_TEXTURE_SHADER = load_shader("screen_rect.vert", "geosphere_texture.frag");
     SKYBOX_TEXTURE_SHADER = load_shader("screen_rect.vert", "skybox_texture.frag");
@@ -121,6 +120,7 @@ void load() {
     PROJECTILE_MATERIAL = load_material("base.vert", "projectile.frag");
 
     SPHERE_MODEL = LoadModel("./resources/models/primitives/icosphere_4.obj");
+    CYLINDER_MODEL = LoadModelFromMesh(GenMeshCylinder(1.0, 1.0, 32));
     RED_FIGHTER_MODEL = LoadModel("./resources/models/red_fighter/RedFighter.obj");
     ASTEROID_MODELS = load_models("./resources/models/asteroids");
 }
@@ -130,7 +130,6 @@ void unload() {
     // Introduce some kind of simple assets manager.
 
     UnloadMesh(PLANE_MESH);
-    UnloadMesh(CYLINDER_MESH);
 
     UnloadShader(GEOSPHERE_TEXTURE_SHADER);
     UnloadShader(SKYBOX_TEXTURE_SHADER);
@@ -147,6 +146,7 @@ void unload() {
     UnloadMaterial(PROJECTILE_MATERIAL);
 
     UnloadModel(SPHERE_MODEL);
+    UnloadModel(CYLINDER_MODEL);
     UnloadModel(RED_FIGHTER_MODEL);
     unload_models(ASTEROID_MODELS);
 }

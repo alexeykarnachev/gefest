@@ -22,6 +22,11 @@ Vector3 Transform::get_forward() {
     return Vector3RotateByQuaternion(constants::FORWARD, this->rotation);
 }
 
+void Transform::rotate_x(float rad) {
+    Quaternion q = QuaternionFromAxisAngle(constants::RIGHT, rad);
+    this->rotation = QuaternionMultiply(this->rotation, q);
+}
+
 Matrix Transform::get_matrix() {
     Matrix r = QuaternionToMatrix(this->rotation);
     Matrix t = MatrixTranslate(this->position.x, this->position.y, this->position.z);

@@ -87,15 +87,16 @@ void update_ship() {
     auto entity = registry::registry.view<registry::Player>().front();
     auto &body = registry::registry.get<dynamic_body::DynamicBody>(entity);
     auto &ship = registry::registry.get<ship::Ship>(entity);
+    auto &crosshair = registry::registry.get<crosshair::Crosshair>(entity);
 
     static float engine_force_min = ship.engine_force * 0.1f;
     static float engine_force_max = ship.engine_force * 10.0f;
     static float projectile_speed_min = ship.projectile_speed * 0.1f;
     static float projectile_speed_max = ship.projectile_speed * 10.0f;
-    static float crosshair_length_min = crosshair::LENGTH * 0.1f;
-    static float crosshair_length_max = crosshair::LENGTH * 10.0f;
-    static float crosshair_thickness_min = crosshair::THICKNESS * 0.1f;
-    static float crosshair_thickness_max = crosshair::THICKNESS * 10.0f;
+    static float crosshair_length_min = crosshair.length * 0.1f;
+    static float crosshair_length_max = crosshair.length * 10.0f;
+    static float crosshair_thickness_min = crosshair.thickness * 0.1f;
+    static float crosshair_thickness_max = crosshair.thickness * 10.0f;
 
     ImGui::SeparatorText("Dynamic Body");
     ImGui::SliderFloat("Mass", &body.mass, 1.0, 200.0);
@@ -119,17 +120,17 @@ void update_ship() {
 
     ImGui::SeparatorText("Crosshair");
     ImGui::SliderFloat(
-        "Length", &crosshair::LENGTH, crosshair_length_min, crosshair_length_max
+        "Length", &crosshair.length, crosshair_length_min, crosshair_length_max
     );
     ImGui::SliderFloat(
         "Thickness",
-        &crosshair::THICKNESS,
+        &crosshair.thickness,
         crosshair_thickness_min,
         crosshair_thickness_max
     );
-    ImGui::SliderFloat("Attenuation", &crosshair::ATTENUATION, 0.0, 20.0);
-    ImGui::SliderFloat("Start Alpha", &crosshair::START_ALPHA, 0.0, 1.0);
-    ImGui::SliderFloat3("Offset", (float *)&crosshair::START_OFFSET, -0.003, 0.003);
+    ImGui::SliderFloat("Attenuation", &crosshair.attenuation, 0.0, 20.0);
+    ImGui::SliderFloat("Start Alpha", &crosshair.start_alpha, 0.0, 1.0);
+    ImGui::SliderFloat3("Offset", (float *)&crosshair.start_offset, -0.003, 0.003);
 
     ImGui::SeparatorText("Speed");
     ImGui::Text("Linear Speed: %f", body.get_linear_speed());

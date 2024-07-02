@@ -20,6 +20,7 @@
 #include "ship.hpp"
 #include "skybox.hpp"
 #include "sun.hpp"
+#include <cstdio>
 
 namespace gefest::game {
 
@@ -76,16 +77,16 @@ void update_window_should_close() {
 template <typename T> void update_components() {
     auto view = registry::registry.view<T>();
     for (auto entity : view) {
-        auto &projectile = registry::registry.get<T>(entity);
-        projectile.update();
+        auto &comp = registry::registry.get<T>(entity);
+        comp.update();
     }
 }
 
 template <typename T> void draw_components() {
     auto view = registry::registry.view<T>();
     for (auto entity : view) {
-        auto &projectile = registry::registry.get<T>(entity);
-        projectile.draw();
+        auto &comp = registry::registry.get<T>(entity);
+        comp.draw();
     }
 }
 
@@ -95,10 +96,10 @@ void update() {
     update_components<sun::Sun>();
     update_components<planet::Planet>();
     update_components<dynamic_body::DynamicBody>();
+    update_components<projectile::Projectile>();
     update_components<ship::Ship>();
     camera::update();
-    crosshair::update();
-    update_components<projectile::Projectile>();
+    update_components<crosshair::Crosshair>();
     update_components<asteroid::Asteroid>();
     update_components<health::Health>();
     update_components<skybox::Skybox>();
@@ -111,8 +112,7 @@ void draw() {
     BeginMode3D(camera::CAMERA);
 
     draw_components<gmodel::GModel>();
-    crosshair::draw();
-    draw_components<projectile::Projectile>();
+    draw_components<crosshair::Crosshair>();
 
     EndMode3D();
 
