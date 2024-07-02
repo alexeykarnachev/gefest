@@ -17,6 +17,7 @@ extern Material MODEL_MATERIAL;
 extern Material SKYBOX_MATERIAL;
 extern Material GEOSPHERE_MATERIAL;
 extern Material SUN_MATERIAL;
+extern Material RED_FIGHTER_MATERIAL;
 extern Material ASTEROID_MATERIAL;
 extern Material CROSSHAIR_MATERIAL;
 extern Material PROJECTILE_MATERIAL;

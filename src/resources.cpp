@@ -22,6 +22,7 @@ Material MODEL_MATERIAL;
 Material SKYBOX_MATERIAL;
 Material GEOSPHERE_MATERIAL;
 Material SUN_MATERIAL;
+Material RED_FIGHTER_MATERIAL;
 Material ASTEROID_MATERIAL;
 Material CROSSHAIR_MATERIAL;
 Material PROJECTILE_MATERIAL;
@@ -114,6 +115,7 @@ void load() {
     SKYBOX_MATERIAL = load_material("skybox.vert", "skybox.frag");
     GEOSPHERE_MATERIAL = load_material("base.vert", "sphere.frag");
     SUN_MATERIAL = load_material("base.vert", "sun.frag");
+    RED_FIGHTER_MATERIAL = load_material("base.vert", "red_fighter.frag");
     ASTEROID_MATERIAL = load_material("base.vert", "model.frag");
     CROSSHAIR_MATERIAL = load_material("base.vert", "crosshair.frag");
     PROJECTILE_MATERIAL = load_material("base.vert", "projectile.frag");
@@ -139,6 +141,7 @@ void unload() {
     UnloadMaterial(SKYBOX_MATERIAL);
     UnloadMaterial(GEOSPHERE_MATERIAL);
     UnloadMaterial(SUN_MATERIAL);
+    UnloadMaterial(RED_FIGHTER_MATERIAL);
     UnloadMaterial(ASTEROID_MATERIAL);
     UnloadMaterial(CROSSHAIR_MATERIAL);
     UnloadMaterial(PROJECTILE_MATERIAL);

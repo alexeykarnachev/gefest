@@ -53,7 +53,7 @@ entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller
     gmodel::GModel gmodel(
         entity,
         resources::RED_FIGHTER_MODEL,
-        resources::MODEL_MATERIAL,
+        resources::RED_FIGHTER_MATERIAL,
         resources::RED_FIGHTER_MODEL.materials[0].maps[0].texture,
         false
     );
