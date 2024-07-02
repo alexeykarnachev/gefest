@@ -32,6 +32,11 @@ void Transform::rotate_x(float rad) {
     this->rotation = QuaternionMultiply(this->rotation, q);
 }
 
+void Transform::rotate_y(float rad) {
+    Quaternion q = QuaternionFromAxisAngle(constants::UP, rad);
+    this->rotation = QuaternionMultiply(this->rotation, q);
+}
+
 Matrix Transform::get_matrix() {
     Matrix r = QuaternionToMatrix(this->rotation);
     Matrix t = MatrixTranslate(this->position.x, this->position.y, this->position.z);

@@ -25,6 +25,7 @@ public:
     Vector3 get_forward();
 
     void rotate_x(float rad);
+    void rotate_y(float rad);
 
     Vector3 apply_to_vector(Vector3 vec);
 };
