@@ -98,11 +98,12 @@ void update() {
     update_components<dynamic_body::DynamicBody>();
     update_components<projectile::Projectile>();
     update_components<ship::Ship>();
-    camera::update();
     update_components<crosshair::Crosshair>();
     update_components<asteroid::Asteroid>();
     update_components<health::Health>();
     update_components<skybox::Skybox>();
+
+    camera::update();
 }
 
 void draw() {
