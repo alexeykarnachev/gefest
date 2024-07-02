@@ -5,16 +5,21 @@
 
 namespace gefest::transform {
 
-Transform::Transform(Vector3 position)
-    : position(position)
+Transform::Transform(entt::entity entity, Vector3 position)
+    : entity(entity)
+    , position(position)
     , rotation(QuaternionIdentity()) {}
 
-Transform::Transform(Vector3 position, Vector3 scale)
-    : position(position)
+Transform::Transform(entt::entity entity, Vector3 position, Vector3 scale)
+    : entity(entity)
+    , position(position)
     , scale(scale) {}
 
-Transform::Transform(Vector3 position, Vector3 scale, Quaternion rotation)
-    : position(position)
+Transform::Transform(
+    entt::entity entity, Vector3 position, Vector3 scale, Quaternion rotation
+)
+    : entity(entity)
+    , position(position)
     , scale(scale)
     , rotation(rotation) {}
 

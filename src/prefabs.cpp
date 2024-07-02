@@ -59,7 +59,7 @@ entt::entity spawn_red_fighter(Vector3 position, ship::ControllerType controller
         false
     );
     transform::Transform transform(
-        position, Vector3Scale(Vector3One(), constants::SCALE)
+        entity, position, Vector3Scale(Vector3One(), constants::SCALE)
     );
 
     registry::registry.emplace<ship::Ship>(entity, ship);
@@ -90,7 +90,7 @@ entt::entity spawn_projectile(entt::entity owner, float speed, float damage) {
 
     gmodel::GModel gmodel(entity, model, material, {}, false);
     projectile::Projectile projectile(entity, owner, speed, damage);
-    transform::Transform transform(position, scale, rotation);
+    transform::Transform transform(entity, position, scale, rotation);
 
     registry::registry.emplace<gmodel::GModel>(entity, gmodel);
     registry::registry.emplace<projectile::Projectile>(entity, projectile);
@@ -111,7 +111,7 @@ entt::entity spawn_asteroid(Vector3 position) {
     asteroid::Asteroid asteroid(entity);
     gmodel::GModel gmodel(entity, model, material, texture, false);
     transform::Transform transform(
-        position, Vector3Scale(Vector3One(), constants::SCALE * 10.0)
+        entity, position, Vector3Scale(Vector3One(), constants::SCALE * 10.0)
     );
     collider::Collider collider(
         entity,
@@ -143,7 +143,7 @@ entt::entity spawn_planet(Vector3 position, float radius) {
 
     planet::Planet planet(entity);
     gmodel::GModel gmodel(entity, model, material, texture, false);
-    transform::Transform transform(position, scale);
+    transform::Transform transform(entity, position, scale);
 
     registry::registry.emplace<planet::Planet>(entity, planet);
     registry::registry.emplace<gmodel::GModel>(entity, gmodel);
@@ -162,7 +162,7 @@ entt::entity spawn_sun(Vector3 position, float radius) {
 
     sun::Sun sun(entity);
     gmodel::GModel gmodel(entity, model, material, texture, false);
-    transform::Transform transform(position, scale);
+    transform::Transform transform(entity, position, scale);
     light::PointLight point_light(
         entity,
         WHITE,
@@ -188,7 +188,7 @@ entt::entity spawn_skybox() {
 
     skybox::Skybox skybox(entity);
     gmodel::GModel gmodel(entity, model, material, texture, true);
-    transform::Transform transform(position, Vector3Scale(Vector3One(), 1e4));
+    transform::Transform transform(entity, position, Vector3Scale(Vector3One(), 1e4));
     light::AmbientLight ambient_light(
         entity,
         {255, 255, 255, 255},  // color

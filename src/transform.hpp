@@ -1,19 +1,23 @@
 #pragma once
 
+#include "entt/entity/fwd.hpp"
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
 
 namespace gefest::transform {
 
 class Transform {
+private:
+    entt::entity entity;
+
 public:
     Vector3 position = Vector3Zero();
     Vector3 scale = Vector3One();
     Quaternion rotation = QuaternionIdentity();
 
-    Transform(Vector3 position);
-    Transform(Vector3 position, Vector3 Scale);
-    Transform(Vector3 position, Vector3 Scale, Quaternion rotation);
+    Transform(entt::entity entity, Vector3 position);
+    Transform(entt::entity entity, Vector3 position, Vector3 Scale);
+    Transform(entt::entity entity, Vector3 position, Vector3 Scale, Quaternion rotation);
 
     Matrix get_matrix();
 
