@@ -4,6 +4,7 @@
 #include "raylib/raylib.h"
 #include "raylib/rlgl.h"
 #include "resources.hpp"
+#include "utils.hpp"
 #include <cstdio>
 
 namespace gefest::textures {
@@ -54,26 +55,16 @@ Texture generate_geosphere_texture(
     auto shader = resources::GEOSPHERE_TEXTURE_SHADER;
 
     // perlin noise uniforms
-    int n_levels_loc = GetShaderLocation(shader, "n_levels");
-    int freq_mult_loc = GetShaderLocation(shader, "freq_mult");
-    int ampl_mult_loc = GetShaderLocation(shader, "ampl_mult");
-    int freq_init_loc = GetShaderLocation(shader, "freq_init");
-
-    SetShaderValue(shader, n_levels_loc, &n_levels, SHADER_UNIFORM_INT);
-    SetShaderValue(shader, freq_mult_loc, &freq_mult, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, ampl_mult_loc, &ampl_mult, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, freq_init_loc, &freq_init, SHADER_UNIFORM_FLOAT);
+    utils::shader::set_int(shader, "n_levels", n_levels);
+    utils::shader::set_float(shader, "freq_mult", freq_mult);
+    utils::shader::set_float(shader, "ampl_mult", ampl_mult);
+    utils::shader::set_float(shader, "freq_init", freq_init);
 
     // terrain uniforms
-    int water_level_loc = GetShaderLocation(shader, "water_level");
-    int sand_level_loc = GetShaderLocation(shader, "sand_level");
-    int grass_level_loc = GetShaderLocation(shader, "grass_level");
-    int rock_level_loc = GetShaderLocation(shader, "rock_level");
-
-    SetShaderValue(shader, water_level_loc, &water_level, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, sand_level_loc, &sand_level, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, grass_level_loc, &grass_level, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, rock_level_loc, &rock_level, SHADER_UNIFORM_FLOAT);
+    utils::shader::set_float(shader, "water_level", water_level);
+    utils::shader::set_float(shader, "sand_level", sand_level);
+    utils::shader::set_float(shader, "grass_level", grass_level);
+    utils::shader::set_float(shader, "rock_level", rock_level);
 
     Texture texture = generate_texture(size, shader);
     return texture;
@@ -89,22 +80,12 @@ Texture generate_skybox_texture(
     auto shader = resources::SKYBOX_TEXTURE_SHADER;
 
     // stars uniforms
-    int stars_freq_loc = GetShaderLocation(shader, "stars_freq");
-    int stars_min_brightness_loc = GetShaderLocation(shader, "stars_min_brightness");
-
-    SetShaderValue(shader, stars_freq_loc, &stars_freq, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(
-        shader, stars_min_brightness_loc, &stars_min_brightness, SHADER_UNIFORM_FLOAT
-    );
+    utils::shader::set_float(shader, "stars_freq", stars_freq);
+    utils::shader::set_float(shader, "stars_min_brightness", stars_min_brightness);
 
     // nebula uniforms
-    int nebula_freq_loc = GetShaderLocation(shader, "nebula_freq");
-    int nebula_min_brightness_loc = GetShaderLocation(shader, "nebula_min_brightness");
-
-    SetShaderValue(shader, nebula_freq_loc, &nebula_freq, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(
-        shader, nebula_min_brightness_loc, &nebula_min_brightness, SHADER_UNIFORM_FLOAT
-    );
+    utils::shader::set_float(shader, "nebula_freq", nebula_freq);
+    utils::shader::set_float(shader, "nebula_min_brightness", nebula_min_brightness);
 
     Texture texture = generate_texture(size, shader);
     return texture;

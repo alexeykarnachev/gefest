@@ -7,6 +7,7 @@
 #include "registry.hpp"
 #include "resources.hpp"
 #include "transform.hpp"
+#include "utils.hpp"
 
 namespace gefest::crosshair {
 
@@ -47,17 +48,10 @@ void Crosshair::draw() {
     Material material = resources::CROSSHAIR_MATERIAL;
     Shader shader = material.shader;
 
-    int length_loc = GetShaderLocation(shader, "length");
-    int attenuation_loc = GetShaderLocation(shader, "attenuation");
-    int start_alpha_loc = GetShaderLocation(shader, "start_alpha");
-    int start_position_loc = GetShaderLocation(shader, "start_position");
-
-    SetShaderValue(shader, length_loc, &this->length, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, attenuation_loc, &this->attenuation, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(shader, start_alpha_loc, &this->start_alpha, SHADER_UNIFORM_FLOAT);
-    SetShaderValue(
-        shader, start_position_loc, &this->start_position, SHADER_UNIFORM_VEC3
-    );
+    utils::shader::set_float(shader, "length", this->length);
+    utils::shader::set_float(shader, "attenuation", this->attenuation);
+    utils::shader::set_float(shader, "start_alpha", this->start_alpha);
+    utils::shader::set_vec3(shader, "start_position", this->start_position);
 
     DrawMesh(mesh, material, this->matrix);
 }
