@@ -7,6 +7,8 @@
 
 namespace gefest::collider {
 
+// -----------------------------------------------------------------------
+// collider
 Collider::Collider(entt::entity entity, Sphere sphere)
     : entity(entity)
     , type(Type::SPHERE)
@@ -17,14 +19,39 @@ Collider::Collider(entt::entity entity, Box box)
     , type(Type::BOX)
     , box(box) {}
 
-bool check_sphere_line_collision(
-    Vector3 start, Vector3 end, Vector3 center, float radius
-) {
+bool Collider::check_line_collision(Vector3 start, Vector3 end) {
+    auto tr = registry::registry.get<transform::Transform>(this->entity);
+
+    switch (this->type) {
+        case Type::SPHERE: return this->sphere.check_line_collision(tr, start, end);
+        case Type::BOX: return this->box.check_line_collision(tr, start, end);
+    }
+}
+
+void Collider::draw() {
+    auto tr = registry::registry.get<transform::Transform>(this->entity);
+
+    switch (this->type) {
+        case Type::SPHERE: return this->sphere.draw(tr);
+        case Type::BOX: return this->box.draw(tr);
+    }
+}
+
+// -----------------------------------------------------------------------
+// sphere
+void Sphere::draw(transform::Transform tr) {
+    static int n_rings = 16;
+    static int n_slices = 16;
+
+    DrawSphereWires(tr.position, this->radius, n_rings, n_slices, WHITE);
+}
+
+bool Sphere::check_line_collision(transform::Transform tr, Vector3 start, Vector3 end) {
     Vector3 vec = Vector3Subtract(end, start);
     Vector3 dir = Vector3Normalize(vec);
     Ray ray = {.position = start, .direction = dir};
 
-    RayCollision collision = GetRayCollisionSphere(ray, center, radius);
+    RayCollision collision = GetRayCollisionSphere(ray, tr.position, radius);
     if (!collision.hit) return false;
 
     float length = Vector3Length(vec);
@@ -33,50 +60,15 @@ bool check_sphere_line_collision(
     return is_hit;
 }
 
-bool check_box_line_collision(Vector3 start, Vector3 end) {
+// -----------------------------------------------------------------------
+// sphere
+void Box::draw(transform::Transform tr) {
+    // TODO: not implemented yet
+}
+
+bool Box::check_line_collision(transform::Transform tr, Vector3 start, Vector3 end) {
+    // TODO: not implemented yet
     return false;
-}
-
-bool Collider::check_line_collision(Vector3 start, Vector3 end) {
-    auto tr = registry::registry.get<transform::Transform>(this->entity);
-
-    bool is_hit = false;
-    switch (this->type) {
-        case Type::SPHERE: {
-            Vector3 center = tr.position;
-            float radius = this->sphere.radius;
-            is_hit = check_sphere_line_collision(start, end, center, radius);
-        } break;
-        case Type::BOX: {
-            is_hit = check_box_line_collision(start, end);
-        } break;
-    }
-
-    return is_hit;
-}
-
-void Collider::draw_sphere() {
-    static int n_rings = 16;
-    static int n_slices = 16;
-
-    auto tr = registry::registry.get<transform::Transform>(this->entity);
-
-    DrawSphereWires(tr.position, this->sphere.radius, n_rings, n_slices, WHITE);
-}
-
-void Collider::draw_box() {
-    auto tr = registry::registry.get<transform::Transform>(this->entity);
-
-    DrawCubeWires(
-        tr.position, this->box.width, this->box.height, this->box.length, WHITE
-    );
-}
-
-void Collider::draw() {
-    switch (this->type) {
-        case Type::SPHERE: this->draw_sphere(); break;
-        case Type::BOX: this->draw_box(); break;
-    }
 }
 
 }  // namespace gefest::collider

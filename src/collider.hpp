@@ -2,6 +2,7 @@
 
 #include "entt/entity/fwd.hpp"
 #include "raylib/raylib.h"
+#include "transform.hpp"
 
 namespace gefest::collider {
 
@@ -12,12 +13,18 @@ enum class Type {
 
 struct Sphere {
     float radius;
+
+    bool check_line_collision(transform::Transform tr, Vector3 start, Vector3 end);
+    void draw(transform::Transform tr);
 };
 
 struct Box {
     float width;
     float height;
     float length;
+
+    bool check_line_collision(transform::Transform tr, Vector3 start, Vector3 end);
+    void draw(transform::Transform tr);
 };
 
 class Collider {
@@ -30,9 +37,6 @@ private:
         Sphere sphere;
         Box box;
     };
-
-    void draw_sphere();
-    void draw_box();
 
 public:
     Collider(entt::entity entity, Sphere sphere);
