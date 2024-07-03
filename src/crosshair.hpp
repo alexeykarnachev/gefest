@@ -7,7 +7,7 @@ namespace gefest::crosshair {
 
 class Crosshair {
 private:
-    entt::entity entity;
+    const entt::entity entity;
 
     Vector3 start_position;
     Matrix matrix;

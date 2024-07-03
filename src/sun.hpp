@@ -7,7 +7,7 @@ namespace gefest::sun {
 
 class Sun {
 private:
-    entt::entity entity;
+    const entt::entity entity;
     Matrix matrix;
 
 public:

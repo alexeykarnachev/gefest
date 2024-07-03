@@ -8,7 +8,7 @@ namespace gefest::transform {
 
 class Transform {
 private:
-    entt::entity entity;
+    const entt::entity entity;
 
 public:
     Vector3 position = Vector3Zero();

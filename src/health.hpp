@@ -5,7 +5,7 @@ namespace gefest::health {
 
 class Health {
 private:
-    entt::entity entity;
+    const entt::entity entity;
 
     float max_val;
     float current_val = max_val;

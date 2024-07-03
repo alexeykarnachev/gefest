@@ -7,7 +7,7 @@ namespace gefest::light {
 
 class AmbientLight {
 private:
-    entt::entity entity;
+    const entt::entity entity;
 
     Color color;
     float intensity;
@@ -20,7 +20,7 @@ public:
 
 class PointLight {
 private:
-    entt::entity entity;
+    const entt::entity entity;
 
     Color color;
     Vector3 attenuation;

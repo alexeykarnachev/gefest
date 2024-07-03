@@ -7,8 +7,8 @@ namespace gefest::projectile {
 class Projectile {
 
 public:
-    entt::entity entity;
-    entt::entity owner;
+    const entt::entity entity;
+    const entt::entity owner;
 
     Projectile(entt::entity entity, entt::entity owner, float speed, float damage);
 

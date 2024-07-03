@@ -14,6 +14,8 @@ enum class ControllerType {
 
 class Ship {
 private:
+    const entt::entity entity;
+
     float thrust = 0.0;
     float roll = 0.0;
     float pitch = 0.0;
@@ -30,7 +32,6 @@ private:
     void shoot();
 
 public:
-    entt::entity entity;
     ControllerType controller_type;
 
     float engine_force;

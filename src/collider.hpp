@@ -7,14 +7,14 @@ namespace gefest::collider {
 
 class Collider {
 private:
-    entt::entity entity;
+    const entt::entity entity;
 
     // collider type
     enum class Type {
         SPHERE,
         BOX,
     };
-    Type type;
+    const Type type;
 
     // collider data
     struct Sphere {

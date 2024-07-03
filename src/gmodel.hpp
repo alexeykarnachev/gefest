@@ -7,7 +7,7 @@ namespace gefest::gmodel {
 
 class GModel {
 public:
-    entt::entity entity;
+    const entt::entity entity;
 
     Model model;
     Material material;

@@ -7,18 +7,18 @@ namespace gefest::dynamic_body {
 
 class DynamicBody {
 public:
-    entt::entity entity;
-
-    Vector3 linear_velocity = {0.0, 0.0, 0.0};
-    Vector3 angular_velocity = {0.0, 0.0, 0.0};
-    Vector3 net_force = {0.0, 0.0, 0.0};
-    Vector3 net_torque = {0.0, 0.0, 0.0};
+    const entt::entity entity;
 
     float mass;
     float linear_damping;
 
     float moment_of_inertia;
     float angular_damping;
+
+    Vector3 linear_velocity = {0.0, 0.0, 0.0};
+    Vector3 angular_velocity = {0.0, 0.0, 0.0};
+    Vector3 net_force = {0.0, 0.0, 0.0};
+    Vector3 net_torque = {0.0, 0.0, 0.0};
 
     DynamicBody(
         entt::entity entity,

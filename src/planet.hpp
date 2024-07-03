@@ -7,7 +7,7 @@ namespace gefest::planet {
 
 class Planet {
 private:
-    entt::entity entity;
+    const entt::entity entity;
     Matrix matrix;
 
 public:
