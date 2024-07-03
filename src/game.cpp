@@ -1,7 +1,7 @@
 #include "game.hpp"
 
-#include "asteroid.hpp"
 #include "camera.hpp"
+#include "celestial_body.hpp"
 #include "constants.hpp"
 #include "crosshair.hpp"
 #include "dynamic_body.hpp"
@@ -9,7 +9,6 @@
 #include "entt/entt.hpp"
 #include "gmodel.hpp"
 #include "health.hpp"
-#include "planet.hpp"
 #include "prefabs.hpp"
 #include "projectile.hpp"
 #include "raylib/raylib.h"
@@ -19,7 +18,6 @@
 #include "resources.hpp"
 #include "ship.hpp"
 #include "skybox.hpp"
-#include "sun.hpp"
 #include <cstdio>
 
 namespace gefest::game {
@@ -93,13 +91,11 @@ template <typename T> void draw_components() {
 void update() {
     update_window_should_close();
 
-    update_components<sun::Sun>();
-    update_components<planet::Planet>();
+    update_components<celestial_body::CelestialBody>();
     update_components<dynamic_body::DynamicBody>();
     update_components<projectile::Projectile>();
     update_components<ship::Ship>();
     update_components<crosshair::Crosshair>();
-    update_components<asteroid::Asteroid>();
     update_components<health::Health>();
     update_components<skybox::Skybox>();
 

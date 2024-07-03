@@ -1,7 +1,7 @@
 #include "prefabs.hpp"
 
-#include "asteroid.hpp"
 #include "camera.hpp"
+#include "celestial_body.hpp"
 #include "collider.hpp"
 #include "constants.hpp"
 #include "crosshair.hpp"
@@ -9,7 +9,6 @@
 #include "gmodel.hpp"
 #include "health.hpp"
 #include "light.hpp"
-#include "planet.hpp"
 #include "projectile.hpp"
 #include "raylib/raylib.h"
 #include "raylib/raymath.h"
@@ -17,7 +16,6 @@
 #include "resources.hpp"
 #include "ship.hpp"
 #include "skybox.hpp"
-#include "sun.hpp"
 #include "textures.hpp"
 #include "transform.hpp"
 
@@ -109,7 +107,7 @@ entt::entity spawn_asteroid(Vector3 position) {
     Material material = resources::ASTEROID_MATERIAL;
     Texture texture = textures::generate_asteroid_texture(16);
 
-    asteroid::Asteroid asteroid(entity);
+    celestial_body::CelestialBody body(entity);
     gmodel::GModel gmodel(entity, model, material, texture, false);
     transform::Transform transform(
         entity, position, Vector3Scale(Vector3One(), constants::SCALE * 10.0)
@@ -125,7 +123,7 @@ entt::entity spawn_asteroid(Vector3 position) {
         1000.0  // max_val
     );
 
-    registry::registry.emplace<asteroid::Asteroid>(entity, asteroid);
+    registry::registry.emplace<celestial_body::CelestialBody>(entity, body);
     registry::registry.emplace<gmodel::GModel>(entity, gmodel);
     registry::registry.emplace<transform::Transform>(entity, transform);
     registry::registry.emplace<collider::Collider>(entity, collider);
@@ -144,11 +142,11 @@ entt::entity spawn_planet(Vector3 position, float radius) {
         4094, 8, 1.84, 0.60, 1.27, 0.50, 0.51, 0.57, 0.61
     );
 
-    planet::Planet planet(entity);
+    celestial_body::CelestialBody body(entity);
     gmodel::GModel gmodel(entity, model, material, texture, false);
     transform::Transform transform(entity, position, scale);
 
-    registry::registry.emplace<planet::Planet>(entity, planet);
+    registry::registry.emplace<celestial_body::CelestialBody>(entity, body);
     registry::registry.emplace<gmodel::GModel>(entity, gmodel);
     registry::registry.emplace<transform::Transform>(entity, transform);
 
@@ -163,7 +161,7 @@ entt::entity spawn_sun(Vector3 position, float radius) {
     Material material = resources::SUN_MATERIAL;
     Texture texture = textures::generate_sun_texture(16);
 
-    sun::Sun sun(entity);
+    celestial_body::CelestialBody body(entity);
     gmodel::GModel gmodel(entity, model, material, texture, false);
     transform::Transform transform(entity, position, scale);
     light::PointLight point_light(
@@ -173,7 +171,7 @@ entt::entity spawn_sun(Vector3 position, float radius) {
         1.0  // intensity
     );
 
-    registry::registry.emplace<sun::Sun>(entity, sun);
+    registry::registry.emplace<celestial_body::CelestialBody>(entity, body);
     registry::registry.emplace<gmodel::GModel>(entity, gmodel);
     registry::registry.emplace<transform::Transform>(entity, transform);
     registry::registry.emplace<light::PointLight>(entity, point_light);
