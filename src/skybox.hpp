@@ -16,12 +16,4 @@ public:
     void update();
 };
 
-Texture generate_geosphere_texture(
-    int size,
-    float stars_freq,
-    float stars_min_brightness,
-    float nebula_freq,
-    float nebula_min_brightness
-);
-
 }  // namespace gefest::skybox

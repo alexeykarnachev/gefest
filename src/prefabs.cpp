@@ -18,6 +18,7 @@
 #include "ship.hpp"
 #include "skybox.hpp"
 #include "sun.hpp"
+#include "textures.hpp"
 #include "transform.hpp"
 
 namespace gefest::prefabs {
@@ -106,7 +107,7 @@ entt::entity spawn_asteroid(Vector3 position) {
     int idx = GetRandomValue(0, resources::ASTEROID_MODELS.size() - 1);
     Model model = resources::ASTEROID_MODELS[idx];
     Material material = resources::ASTEROID_MATERIAL;
-    Texture texture = asteroid::generate_geosphere_texture(4094);
+    Texture texture = textures::generate_asteroid_texture(16);
 
     asteroid::Asteroid asteroid(entity);
     gmodel::GModel gmodel(entity, model, material, texture, false);
@@ -139,7 +140,7 @@ entt::entity spawn_planet(Vector3 position, float radius) {
     Vector3 scale = Vector3Scale(Vector3One(), radius);
     Model model = resources::SPHERE_MODEL;
     Material material = resources::GEOSPHERE_MATERIAL;
-    Texture texture = planet::generate_geosphere_texture(
+    Texture texture = textures::generate_geosphere_texture(
         4094, 8, 1.84, 0.60, 1.27, 0.50, 0.51, 0.57, 0.61
     );
 
@@ -160,7 +161,7 @@ entt::entity spawn_sun(Vector3 position, float radius) {
     Vector3 scale = Vector3Scale(Vector3One(), radius);
     Model model = resources::SPHERE_MODEL;
     Material material = resources::SUN_MATERIAL;
-    Texture texture = sun::generate_geosphere_texture(4094);
+    Texture texture = textures::generate_sun_texture(16);
 
     sun::Sun sun(entity);
     gmodel::GModel gmodel(entity, model, material, texture, false);
@@ -186,7 +187,7 @@ entt::entity spawn_skybox() {
     Vector3 position = camera::CAMERA.position;
     Model model = resources::SPHERE_MODEL;
     Material material = resources::SKYBOX_MATERIAL;
-    Texture texture = skybox::generate_geosphere_texture(4094, 300.0, 0.83, 1.3, 0.3);
+    Texture texture = textures::generate_skybox_texture(4094, 300.0, 0.83, 1.3, 0.3);
 
     skybox::Skybox skybox(entity);
     gmodel::GModel gmodel(entity, model, material, texture, true);

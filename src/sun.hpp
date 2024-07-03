@@ -16,6 +16,4 @@ public:
     void update();
 };
 
-Texture generate_geosphere_texture(int size);
-
 }  // namespace gefest::sun
