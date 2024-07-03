@@ -115,7 +115,9 @@ entt::entity spawn_asteroid(Vector3 position) {
     );
     collider::Collider collider(
         entity,
-        constants::SCALE * 20.0  // sphere_radius
+        collider::Sphere{
+            .radius = constants::SCALE * 20.0f,
+        }
     );
     health::Health health(
         entity,

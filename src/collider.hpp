@@ -5,27 +5,26 @@
 
 namespace gefest::collider {
 
+enum class Type {
+    SPHERE,
+    BOX,
+};
+
+struct Sphere {
+    float radius;
+};
+
+struct Box {
+    float width;
+    float height;
+    float length;
+};
+
 class Collider {
 private:
     const entt::entity entity;
 
-    // collider type
-    enum class Type {
-        SPHERE,
-        BOX,
-    };
     const Type type;
-
-    // collider data
-    struct Sphere {
-        float radius;
-    };
-
-    struct Box {
-        float width;
-        float height;
-        float length;
-    };
 
     union {
         Sphere sphere;
@@ -36,8 +35,8 @@ private:
     void draw_box();
 
 public:
-    Collider(entt::entity entity, float sphere_radius);
-    Collider(entt::entity entity, float box_width, float box_height, float box_length);
+    Collider(entt::entity entity, Sphere sphere);
+    Collider(entt::entity entity, Box box);
 
     bool check_line_collision(Vector3 start, Vector3 end);
 

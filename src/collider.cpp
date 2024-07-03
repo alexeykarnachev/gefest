@@ -7,21 +7,15 @@
 
 namespace gefest::collider {
 
-Collider::Collider(entt::entity entity, float sphere_radius)
+Collider::Collider(entt::entity entity, Sphere sphere)
     : entity(entity)
     , type(Type::SPHERE)
-    , sphere(Sphere{.radius = sphere_radius}) {}
+    , sphere(sphere) {}
 
-Collider::Collider(
-    entt::entity entity, float box_width, float box_height, float box_length
-)
+Collider::Collider(entt::entity entity, Box box)
     : entity(entity)
     , type(Type::BOX)
-    , box(Box{
-          .width = box_width,
-          .height = box_height,
-          .length = box_length,
-      }) {}
+    , box(box) {}
 
 bool check_sphere_line_collision(
     Vector3 start, Vector3 end, Vector3 center, float radius
