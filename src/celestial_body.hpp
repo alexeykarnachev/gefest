@@ -28,10 +28,6 @@ private:
         Asteroid asteroid;
     };
 
-    void draw_sun();
-    void draw_planet();
-    void draw_asteroid();
-
 public:
     CelestialBody(entt::entity, Sun sun);
     CelestialBody(entt::entity, Planet planet);

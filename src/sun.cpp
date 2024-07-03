@@ -24,6 +24,4 @@ Texture generate_geosphere_texture(int size) {
     return render_texture.texture;
 }
 
-void update() {}
-
 }  // namespace gefest::sun
