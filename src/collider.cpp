@@ -26,6 +26,8 @@ bool Collider::check_line_collision(Vector3 start, Vector3 end) {
         case Type::SPHERE: return this->sphere.check_line_collision(tr, start, end);
         case Type::BOX: return this->box.check_line_collision(tr, start, end);
     }
+
+    return false;
 }
 
 void Collider::draw() {

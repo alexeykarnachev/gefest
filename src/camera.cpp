@@ -7,6 +7,7 @@
 #include "raylib/rcamera.h"
 #include "registry.hpp"
 #include "transform.hpp"
+#include <algorithm>
 
 namespace gefest::camera {
 
@@ -69,9 +70,9 @@ void update_editor_mode() {
 }
 
 void update_follow_mode() {
-    auto entity = registry::registry.view<registry::Player>().front();
-    auto tr = registry::registry.get<transform::Transform>(entity);
-    auto body = registry::registry.get<dynamic_body::DynamicBody>(entity);
+    auto player = registry::registry.view<registry::Player>().front();
+    auto tr = registry::registry.get<transform::Transform>(player);
+    auto body = registry::registry.get<dynamic_body::DynamicBody>(player);
     float speed = body.get_linear_speed();
 
     // TODO: refactor using Transform::apply
@@ -90,11 +91,17 @@ void update_follow_mode() {
     target = Vector3Lerp(target, CAMERA.target, FOLLOW_SMOOTHNESS);
 
     float fov = FOV + speed * FOLLOW_SPEED_FOV_MULTIPLIER;
+    fov = std::min(fov, 120.0f);
 
     CAMERA.position = position;
     CAMERA.target = target;
     CAMERA.up = up;
     CAMERA.fovy = fov;
+}
+
+void translate(Vector3 vec) {
+    CAMERA.position = Vector3Add(camera::CAMERA.position, vec);
+    CAMERA.target = Vector3Add(camera::CAMERA.target, vec);
 }
 
 void update() {

@@ -2,6 +2,7 @@
 
 #include "constants.hpp"
 #include "raylib/raymath.h"
+#include "registry.hpp"
 
 namespace gefest::transform {
 
@@ -25,6 +26,10 @@ Transform::Transform(
 
 Vector3 Transform::get_forward() {
     return Vector3RotateByQuaternion(constants::FORWARD, this->rotation);
+}
+
+void Transform::translate(Vector3 vec) {
+    this->position = Vector3Add(this->position, vec);
 }
 
 void Transform::rotate_x(float rad) {

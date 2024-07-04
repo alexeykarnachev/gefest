@@ -24,6 +24,8 @@ public:
     Vector3 get_up();
     Vector3 get_forward();
 
+    void translate(Vector3 vec);
+
     void rotate_x(float rad);
     void rotate_y(float rad);
 

@@ -18,13 +18,14 @@
 #include "resources.hpp"
 #include "ship.hpp"
 #include "skybox.hpp"
+#include "transform.hpp"
 #include <cstdio>
 
 namespace gefest::game {
 
 static bool WINDOW_SHOULD_CLOSE = false;
 
-void load_window() {
+static void load_window() {
     int screen_width = 2560;
     int screen_height = 1440;
 
@@ -35,7 +36,7 @@ void load_window() {
     rlSetClipPlanes(constants::SCALE * 0.1f, constants::SCALE * 1e6);
 }
 
-void load() {
+static void load() {
     load_window();
     resources::load();
     editor::load();
@@ -61,13 +62,13 @@ void load() {
     prefabs::spawn_skybox();
 }
 
-void unload() {
+static void unload() {
     editor::unload();
     resources::unload();
     CloseWindow();
 }
 
-void update_window_should_close() {
+static void update_window_should_close() {
     bool is_alt_f4_pressed = IsKeyDown(KEY_LEFT_ALT) && IsKeyPressed(KEY_F4);
     WINDOW_SHOULD_CLOSE = (WindowShouldClose() || is_alt_f4_pressed);
 }
@@ -88,7 +89,24 @@ template <typename T> void draw_components() {
     }
 }
 
-void update() {
+static void update_origin() {
+    auto player = registry::registry.view<registry::Player>().front();
+    auto player_tr = registry::registry.get<transform::Transform>(player);
+    auto dist = Vector3Length(player_tr.position);
+
+    if (dist < constants::ORIGIN_UPDATE_DISTANCE) return;
+
+    Vector3 offset = Vector3Negate(player_tr.position);
+
+    camera::translate(offset);
+
+    for (auto entity : registry::registry.view<transform::Transform>()) {
+        auto &tr = registry::registry.get<transform::Transform>(entity);
+        tr.translate(offset);
+    }
+}
+
+static void update() {
     update_window_should_close();
 
     update_components<celestial_body::CelestialBody>();
@@ -100,9 +118,11 @@ void update() {
     update_components<skybox::Skybox>();
 
     camera::update();
+
+    update_origin();
 }
 
-void draw() {
+static void draw() {
     BeginDrawing();
     ClearBackground(BLANK);
 

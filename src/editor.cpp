@@ -90,7 +90,7 @@ void update_ship() {
     auto &crosshair = registry::registry.get<crosshair::Crosshair>(entity);
 
     static float engine_force_min = ship.engine_force * 0.1f;
-    static float engine_force_max = ship.engine_force * 10.0f;
+    static float engine_force_max = ship.engine_force * 100.0f;
     static float projectile_speed_min = ship.projectile_speed * 0.1f;
     static float projectile_speed_max = ship.projectile_speed * 10.0f;
     static float crosshair_length_min = crosshair.length * 0.1f;
